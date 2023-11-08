@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:stretchColumns="1,2">
+
+    <TableRow
+        android:id="@+id/TableLabel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_outer_frame">
+
+        <TextView
+            android:id="@+id/Discount_label"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="1dip"
+            android:text="割引率"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/DiscountPriceLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/shape_outer_frame"
+            android:gravity="center"
+            android:padding="1dip"
+            android:text="値引額"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/PriceLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="1dip"
+            android:text="小計"
+            android:textSize="24sp" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/Table3PerLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_outer_frame">
+
+        <TextView
+            android:id="@+id/Per3_label"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="1dip"
+            android:text="3%"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/per3_DiscountText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/shape_outer_frame"
+            android:gravity="right"
+            android:padding="1dip"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/per3_PriceText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:gravity="right"
+            android:padding="1dip"
+            android:text="xxx"
+            android:textSize="24sp" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/Table5PerLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_outer_frame">
+
+        <TextView
+            android:id="@+id/Per5_label"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="1dip"
+            android:text="5%"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/per5_DiscountText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/shape_outer_frame"
+            android:gravity="right"
+            android:padding="1dip"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/per5_PriceText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:gravity="right"
+            android:padding="1dip"
+            android:text="xxx"
+            android:textSize="24sp" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/Table10PerLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_outer_frame">
+
+        <TextView
+            android:id="@+id/Per10_label"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="1dip"
+            android:text="10%"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/per10_DiscountText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/shape_outer_frame"
+            android:gravity="right"
+            android:padding="1dip"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/per10_PriceText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:gravity="right"
+            android:padding="1dip"
+            android:text="xxx"
+            android:textSize="24sp" />
+
+    </TableRow>
+</TableLayout>

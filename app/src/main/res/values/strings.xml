@@ -45,4 +45,8 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
     <string name="priceTextFieldText_hint">金額を入力</string>
+    <string name="titleLabelText">割引計算ツール</string>
+    <string name="unitLabelText">￥</string>
+    <string name="configButtonText">設定</string>
+    <string name="perEnableSwitchText">xx%</string>
 </resources>

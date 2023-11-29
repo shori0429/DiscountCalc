@@ -50,4 +50,8 @@
     <string name="priceLabel">小計</string>
     <string name="oneCalcPerLabel">3%</string>
     <string name="oneCalcPriceText">xxx</string>
+    <string name="titleLabelText">割引計算ツール</string>
+    <string name="unitLabelText">￥</string>
+    <string name="configButtonText">設定</string>
+    <string name="perEnableSwitchText">xx%</string>
 </resources>

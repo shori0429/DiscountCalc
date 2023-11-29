@@ -45,6 +45,11 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
     <string name="priceTextFieldText_hint">金額を入力</string>
+    <string name="discountRate">割引率</string>
+    <string name="discountLabel">値引額</string>
+    <string name="priceLabel">小計</string>
+    <string name="oneCalcPerLabel">3%</string>
+    <string name="oneCalcPriceText">xxx</string>
     <string name="titleLabelText">割引計算ツール</string>
     <string name="unitLabelText">￥</string>
     <string name="configButtonText">設定</string>

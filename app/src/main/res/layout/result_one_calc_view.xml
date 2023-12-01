@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:stretchColumns="1,2">
+
+    <TableRow
+        android:id="@+id/TablePerLabel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_outer_frame">
+
+        <TextView
+            android:id="@+id/Per_label"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="1dip"
+            android:text="@string/oneCalcPerLabel"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/per_DiscountText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/shape_outer_frame"
+            android:gravity="end"
+            android:padding="1dip"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/per_PriceText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:gravity="end"
+            android:padding="1dip"
+            android:text="@string/oneCalcPriceText"
+            android:textSize="24sp" />
+
+    </TableRow>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,43 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:stretchColumns="1,2">
+    android:layout_height="wrap_content">
 
-    <TableRow
-        android:id="@+id/TablePerLabel"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/shape_outer_frame">
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/discountBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="end"
+        app:constraint_referenced_ids="discountLabel" />
 
-        <TextView
-            android:id="@+id/Per_label"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:padding="1dip"
-            android:text="@string/oneCalcPerLabel"
-            android:textSize="24sp" />
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/discountPriceBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="end"
+        app:constraint_referenced_ids="discountPriceLabel" />
 
-        <TextView
-            android:id="@+id/per_DiscountText"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/shape_outer_frame"
-            android:gravity="end"
-            android:padding="1dip"
-            android:textSize="24sp" />
+    <TextView
+        android:id="@+id/discountLabel"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_outer_frame"
+        android:gravity="center"
+        android:padding="1dip"
+        android:text="@string/discountRate"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/per_PriceText"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="end"
-            android:gravity="end"
-            android:padding="1dip"
-            android:text="@string/oneCalcPriceText"
-            android:textSize="24sp" />
+    <TextView
+        android:id="@+id/discountPriceLabel"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_outer_frame"
+        android:gravity="center"
+        android:padding="1dip"
+        android:text="@string/discountLabel"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@id/discountBarrier"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    </TableRow>
-
+    <TextView
+        android:id="@+id/priceLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_outer_frame"
+        android:gravity="center"
+        android:padding="1dip"
+        android:text="@string/priceLabel"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/discountPriceLabel"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

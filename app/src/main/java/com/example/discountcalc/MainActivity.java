@@ -3,10 +3,11 @@ package com.example.discountcalc;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.discountcalc.CustomAdapters.ResultLayoutAdapter;
+import com.example.discountcalc.Fragments.TitleFragment;
 import com.example.discountcalc.Params.DiscountData;
 import com.example.discountcalc.databinding.ActivityMainBinding;
 
@@ -24,17 +25,23 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        RecyclerView rv = findViewById(R.id.resultPriceList);
+        //RecyclerView rv = findViewById(R.id.resultPriceList);
         ResultLayoutAdapter adapter = new ResultLayoutAdapter(this.getDiscountDataList());
 
+        TitleFragment titleFragment=new TitleFragment();
+
+        FragmentManager fragmentManager=getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.calcTitleView,titleFragment);
+        fragmentTransaction.commit();
         //
-        rv.setHasFixedSize(true);
+        //rv.setHasFixedSize(true);
 
         //
-        rv.setLayoutManager(new LinearLayoutManager(this));
+       // rv.setLayoutManager(new LinearLayoutManager(this));
 
         //
-        rv.setAdapter(adapter);
+       // rv.setAdapter(adapter);
 
     }
 

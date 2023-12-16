@@ -1,6 +1,7 @@
 package com.example.discountcalc;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,8 +20,7 @@ public class CalcTitle extends AppCompatActivity {
     }
 
     private void setOnclickListeners(){
-        calcTitleBinding.configButton.setOnClickListener(v->{
-
-        });
+        String text="Button Click";
+        calcTitleBinding.configButton.setOnClickListener(v-> Toast.makeText(this,text,Toast.LENGTH_SHORT).show());
     }
 }

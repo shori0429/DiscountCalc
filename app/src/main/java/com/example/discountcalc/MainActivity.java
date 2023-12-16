@@ -1,21 +1,21 @@
 package com.example.discountcalc;
 
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.example.discountcalc.CustomAdapters.ResultLayoutAdapter;
+import com.example.discountcalc.Fragments.TitleFragment;
+import com.example.discountcalc.Params.DiscountData;
 import com.example.discountcalc.databinding.ActivityMainBinding;
-import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
 
     @Override
@@ -25,43 +25,36 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        setSupportActionBar(binding.toolbar);
+        //RecyclerView rv = findViewById(R.id.resultPriceList);
+        ResultLayoutAdapter adapter = new ResultLayoutAdapter(this.getDiscountDataList());
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        TitleFragment titleFragment=new TitleFragment();
 
-        binding.fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAnchorView(R.id.fab)
-                .setAction("Action", null).show());
+        FragmentManager fragmentManager=getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.calcTitleView,titleFragment);
+        fragmentTransaction.commit();
+        //
+        //rv.setHasFixedSize(true);
+
+        //
+       // rv.setLayoutManager(new LinearLayoutManager(this));
+
+        //
+       // rv.setAdapter(adapter);
+
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+    private List<DiscountData> getDiscountDataList() {
+        ArrayList<DiscountData> list = new ArrayList<>();
+        for (int i = 1; i < 10; i++) {
+            DiscountData data = new DiscountData();
+            data.setDiscount(i);
+            data.setDiscountPrice(i * 10);
+            data.setPrice(i * 100);
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+            list.add(data);
         }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                || super.onSupportNavigateUp();
+        return list;
     }
 }

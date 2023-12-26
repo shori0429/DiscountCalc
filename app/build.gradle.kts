@@ -1,5 +1,8 @@
+@file:Suppress("UnstableApiUsage")
+
 plugins {
     id("com.android.application")
+    id("androidx.navigation.safeargs")
 }
 
 android {
@@ -31,6 +34,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        dataBinding=true
     }
     viewBinding{
         enable=true
@@ -39,6 +43,8 @@ android {
     tasks.withType<Test> {
         useJUnitPlatform()
     }
+
+
 }
 
 dependencies {
@@ -48,6 +54,9 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.navigation:navigation-fragment:2.7.4")
     implementation("androidx.navigation:navigation-ui:2.7.4")
+    implementation("androidx.preference:preference:1.2.1")
+    implementation("androidx.legacy:legacy-support-v4:1.0.0")
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

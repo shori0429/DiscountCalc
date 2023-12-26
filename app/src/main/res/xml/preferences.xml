@@ -1,0 +1,17 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="@string/messages_header">
+        <ListPreference
+            android:key="using_setting"
+            android:title="使用する設定データ"
+            android:summary="カスタム設定・プリセット設定を切り替えます"
+            android:entries="@array/settings_params"
+            android:entryValues="@array/settings_params"
+            app:useSimpleSummaryProvider="true"
+            />
+
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

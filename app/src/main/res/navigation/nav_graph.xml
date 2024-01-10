@@ -9,20 +9,19 @@
         android:id="@+id/titleFragment"
         android:name="com.example.discountcalc.Fragments.TitleFragment"
         android:label="TitleFragment"
-        tools:layout="@layout/calc_title"
-        >
-        <action
-            android:id="@+id/action_titleFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
+        tools:layout="@layout/calc_title">
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.discountcalc.Fragments.SettingsFragment"
         android:label="SettingsFragment"
-        tools:layout="@layout/config_main"
-        >
+        tools:layout="@layout/config_main">
         <action
             android:id="@+id/action_settingsFragment_to_titleFragment"
             app:destination="@id/titleFragment" />
     </fragment>
+    <!--Global Action-->
+    <action
+        android:id="@+id/action_titleFragment_to_settingsFragment"
+        app:destination="@id/settingsFragment" />
 </navigation>

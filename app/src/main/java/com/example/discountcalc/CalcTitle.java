@@ -27,7 +27,7 @@ public class CalcTitle extends AppCompatActivity {
         String text="Button Click";
         calcTitleBinding.configButton.setOnClickListener(v-> Toast.makeText(this,text,Toast.LENGTH_SHORT).show());
 
-        NavHostFragment navHostFragment=(NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        NavHostFragment navHostFragment=(NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.main_title_container);
         NavController navController= null;
         if (navHostFragment != null) {
             navController = navHostFragment.getNavController();

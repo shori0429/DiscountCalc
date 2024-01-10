@@ -10,6 +10,9 @@
             android:entryValues="@array/settings_params"
             app:useSimpleSummaryProvider="true"
             />
+        <ListPreference
+            android:title="パラメータの保存"
+            />
 
 
     </PreferenceCategory>

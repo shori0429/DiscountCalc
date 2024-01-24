@@ -4,6 +4,9 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.datastore.preferences.core.Preferences;
+import androidx.datastore.preferences.rxjava3.RxPreferenceDataStoreBuilder;
+import androidx.datastore.rxjava3.RxDataStore;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -18,11 +21,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.discountcalc.CustomAdapters.ResultLayoutAdapter;
+import com.example.discountcalc.DataBase.CustomConfigDataStoreSingleton;
 import com.example.discountcalc.Params.DiscountData;
 import com.example.discountcalc.databinding.ResultPriceListBinding;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 class PriceViewModel extends ViewModel {
     private MutableLiveData<TextView> priceText;
@@ -34,11 +39,16 @@ class PriceViewModel extends ViewModel {
 
 public class ResultListFragment extends Fragment {
 
+    private static final String TAG_STORE_NAME = "custom_setting_data";
     private int price;
     private PriceViewModel priceViewModel;
     private View view;
 
+    RxDataStore<Preferences> datastoreRX;
+    CustomConfigDataStoreSingleton customConfigDataStoreSingleton;
+
     private ResultPriceListBinding resultPriceListBinding;
+    private Preferences pref_error;
 
     public ResultListFragment() {
         // Required empty public constructor
@@ -65,6 +75,14 @@ public class ResultListFragment extends Fragment {
         resultPriceListBinding = ResultPriceListBinding.inflate(inflater, container, false);
         view = resultPriceListBinding.getRoot();
         Log.i("resultFragment", getParentFragmentManager().toString());
+
+        customConfigDataStoreSingleton=CustomConfigDataStoreSingleton.getInstance();
+        if(customConfigDataStoreSingleton==null){
+            datastoreRX=new RxPreferenceDataStoreBuilder(view.getContext(),TAG_STORE_NAME).build();
+        }else{
+            datastoreRX=customConfigDataStoreSingleton.getDatastore();
+        }
+
 //        // Get the ViewModel.
 //        priceViewModel=new ViewModelProvider(this).get(PriceViewModel.class);
 //        // Create the observer which updates the UI.
@@ -87,4 +105,5 @@ public class ResultListFragment extends Fragment {
         }
         return list;
     }
+
 }

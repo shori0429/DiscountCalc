@@ -1,5 +1,8 @@
 syntax="proto3";
 
+option java_package="com.example.discountcalc";
+option java_multiple_files=true;
+
 message CustomConfigData{
   string query=1;
   string perLabel=2; //〇%割引表記のためのラベル

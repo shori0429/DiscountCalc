@@ -1,8 +1,8 @@
-    @file:Suppress("UnstableApiUsage")
-
+val protobufVer="3.25.0"
 plugins {
     id("com.android.application")
     id("androidx.navigation.safeargs")
+    id("com.google.protobuf") version "0.9.4"
 }
 
 android {
@@ -12,7 +12,7 @@ android {
     defaultConfig {
         applicationId = "com.example.discountcalc"
         minSdk = 21
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -28,10 +28,12 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+
+    compileOptions{
+        sourceCompatibility=JavaVersion.VERSION_1_8
+        targetCompatibility=JavaVersion.VERSION_1_8
     }
+
     buildFeatures {
         viewBinding = true
         dataBinding=true
@@ -59,12 +61,32 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.lifecycle:lifecycle-livedata:2.7.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel:2.7.0")
-    implementation("androidx.datastore:datastore:1.0.0")
-    implementation("androidx.datastore:datastore-rxjava2:1.0.0")
-    implementation("androidx.datastore:datastore-rxjava3:1.0.0")
-    implementation("androidx.datastore:datastore-core:1.0.0")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+    // DataStore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    // RxJava3
+    implementation("androidx.datastore:datastore-preferences-rxjava3:1.0.0")
+    // protobuf
+    implementation("com.google.protobuf:protobuf-javalite:${protobufVer}")
+    // lifecycleScope
+    implementation("androidx.lifecycle:lifecycle-runtime:2.7.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+}
+
+protobuf{
+    protoc{
+        artifact="com.google.protobuf:protoc:${protobufVer}"
+    }
+
+    generateProtoTasks {
+        all().forEach {
+            it.builtins{
+                create("java"){
+                    option("lite")
+                }
+            }
+        }
+    }
 
 }

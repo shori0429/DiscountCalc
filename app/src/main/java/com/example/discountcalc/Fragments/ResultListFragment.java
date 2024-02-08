@@ -5,9 +5,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.datastore.preferences.core.Preferences;
+import androidx.datastore.preferences.core.PreferencesKeys;
 import androidx.datastore.preferences.rxjava3.RxPreferenceDataStoreBuilder;
 import androidx.datastore.rxjava3.RxDataStore;
-import androidx.datastore.rxjava3.RxDataStoreBuilder;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -22,18 +22,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.discountcalc.CustomAdapters.ResultLayoutAdapter;
-import com.example.discountcalc.CustomConfigData;
 import com.example.discountcalc.DataBase.CustomConfigDataStoreHelper;
 import com.example.discountcalc.DataBase.CustomConfigDataStoreSingleton;
-import com.example.discountcalc.DataBase.CustomConfigSerializer;
 import com.example.discountcalc.Params.DiscountData;
 import com.example.discountcalc.databinding.ResultPriceListBinding;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Flow;
 
 import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Single;
 
 
 class PriceViewModel extends ViewModel {
@@ -47,11 +45,10 @@ class PriceViewModel extends ViewModel {
 public class ResultListFragment extends Fragment {
 
     private static final String TAG_STORE_NAME = "custom_setting_data";
-    private static final String PRICE_KEY ="query_key";
+    private static final String DISCOUNT_KEY ="discount_key";
 
-    private static final String PERLABEL_KEY="per_label_key";
+    private static final String CONFIG_ENUM_KEY="config_enum_key";
 
-    private static final String PERDATA_KEY="per_data_key";
     private int price;
     private PriceViewModel priceViewModel;
     private View view;
@@ -109,24 +106,34 @@ public class ResultListFragment extends Fragment {
     private void getConfigDataStoreInstance() {
         customConfigDataStoreSingleton = CustomConfigDataStoreSingleton.getInstance();
         if (customConfigDataStoreSingleton == null) {
-            datastoreRX = new RxPreferenceDataStoreBuilder(view.getContext(), TAG_STORE_NAME).build();
+            datastoreRX = new RxPreferenceDataStoreBuilder(view.getContext(), TAG_STORE_NAME+".pb").build();
         } else {
             datastoreRX = customConfigDataStoreSingleton.getDatastore();
         }
         customConfigDataStoreSingleton.setDataStore(datastoreRX);
     }
 
-    private void saveDataStore() {
-       // datastoreRX=new RxPreferenceDataStoreBuilder<CustomConfigData>(view.getContext(),"customConfig_setting.pb",new CustomConfigSerializer()).build();
+    private void dataStoreHelperInitialize(RxDataStore<Preferences> dataStore){
+        customConfigDataStoreHelper=new CustomConfigDataStoreHelper(this.getParentFragment(),dataStore);
+    }
+
+    private void saveDataStore(){
+        configDataList.forEach(d->
+        {
+            customConfigDataStoreHelper.putIntegerValue(DISCOUNT_KEY, d.getDiscount());
+            customConfigDataStoreHelper.putIntegerValue(CONFIG_ENUM_KEY,d.getConfigEnum());
+        });
+
     }
 
     private void loadDataStore(){
-        //Flowable<Integer> priceData=dataStore.data().map(CustomConfigData::getPrice);
+        //ロード処理
+        Preferences.Key<Integer> PREF_KEY= PreferencesKeys.intKey(DISCOUNT_KEY);
+        Single<Integer> priceData=datastoreRX.data().firstOrError().map(pref->pref.get(PREF_KEY)).onErrorReturnItem(-2);
     }
     @Override
     public void onPause() {
         super.onPause();
-        saveDataStore();
     }
 
 

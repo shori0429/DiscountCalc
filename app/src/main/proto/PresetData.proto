@@ -4,19 +4,16 @@ option java_package="com.example.discountcalc";
 option java_multiple_files=true;
 
 message CustomConfigData{
-  string query=1;
-  string perLabel=2; //〇%割引表記のためのラベル
-  int32 per=3;    //割引の割合
-  ConfigEnum configEnum=4;
-}
-
-enum ConfigEnum{
-  PARAM1=0;
-  PARAM2=1;
-  PARAM3=2;
-  PARAM4=3;
-  PARAM5=4;
-  PARAM6=5;
-  PARAM7=6;
-  PARAM8=7;
+  int32 discount=1; //割引率
+  enum ConfigEnum{
+    PARAM1=0;
+    PARAM2=1;
+    PARAM3=2;
+    PARAM4=3;
+    PARAM5=4;
+    PARAM6=5;
+    PARAM7=6;
+    PARAM8=7;
+  }
+  ConfigEnum configEnum=2;
 }

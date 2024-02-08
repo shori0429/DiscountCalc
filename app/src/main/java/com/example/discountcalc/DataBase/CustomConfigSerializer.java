@@ -3,9 +3,12 @@ package com.example.discountcalc.DataBase;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.datastore.core.Serializer;
+import androidx.datastore.rxjava3.RxDataStore;
+import androidx.datastore.rxjava3.RxDataStoreBuilder;
 
 
 import com.example.discountcalc.CustomConfigData;
+import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +18,12 @@ import kotlin.Unit;
 import kotlin.coroutines.Continuation;
 
 public class CustomConfigSerializer implements Serializer<CustomConfigData> {
+
+    private int price;
+    private int perLabel;
+    private int per;
+    CustomConfigData customConfigData=CustomConfigData.getDefaultInstance();
+
     @Override
     public CustomConfigData getDefaultValue() {
         return CustomConfigData.getDefaultInstance();
@@ -26,7 +35,7 @@ public class CustomConfigSerializer implements Serializer<CustomConfigData> {
         try{
             return CustomConfigData.parseFrom(input);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Cannot read proto.",e);
         }
     }
 
@@ -40,5 +49,7 @@ public class CustomConfigSerializer implements Serializer<CustomConfigData> {
         }
         return null;
     }
+
+
 
 }

@@ -1,20 +1,32 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory android:title="@string/messages_header">
+    <PreferenceCategory app:title="@string/messages_header">
         <ListPreference
-            android:key="using_setting"
-            android:title="使用する設定データ"
-            android:summary="カスタム設定・プリセット設定を切り替えます"
-            android:entries="@array/settings_params"
-            android:entryValues="@array/settings_params"
+            app:key="using_setting"
+            app:title="使用する設定データ"
+            app:summary="カスタム設定・プリセット設定を切り替えます"
+            app:entries="@array/settings_params"
+            app:entryValues="@array/settings_params"
             app:useSimpleSummaryProvider="true"
             />
-        <ListPreference
-            android:title="パラメータの保存"
+
+        <CheckBoxPreference
+            app:title="パラメータの保存"
+            app:defaultValue="true"
+            />
+
+        <SeekBarPreference
+            app:title="表示数"
+            app:key="viewCount"
+            android:max="10"
+            app:min="1"
+            app:defaultValue="10"
+            app:showSeekBarValue="true"
             />
 
 
     </PreferenceCategory>
+
 
 </PreferenceScreen>

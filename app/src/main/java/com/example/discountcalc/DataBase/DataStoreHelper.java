@@ -14,7 +14,7 @@ import io.reactivex.rxjava3.core.Single;
 
 public class DataStoreHelper {
     Fragment fragment;
-    RxDataStore<Preferences> dataStoreRx;
+    RxDataStore<Preferences>dataStoreRx;
     Preferences pref_error=new Preferences() {
         @Override
         public <T> boolean contains(@NonNull Key<T> key) {
@@ -49,12 +49,12 @@ public class DataStoreHelper {
             MutablePreferences mutablePreferences=prefsIn.toMutablePreferences();
             mutablePreferences.set(PREF_KEY,value);
             return Single.just(mutablePreferences);
-            //値の保存や再取得エラーをキャッチするための処理
+        //値の保存や再取得エラーをキャッチするための処理
         } ).onErrorReturnItem(pref_error);
         returnValue=updateResult.blockingGet()!=pref_error;
         return returnValue;
     }
-    String getStringValue(String key){
+    public String getStringValue(String key){
         Preferences.Key<String> PREF_KEY= PreferencesKeys.stringKey(key);
         Single<String>value=dataStoreRx.data().firstOrError().map(prefs->prefs.get(PREF_KEY)).onErrorReturnItem("null");
         return value.blockingGet();
@@ -70,7 +70,7 @@ public class DataStoreHelper {
         returnValue=updateResult.blockingGet()!=pref_error;
         return returnValue;
     }
-    boolean getBoolValue(String key){
+    public boolean getBoolValue(String key){
         Preferences.Key<Boolean> PREF_KEY= PreferencesKeys.booleanKey(key);
         Single<Boolean>value=dataStoreRx.data().firstOrError().map(prefs->prefs.get(PREF_KEY)).onErrorReturnItem(false);
         return value.blockingGet();
@@ -91,7 +91,7 @@ public class DataStoreHelper {
         return returnValue;
     }
 
-    int getIntValue(String key){
+    public int getIntValue(String key){
         Preferences.Key<Integer> PREF_KEY= PreferencesKeys.intKey(key);
         Single<Integer>value=dataStoreRx.data().firstOrError().map(prefs->prefs.get(PREF_KEY)).onErrorReturnItem(-1);
         return value.blockingGet();

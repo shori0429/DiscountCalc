@@ -2,7 +2,6 @@ val protobufVer="3.25.0"
 plugins {
     id("com.android.application")
     id("androidx.navigation.safeargs")
-    id("com.google.protobuf") version "0.9.4"
 }
 
 android {
@@ -54,8 +53,8 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.navigation:navigation-fragment:2.7.6")
-    implementation("androidx.navigation:navigation-ui:2.7.6")
+    implementation("androidx.navigation:navigation-fragment:2.7.7")
+    implementation("androidx.navigation:navigation-ui:2.7.7")
     implementation("androidx.preference:preference:1.2.1")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
@@ -65,28 +64,9 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     // RxJava3
     implementation("androidx.datastore:datastore-preferences-rxjava3:1.0.0")
-    // protobuf
-    implementation("com.google.protobuf:protobuf-javalite:${protobufVer}")
     // lifecycleScope
     implementation("androidx.lifecycle:lifecycle-runtime:2.7.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-}
-
-protobuf{
-    protoc{
-        artifact="com.google.protobuf:protoc:${protobufVer}"
-    }
-
-    generateProtoTasks {
-        all().forEach {
-            it.builtins{
-                create("java"){
-                    option("lite")
-                }
-            }
-        }
-    }
-
 }

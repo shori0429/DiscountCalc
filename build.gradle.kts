@@ -2,7 +2,6 @@
 plugins {
     id("com.android.application") version "8.1.2" apply false
     id("java")
-    id("com.google.protobuf") version "0.9.4" apply false
 }
 buildscript{
     repositories{
@@ -10,8 +9,7 @@ buildscript{
 
     }
     dependencies {
-        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.7.6")
-        classpath("com.google.protobuf:protobuf-gradle-plugin:0.9.4")
+        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.7.7")
     }
 }
 

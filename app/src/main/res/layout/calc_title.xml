@@ -29,10 +29,13 @@
         android:hint="@string/priceTextFieldText_hint"
         android:importantForAutofill="no"
         android:inputType="number"
+        android:digits="0123456789"
+        android:focusableInTouchMode="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/unitLabel"
         app:layout_constraintTop_toBottomOf="@+id/titleLabel"
-        tools:ignore="TouchTargetSizeCheck" />
+        tools:ignore="TouchTargetSizeCheck"
+        />
 
     <TextView
         android:id="@+id/unitLabel"

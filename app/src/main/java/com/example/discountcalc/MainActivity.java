@@ -3,17 +3,13 @@ package com.example.discountcalc;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.FragmentManager;
 
-import com.example.discountcalc.CustomAdapters.ResultLayoutAdapter;
-import com.example.discountcalc.Params.DiscountData;
+import com.example.discountcalc.Fragments.SettingsFragment;
+import com.example.discountcalc.Fragments.TitleFragment;
 import com.example.discountcalc.databinding.ActivityMainBinding;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TitleFragment.OnClickListener{
 
     private ActivityMainBinding binding;
 
@@ -24,30 +20,32 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        RecyclerView rv = findViewById(R.id.resultPriceList);
-        ResultLayoutAdapter adapter = new ResultLayoutAdapter(this.getDiscountDataList());
+    }
 
-        //
-        rv.setHasFixedSize(true);
+    @Override
+    protected void onStart() {
+        super.onStart();
 
-        //
-        rv.setLayoutManager(new LinearLayoutManager(this));
+        //使用するフラグメント宣言
+        TitleFragment titleFragment=new TitleFragment();
 
-        //
-        rv.setAdapter(adapter);
+        //フラグメントを扱うためのManagerとTransactionを取得
+        FragmentManager fragmentManager=getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.main_title_container,titleFragment)
+                .setReorderingAllowed(true)
+                .addToBackStack(null)
+                .commit();
 
     }
 
-    private List<DiscountData> getDiscountDataList() {
-        ArrayList<DiscountData> list = new ArrayList<>();
-        for (int i = 1; i < 10; i++) {
-            DiscountData data = new DiscountData();
-            data.setDiscount(i);
-            data.setDiscountPrice(i * 10);
-            data.setPrice(i * 100);
-
-            list.add(data);
-        }
-        return list;
+    @Override
+    public void onClick() {
+        FragmentManager fragmentManager=getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.main_title_container, SettingsFragment.class,null)
+                .setReorderingAllowed(true)
+                .addToBackStack(null)
+                .commit();
     }
 }

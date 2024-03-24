@@ -1,5 +1,6 @@
 package com.example.discountcalc.Fragments;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,9 +9,7 @@ import androidx.datastore.preferences.core.Preferences;
 import androidx.datastore.preferences.rxjava3.RxPreferenceDataStoreBuilder;
 import androidx.datastore.rxjava3.RxDataStore;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -135,6 +134,9 @@ public class ResultListFragment extends Fragment {
         } else {
             viewCount = count;
             Log.i("viewCount", Integer.toString(count));
+            SharedPreferences sharedPreferences=PreferenceManager.getDefaultSharedPreferences(requireContext());
+            viewCount=sharedPreferences.getInt("viewCount",-1);
+            Log.i("viewCount", "Result-sharedPreferences:"+count);
         }
     }
 

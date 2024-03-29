@@ -8,10 +8,15 @@ public class DiscountCalc {
      * @param ratio n%割引
      **/
 
-    public static int discountCalculationInTax(int price,int ratio){
+    public static int discountCalculationPercentage(int price, double ratio){
         double discount=price*ratio;
         //計算結果の少数を切り捨てて返す
-        return (int)(price-discount);
+        return (int)Math.ceil(discount);
     }
 
+    public static int discountCalculationIntPercentage(int price,double ratio){
+        double discount=price*(ratio/100);
+        //計算結果の少数を切り捨てて返す
+        return (int)Math.ceil(discount);
+    }
 }

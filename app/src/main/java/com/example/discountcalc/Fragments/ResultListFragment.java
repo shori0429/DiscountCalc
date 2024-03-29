@@ -1,5 +1,6 @@
 package com.example.discountcalc.Fragments;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -93,16 +94,6 @@ public class ResultListFragment extends Fragment {
         };
         discountCalcViewModel.getPrice().observe(getViewLifecycleOwner(),priceObserver);
 
-        //discountCalcViewModel.getPrice().observe(this,);
-        // Create the observer which updates the UI.
-        //final Observer<TextView> priceObserver= textView -> price=Integer.parseInt(textView.getText().toString());
-        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
-        //DiscountCalcViewModel.getPriceText().observe(getViewLifecycleOwner(),priceObserver);
-
-
-        // ViewModel取得
-        //discountCalcViewModel=DiscountCalcViewModel.getSingleton();
-
         // データストアインスタンス取得
         getDataStoreInstance();
         // データストアヘルパー取得
@@ -146,6 +137,9 @@ public class ResultListFragment extends Fragment {
         } else {
             viewCount = count;
             Log.i("viewCount", Integer.toString(count));
+            SharedPreferences sharedPreferences=PreferenceManager.getDefaultSharedPreferences(requireContext());
+            viewCount=sharedPreferences.getInt("viewCount",-1);
+            Log.i("viewCount", "Result-sharedPreferences:"+count);
         }
 
         // リスト初期化

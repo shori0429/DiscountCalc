@@ -11,6 +11,7 @@ import androidx.datastore.rxjava3.RxDataStore;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -84,13 +85,10 @@ public class ResultListFragment extends Fragment {
         Log.i("ResultListFragment","Called ViewModelProvider.get");
         discountCalcViewModel=new ViewModelProvider(requireActivity()).get(DiscountCalcViewModel.class);
 
-        final Observer<Integer> priceObserver=new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                price=integer;
-                calcDiscounts();
-                resultLayoutAdapter.updateItem(configDataList);
-            }
+        final Observer<Integer> priceObserver= integer -> {
+            price=integer;
+            calcDiscounts();
+            resultLayoutAdapter.updateItem(configDataList);
         };
         discountCalcViewModel.getPrice().observe(getViewLifecycleOwner(),priceObserver);
 
@@ -137,7 +135,7 @@ public class ResultListFragment extends Fragment {
         } else {
             viewCount = count;
             Log.i("viewCount", Integer.toString(count));
-            SharedPreferences sharedPreferences=PreferenceManager.getDefaultSharedPreferences(requireContext());
+            SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(requireContext());
             viewCount=sharedPreferences.getInt("viewCount",-1);
             Log.i("viewCount", "Result-sharedPreferences:"+count);
         }

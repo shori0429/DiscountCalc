@@ -2,6 +2,8 @@ package com.example.discountcalc.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,17 +14,22 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.discountcalc.R;
+import com.example.discountcalc.ViewModels.DiscountCalcViewModel;
 import com.example.discountcalc.databinding.CalcTitleBinding;
 
-public class TitleFragment extends Fragment{
+public class TitleFragment extends Fragment implements TextWatcher {
 
     private CalcTitleBinding calcTitleBinding;
 
     OnClickListener _clickListener;
 
     InputMethodManager inputMethodManager;
+
+    DiscountCalcViewModel discountCalcViewModel;
+
     public TitleFragment(){
         super();
     }
@@ -38,6 +45,12 @@ public class TitleFragment extends Fragment{
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
+        discountCalcViewModel=new ViewModelProvider(requireActivity()).get(DiscountCalcViewModel.class);
+
+
+        calcTitleBinding.priceTextField.addTextChangedListener(this);
 
         ResultListFragment resultListFragment=new ResultListFragment();
         getChildFragmentManager().beginTransaction()
@@ -88,4 +101,30 @@ public class TitleFragment extends Fragment{
         void onClick();
     }
 
+    // 文字列が修正される直前に呼び出されるメソッド
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    // 文字一つを入力したときに呼び出される
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    // 最後にこのメソッドが呼び出される
+    @Override
+    public void afterTextChanged(Editable s) {
+        String inputStr=s.toString();
+
+        if(inputStr.length()>0){
+            // TextViewに入力された値をリアルタイムで反映
+            discountCalcViewModel.setPrice(Integer.parseInt(calcTitleBinding.priceTextField.getText().toString()));
+        }
+        else{
+            discountCalcViewModel.setPrice(0);
+        }
+        Log.i("priceText","price:"+discountCalcViewModel.getPrice().getValue());
+    }
 }

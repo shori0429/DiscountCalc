@@ -7,11 +7,13 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.discountcalc.Fragments.SettingsFragment;
 import com.example.discountcalc.Fragments.TitleFragment;
+import com.example.discountcalc.ViewModels.DiscountCalcViewModel;
 import com.example.discountcalc.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity implements TitleFragment.OnClickListener{
 
     private ActivityMainBinding binding;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

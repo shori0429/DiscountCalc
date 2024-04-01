@@ -6,4 +6,16 @@
     </style>
 
     <style name="Theme.DiscountCalc" parent="Base.Theme.DiscountCalc" />
+
+    <!-- custom style -->
+    <style name="SwitchCompatStyle"
+        parent="Widget.Material3.CompoundButton.Switch">
+        <item name="thumbTint">@drawable/thumb_selector</item>
+        <item name="trackTint">@drawable/track_selector</item>
+    </style>
+
+    <style name="App.Switches" parent="Widget.Material3.CompoundButton.Switch">
+        <item name="track">@drawable/switch_track</item>
+        <item name="android:thumb">@drawable/switch_thumb</item>
+    </style>
 </resources>

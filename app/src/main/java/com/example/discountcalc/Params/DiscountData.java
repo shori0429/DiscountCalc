@@ -3,28 +3,32 @@ package com.example.discountcalc.Params;
 public class DiscountData {
 
     // 割引率
-    private int discount;
+    private int discountPer;
     // 割引額
     private int discountPrice;
-    // 価格
-    private int price;
+    // 値引き後価格
+    private int afterPrice;
+
+    private int configEnum;
 
     public DiscountData(){
-        discount=0;
+        discountPer=0;
         discountPrice=0;
-        price=0;
+        afterPrice=0;
+        configEnum=0;
     }
-    public DiscountData(int discount,int discountPrice,int price){
-        this.discount=discount;
+    public DiscountData(int discountPer, int discountPrice, int afterPrice, int configEnum){
+        this.discountPer = discountPer;
         this.discountPrice=discountPrice;
-        this.price=price;
+        this.afterPrice = afterPrice;
+        this.configEnum=configEnum;
     }
-    public int getDiscount() {
-        return discount;
+    public int getDiscountPer() {
+        return discountPer;
     }
 
-    public void setDiscount(int discount) {
-        this.discount = discount;
+    public void setDiscountPer(int discountPer) {
+        this.discountPer = discountPer;
     }
 
     public int getDiscountPrice() {
@@ -35,11 +39,19 @@ public class DiscountData {
         this.discountPrice = discountPrice;
     }
 
-    public int getPrice() {
-        return price;
+    public int getAfterPrice() {
+        return afterPrice;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
+    public void setAfterPrice(int afterPrice) {
+        this.afterPrice = afterPrice;
+    }
+
+    public void setConfigEnum(int configEnum) {
+        this.configEnum = configEnum;
+    }
+
+    public int getConfigEnum() {
+        return configEnum;
     }
 }

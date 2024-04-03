@@ -15,6 +15,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.discountcalc.R;
 import com.example.discountcalc.ViewModels.DiscountCalcViewModel;
@@ -24,7 +27,6 @@ public class TitleFragment extends Fragment implements TextWatcher {
 
     private CalcTitleBinding calcTitleBinding;
 
-    OnClickListener _clickListener;
 
     InputMethodManager inputMethodManager;
 
@@ -72,14 +74,13 @@ public class TitleFragment extends Fragment implements TextWatcher {
         calcTitleBinding = null;
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        try{
-            _clickListener=(OnClickListener) context;
-        }catch (ClassCastException e){
-            throw new ClassCastException(context+"must implement");
-        }
+    // navigationGraphのDestination遷移を実装
+    private void setNavGraphDestination(){
+        NavHostFragment navHostFragment=(NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.host_fragment);
+        assert navHostFragment != null:"null navHostFragment. TitleFragment.java line:89";
+        NavController navHostController=navHostFragment.getNavController();
+        NavDirections navDirections=TitleFragmentDirections.actionTitleFragmentToSettingsFragment();
+        navHostController.navigate(navDirections);
     }
 
 
@@ -89,7 +90,7 @@ public class TitleFragment extends Fragment implements TextWatcher {
         calcTitleBinding.configButton.setOnClickListener(v -> {
             Toast.makeText(view.getContext(), text, Toast.LENGTH_SHORT).show();
             Log.i("test", text);
-            _clickListener.onClick();
+            setNavGraphDestination();
         });
         view.setOnClickListener(v->{
             // キーボードを隠す
@@ -97,9 +98,6 @@ public class TitleFragment extends Fragment implements TextWatcher {
         });
     }
 
-    public interface OnClickListener{
-        void onClick();
-    }
 
     // 文字列が修正される直前に呼び出されるメソッド
     @Override

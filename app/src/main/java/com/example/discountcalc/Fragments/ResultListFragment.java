@@ -100,7 +100,7 @@ public class ResultListFragment extends Fragment {
         //　表示数取得
         getViewCountData();
         // 保存データ取得
-        //loadDataStore();
+        loadDataStore();
 
         // 計算
         calcDiscounts();

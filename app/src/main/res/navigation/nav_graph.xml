@@ -10,6 +10,11 @@
         android:name="com.example.discountcalc.Fragments.TitleFragment"
         android:label="TitleFragment"
         tools:layout="@layout/calc_title">
+        <action
+            android:id="@+id/action_titleFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:popUpTo="@id/titleFragment"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -19,13 +24,7 @@
         <action
             android:id="@+id/action_settingsFragment_to_titleFragment"
             app:destination="@id/titleFragment"
-            app:popUpTo="@id/settingsFragment"
-            app:popUpToInclusive="true" />
+            app:popUpTo="@id/titleFragment" />
     </fragment>
     <!--Global Action-->
-    <action
-        android:id="@+id/action_titleFragment_to_settingsFragment"
-        app:destination="@id/settingsFragment"
-        app:popUpTo="@id/titleFragment"
-        app:popUpToInclusive="true" />
 </navigation>

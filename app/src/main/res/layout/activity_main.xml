@@ -9,15 +9,17 @@
     tools:context=".MainActivity">
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/main_title_container"
+        android:id="@+id/host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_graph"
 
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

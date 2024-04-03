@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
+import com.example.discountcalc.CalculationPack.ConvertDisplayUnitsHelper;
 import com.example.discountcalc.CalculationPack.DiscountCalc;
 import com.example.discountcalc.CustomAdapters.ResultLayoutAdapter;
 import com.example.discountcalc.DataBase.CustomConfigDataStoreSingleton;
@@ -77,6 +78,8 @@ public class ResultListFragment extends Fragment {
 
     int viewCount;
 
+    boolean[] paddingFlags;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -105,8 +108,11 @@ public class ResultListFragment extends Fragment {
         // 計算
         calcDiscounts();
 
+        paddingFlags=new boolean[4];
+        paddingFlags[2]=true;
+
         recyclerView = resultPriceListBinding.resultPriceList;
-        resultLayoutAdapter= new ResultLayoutAdapter(configDataList);
+        resultLayoutAdapter= new ResultLayoutAdapter(configDataList, ConvertDisplayUnitsHelper.dpToPx(30,requireContext()),paddingFlags);
         LinearLayoutManager llm = new LinearLayoutManager(resultPriceListBinding.getRoot().getContext());
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(llm);

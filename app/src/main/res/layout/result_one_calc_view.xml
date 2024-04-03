@@ -21,36 +21,39 @@
     <TextView
         android:id="@+id/discountLabel"
         android:layout_width="80dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:background="@drawable/shape_outer_frame"
         android:gravity="center"
         android:padding="1dip"
         android:text="@string/discountRate"
         android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/discountPriceLabel"
         android:layout_width="80dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:background="@drawable/shape_outer_frame"
         android:gravity="center"
         android:padding="1dip"
         android:text="@string/discountLabel"
         android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/discountBarrier"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/priceLabel"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:background="@drawable/shape_outer_frame"
         android:gravity="center"
         android:padding="1dip"
         android:text="@string/priceLabel"
         android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/discountPriceLabel"
         app:layout_constraintTop_toTopOf="parent" />

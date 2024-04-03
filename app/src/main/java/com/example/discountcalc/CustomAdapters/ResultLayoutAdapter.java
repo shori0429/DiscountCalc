@@ -1,6 +1,7 @@
 package com.example.discountcalc.CustomAdapters;
 
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ public class ResultLayoutAdapter extends RecyclerView.Adapter<ResultLayoutAdapte
 
 
     private ArrayList<DiscountData> localData;
+    private int[]  paddings;
     public static class ResultViewHolder extends RecyclerView.ViewHolder{
         private final TextView discountTextview;
         private final TextView discountPriceTextview;
@@ -50,8 +52,17 @@ public class ResultLayoutAdapter extends RecyclerView.Adapter<ResultLayoutAdapte
      * アダプタのデータセットを初期化
      * RecycleViewで使用されるビューに入力するデータを含む
      */
-    public ResultLayoutAdapter(ArrayList<DiscountData> dataset){
+    public ResultLayoutAdapter(ArrayList<DiscountData> dataset)
+    {
         localData=dataset;
+    }
+
+    public ResultLayoutAdapter(ArrayList<DiscountData> dataset,int paddingPx,boolean[] paddingFlags){
+        localData=dataset;
+        paddings=new int[paddingFlags.length];
+        for (int i=0;i<paddings.length;i++){
+            paddings[i]=(paddingFlags[i]?1:0)*paddingPx;
+        }
     }
 
     // 新しいビューを作成(レイアウトマネージャーによって呼び出される)
@@ -68,9 +79,16 @@ public class ResultLayoutAdapter extends RecyclerView.Adapter<ResultLayoutAdapte
     @Override
     public void onBindViewHolder(@NonNull ResultViewHolder holder, int position) {
         // この位置のデータセットから要素を取得し、ビューの内容をその要素で置き換える
-        holder.discountTextview.setText(String.format(Locale.getDefault(),"%d",localData.get(position).getDiscountPer()));
-        holder.discountPriceTextview.setText(String.format(Locale.getDefault(),"%d",localData.get(position).getDiscountPrice()));
-        holder.priceTextview.setText(String.format(Locale.getDefault(),"%d",localData.get(position).getAfterPrice()));
+        holder.discountTextview.setText(String.format(Locale.getDefault(),"%d%%",localData.get(position).getDiscountPer()));
+        holder.discountPriceTextview.setText(String.format(Locale.getDefault(),"%d円",localData.get(position).getDiscountPrice()));
+        holder.priceTextview.setText(String.format(Locale.getDefault(),"%d円",localData.get(position).getAfterPrice()));
+        // 文字のGravityを変更
+        holder.discountTextview.setGravity(Gravity.END);
+        holder.discountPriceTextview.setGravity(Gravity.END);
+        holder.priceTextview.setGravity(Gravity.END);
+
+        // 価格表示の余白を変更
+        holder.priceTextview.setPadding(paddings[0],paddings[1],paddings[2],paddings[3]);
         Log.i("info","Data:"+position);
     }
     // データセットのサイズを返す (レイアウトマネージャによって呼び出される)

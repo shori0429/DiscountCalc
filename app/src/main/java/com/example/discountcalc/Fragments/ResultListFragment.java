@@ -54,6 +54,8 @@ public class ResultListFragment extends Fragment {
     private int price;
     private View view;
 
+    private boolean createDataStoreInstance=false;
+
     private RecyclerView recyclerView;
     private ResultLayoutAdapter resultLayoutAdapter;
     InputMethodManager inputMethodManager;
@@ -102,8 +104,11 @@ public class ResultListFragment extends Fragment {
 
         //　表示数取得
         getViewCountData();
-        // 保存データ取得
-        loadDataStore();
+        // 初回起動時の場合、データストアから値取得しないように(初期値-1になる為)
+        if(!createDataStoreInstance) {
+            // 保存データ取得
+            loadDataStore();
+        }
 
         // 計算
         calcDiscounts();
@@ -161,6 +166,7 @@ public class ResultListFragment extends Fragment {
         if (dataStoreSingleton.getDatastore() == null) {
             datastoreRX = new RxPreferenceDataStoreBuilder(view.getContext(), TAG_STORE_NAME).build();
             createDiscountPreferenceData();
+            createDataStoreInstance=true;
         } else {
             datastoreRX = dataStoreSingleton.getDatastore();
         }
@@ -178,14 +184,12 @@ public class ResultListFragment extends Fragment {
     // DataStoreに割引データの設定を保存
     private void saveDataStore() {
         for(int i=0;i<viewCount;i++){
-
             dataStoreHelper.putIntegerValue(DISCOUNT_KEY + i, discountPers.get(i));
         }
     }
 
     // DataStoreから割引データの設定取得
     private void loadDataStore() {
-        dataStoreHelperInitialize(dataStoreSingleton.getDatastore());
         discountPers=new ArrayList<>();
         configEnums=new ArrayList<>();
         for (int i = 0; i < viewCount; i++) {

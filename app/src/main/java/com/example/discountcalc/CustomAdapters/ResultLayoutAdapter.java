@@ -80,8 +80,8 @@ public class ResultLayoutAdapter extends RecyclerView.Adapter<ResultLayoutAdapte
     public void onBindViewHolder(@NonNull ResultViewHolder holder, int position) {
         // この位置のデータセットから要素を取得し、ビューの内容をその要素で置き換える
         holder.discountTextview.setText(String.format(Locale.getDefault(),"%d%%",localData.get(position).getDiscountPer()));
-        holder.discountPriceTextview.setText(String.format(Locale.getDefault(),"%d円",localData.get(position).getDiscountPrice()));
-        holder.priceTextview.setText(String.format(Locale.getDefault(),"%d円",localData.get(position).getAfterPrice()));
+        holder.discountPriceTextview.setText(String.format(Locale.getDefault(),"%,d円",localData.get(position).getDiscountPrice()));
+        holder.priceTextview.setText(String.format(Locale.getDefault(),"%,d円",localData.get(position).getAfterPrice()));
         // 文字のGravityを変更
         holder.discountTextview.setGravity(Gravity.END);
         holder.discountPriceTextview.setGravity(Gravity.END);

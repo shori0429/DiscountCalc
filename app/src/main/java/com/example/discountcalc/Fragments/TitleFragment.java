@@ -96,7 +96,7 @@ public class TitleFragment extends Fragment implements TextWatcher {
         calcTitleBinding.configButton.setOnClickListener(v -> {
             Toast.makeText(view.getContext(), text, Toast.LENGTH_SHORT).show();
             Log.i("test", text);
-            setNavGraphDestination();
+            //setNavGraphDestination();
         });
         view.setOnClickListener(v->{
             // キーボードを隠す

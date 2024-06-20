@@ -2,6 +2,7 @@ package com.example.discountcalc.Fragments;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -39,7 +40,7 @@ public class CustomToolBar extends LinearLayout {
     public void configure(String titleText,Boolean isHideLeftButton,Boolean isHideRightButton){
         TextView centerText=findViewById(R.id.Action_Title);
         ImageButton leftButton=findViewById(R.id.Action_LeftButton);
-        ImageButton rightButton=findViewById(R.id.Action_ButtonRight);
+        ImageButton rightButton=findViewById(R.id.Action_RightButton);
 
         // textに文字設定
         centerText.setText(titleText);
@@ -69,6 +70,9 @@ public class CustomToolBar extends LinearLayout {
         rightButton.setOnClickListener(b->{
             delegate.onClickedRightButton();
         });
+        Log.i("toolBar","Constructor");
 
     }
+
+
 }

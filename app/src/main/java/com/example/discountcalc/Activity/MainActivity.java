@@ -1,4 +1,4 @@
-package com.example.discountcalc;
+package com.example.discountcalc.Activity;
 
 import android.os.Bundle;
 

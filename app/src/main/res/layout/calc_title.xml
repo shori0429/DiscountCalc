@@ -6,6 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/title_ToolBarView"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_original_toolbar" />
+
     <TextView
         android:id="@+id/titleLabel"
         android:layout_width="wrap_content"
@@ -15,9 +25,9 @@
         android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/title_ToolBarView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/title_ToolBarView" />
 
     <EditText
         android:id="@+id/priceTextField"
@@ -59,10 +69,10 @@
         android:text="@string/configButtonText"
         android:textColor="#000000"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/title_ToolBarView" />
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/resultListView"
+        android:id="@+id/title_resultListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 

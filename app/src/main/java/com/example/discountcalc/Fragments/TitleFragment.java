@@ -51,14 +51,20 @@ public class TitleFragment extends Fragment implements TextWatcher {
 
         discountCalcViewModel=new ViewModelProvider(requireActivity()).get(DiscountCalcViewModel.class);
 
-
         calcTitleBinding.priceTextField.addTextChangedListener(this);
+
+        ToolBarFragment toolBarFragment=new ToolBarFragment();
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.title_ToolBarView, toolBarFragment)
+                .setReorderingAllowed(true)
+                .commit();
 
         ResultListFragment resultListFragment=new ResultListFragment();
         getChildFragmentManager().beginTransaction()
-                .replace(R.id.resultListView,resultListFragment)
+                .replace(R.id.title_resultListView,resultListFragment)
                 .setReorderingAllowed(true)
                 .commit();
+
     }
 
     @Override
@@ -90,7 +96,7 @@ public class TitleFragment extends Fragment implements TextWatcher {
         calcTitleBinding.configButton.setOnClickListener(v -> {
             Toast.makeText(view.getContext(), text, Toast.LENGTH_SHORT).show();
             Log.i("test", text);
-            setNavGraphDestination();
+            //setNavGraphDestination();
         });
         view.setOnClickListener(v->{
             // キーボードを隠す

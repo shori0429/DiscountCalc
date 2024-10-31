@@ -42,6 +42,7 @@ public class ResultListFragment extends Fragment {
     private static final String TAG_STORE_NAME = "custom_setting_data";
     //　割引率キー(x%)
     private static final String DISCOUNT_KEY = "discount_key";
+
     // 必要かわからん
     private static final String CONFIG_ENUM_KEY = "config_enum_key";
     // 表示数保存キー
@@ -78,8 +79,10 @@ public class ResultListFragment extends Fragment {
 
     ArrayList<Integer> configEnums;
 
+    // 結果表示数
     int viewCount;
 
+    // 余白の適用フラグ
     boolean[] paddingFlags;
 
     @Override
@@ -90,12 +93,7 @@ public class ResultListFragment extends Fragment {
         Log.i("ResultListFragment","Called ViewModelProvider.get");
         discountCalcViewModel=new ViewModelProvider(requireActivity()).get(DiscountCalcViewModel.class);
 
-        final Observer<Integer> priceObserver= integer -> {
-            price=integer;
-            calcDiscounts();
-            resultLayoutAdapter.updateItem(configDataList);
-        };
-        discountCalcViewModel.getPrice().observe(getViewLifecycleOwner(),priceObserver);
+        LivedataInit();
 
         // データストアインスタンス取得
         getDataStoreInstance();
@@ -118,11 +116,23 @@ public class ResultListFragment extends Fragment {
 
         recyclerView = resultPriceListBinding.resultPriceList;
         resultLayoutAdapter= new ResultLayoutAdapter(configDataList, ConvertDisplayUnitsHelper.dpToPx(30,requireContext()),paddingFlags);
+        // 縦方向のLayoutManagerを作成
         LinearLayoutManager llm = new LinearLayoutManager(resultPriceListBinding.getRoot().getContext());
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(resultLayoutAdapter);
 
+    }
+
+    //入力価格データ購読設定
+    private void LivedataInit() {
+        // LiveData設定
+        final Observer<Integer> priceObserver= integer -> {
+            price=integer;
+            calcDiscounts();
+            resultLayoutAdapter.updateItem(configDataList);
+        };
+        discountCalcViewModel.getPrice().observe(getViewLifecycleOwner(),priceObserver);
     }
 
     @Override
@@ -203,8 +213,11 @@ public class ResultListFragment extends Fragment {
     // 計算処理
     private void calcDiscounts(){
         for (int i = 0; i < viewCount; i++) {
+            // 割引率取得
             int discountPer = discountPers.get(i);
+            // 割引額算出
             int discountPrice = DiscountCalc.discountCalculationIntPercentage(price, discountPer);
+            // 割引後の価格算出
             int afterPrice = price - discountPrice;
             //int enumKey = configEnums.get(i);
             DiscountData data=new DiscountData(discountPer,discountPrice,afterPrice,0);

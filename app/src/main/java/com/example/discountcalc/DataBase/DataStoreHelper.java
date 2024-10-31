@@ -12,6 +12,11 @@ import java.util.Map;
 
 import io.reactivex.rxjava3.core.Single;
 
+/**
+ * JavaにてSharedPreferencesとよく似た方法で動作させるデータストアクラス
+ * 参考URL:<a href="https://medium.com/@deadmanapple/using-the-android-datastore-library-instead-of-sharedpreferences-in-java-d6744c348a05">Using the Android DataStore Library instead of SharedPreferences in Java</a>
+ *
+ * **/
 public class DataStoreHelper {
     Fragment fragment;
     RxDataStore<Preferences>dataStoreRx;
@@ -40,6 +45,8 @@ public class DataStoreHelper {
     }
 
     // 値の保存
+
+    //String型の値の保存
     public boolean putStringValue(String key,String value){
         boolean returnValue;
         // DataStoreは通常のStringをキーとして受け付けないので、String型のPreferences.Keyを作成する必要がある。
@@ -51,14 +58,19 @@ public class DataStoreHelper {
             return Single.just(mutablePreferences);
         //値の保存や再取得エラーをキャッチするための処理
         } ).onErrorReturnItem(pref_error);
+        // 同期的に値取得
         returnValue=updateResult.blockingGet()!=pref_error;
         return returnValue;
     }
+
+    // String型の値の抽出
     public String getStringValue(String key){
         Preferences.Key<String> PREF_KEY= PreferencesKeys.stringKey(key);
         Single<String>value=dataStoreRx.data().firstOrError().map(prefs->prefs.get(PREF_KEY)).onErrorReturnItem("null");
         return value.blockingGet();
     }
+
+    // boolean型の値の保存
     public boolean putBoolValue(String key,boolean value){
         boolean returnValue;
         Preferences.Key<Boolean> PREF_KEY= PreferencesKeys.booleanKey(key);
@@ -70,12 +82,15 @@ public class DataStoreHelper {
         returnValue=updateResult.blockingGet()!=pref_error;
         return returnValue;
     }
+
+    // boolean型の値の抽出
     public boolean getBoolValue(String key){
         Preferences.Key<Boolean> PREF_KEY= PreferencesKeys.booleanKey(key);
         Single<Boolean>value=dataStoreRx.data().firstOrError().map(prefs->prefs.get(PREF_KEY)).onErrorReturnItem(false);
         return value.blockingGet();
     }
 
+    // int型の値の保存
     public boolean putIntegerValue(String key,int integer){
         boolean returnValue;
         // DataStoreは通常のStringをキーとして受け付けないので、Integer型のPreferences.Keyを作成する必要がある。
@@ -91,6 +106,7 @@ public class DataStoreHelper {
         return returnValue;
     }
 
+    // int型の値の出力
     public int getIntValue(String key){
         Preferences.Key<Integer> PREF_KEY= PreferencesKeys.intKey(key);
         Single<Integer>value=dataStoreRx.data().firstOrError().map(prefs->prefs.get(PREF_KEY)).onErrorReturnItem(-1);

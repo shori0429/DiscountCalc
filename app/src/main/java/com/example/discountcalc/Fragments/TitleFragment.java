@@ -3,8 +3,8 @@ package com.example.discountcalc.Fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +23,9 @@ import com.example.discountcalc.R;
 import com.example.discountcalc.ViewModels.DiscountCalcViewModel;
 import com.example.discountcalc.databinding.CalcTitleBinding;
 
-public class TitleFragment extends Fragment implements TextWatcher {
+public class TitleFragment extends Fragment implements CustomTextWatcher {
 
     private CalcTitleBinding calcTitleBinding;
-
 
     InputMethodManager inputMethodManager;
 
@@ -35,6 +34,7 @@ public class TitleFragment extends Fragment implements TextWatcher {
     public TitleFragment(){
         super();
     }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -48,23 +48,25 @@ public class TitleFragment extends Fragment implements TextWatcher {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
+        // ViewModelデータ取得
         discountCalcViewModel=new ViewModelProvider(requireActivity()).get(DiscountCalcViewModel.class);
 
+        // 金額入力欄の入力イベント取得設定
         calcTitleBinding.priceTextField.addTextChangedListener(this);
 
+        // ツールバーFragment設定
         ToolBarFragment toolBarFragment=new ToolBarFragment();
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.title_ToolBarView, toolBarFragment)
                 .setReorderingAllowed(true)
                 .commit();
 
+        // 結果表示Fragment設定
         ResultListFragment resultListFragment=new ResultListFragment();
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.title_resultListView,resultListFragment)
                 .setReorderingAllowed(true)
                 .commit();
-
     }
 
     @Override
@@ -102,22 +104,33 @@ public class TitleFragment extends Fragment implements TextWatcher {
             // キーボードを隠す
             view.setOnClickListener(c-> inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS));
         });
+        // androidキーボードのenter押下イベント
+        // (エミュ:何故か少し長押ししてから離さないと認識しない)
+        // (実機:未検証)
+        calcTitleBinding.priceTextField.setOnKeyListener((v, keyCode, event) -> {
+            if(event.getKeyCode()==KeyEvent.KEYCODE_ENTER){
+                switch(event.getAction()){
+                    // 押したとき
+                    case KeyEvent.ACTION_DOWN:
+                        Log.i("key_event", "enter down");
+                        break;
+                    // 離した時
+                    case KeyEvent.ACTION_UP:
+                        Log.i("key_event", "enter up");
+                        // キーボードの表示を消す
+                        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                        break;
+                    default:
+
+                }
+                return true;
+            }
+            return false;
+        });
+
+
     }
 
-
-    // 文字列が修正される直前に呼び出されるメソッド
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-    }
-
-    // 文字一つを入力したときに呼び出される
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-    }
-
-    // 最後にこのメソッドが呼び出される
     @Override
     public void afterTextChanged(Editable s) {
         String inputStr=s.toString();

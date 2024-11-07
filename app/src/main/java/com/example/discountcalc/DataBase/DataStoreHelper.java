@@ -106,7 +106,7 @@ public class DataStoreHelper {
         return returnValue;
     }
 
-    // int型の値の出力
+    // int型の値の抽出
     public int getIntValue(String key){
         Preferences.Key<Integer> PREF_KEY= PreferencesKeys.intKey(key);
         Single<Integer>value=dataStoreRx.data().firstOrError().map(prefs->prefs.get(PREF_KEY)).onErrorReturnItem(-1);

@@ -16,16 +16,21 @@ import com.example.discountcalc.R;
 import java.util.ArrayList;
 import java.util.Locale;
 
+/**
+ * 1行分のデータを1行分のViewに設定して生成するクラス
+ **/
 public class ResultLayoutAdapter extends RecyclerView.Adapter<ResultLayoutAdapter.ResultViewHolder> {
-
 
     private ArrayList<DiscountData> localData;
     private int[]  paddings;
+
+    /**
+     * 1行分のViewの参照を保持するホルダークラス
+     **/
     public static class ResultViewHolder extends RecyclerView.ViewHolder{
         private final TextView discountTextview;
         private final TextView discountPriceTextview;
         private final TextView priceTextview;
-
 
         //ビューホルダー
         public ResultViewHolder(View view){
@@ -59,13 +64,14 @@ public class ResultLayoutAdapter extends RecyclerView.Adapter<ResultLayoutAdapte
 
     public ResultLayoutAdapter(ArrayList<DiscountData> dataset,int paddingPx,boolean[] paddingFlags){
         localData=dataset;
+        //int型で配列作成し、paddingFlagsがtrueなら設定した数値分の余白を空ける
         paddings=new int[paddingFlags.length];
         for (int i=0;i<paddings.length;i++){
             paddings[i]=(paddingFlags[i]?1:0)*paddingPx;
         }
     }
 
-    // 新しいビューを作成(レイアウトマネージャーによって呼び出される)
+    // 新しい1行分のビューを作成(レイアウトマネージャーによって呼び出される)
     @NonNull
     @Override
     public ResultViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -82,7 +88,7 @@ public class ResultLayoutAdapter extends RecyclerView.Adapter<ResultLayoutAdapte
         holder.discountTextview.setText(String.format(Locale.getDefault(),"%d%%",localData.get(position).getDiscountPer()));
         holder.discountPriceTextview.setText(String.format(Locale.getDefault(),"%,d円",localData.get(position).getDiscountPrice()));
         holder.priceTextview.setText(String.format(Locale.getDefault(),"%,d円",localData.get(position).getAfterPrice()));
-        // 文字のGravityを変更
+        // 文字のGravityを変更(右寄せ)
         holder.discountTextview.setGravity(Gravity.END);
         holder.discountPriceTextview.setGravity(Gravity.END);
         holder.priceTextview.setGravity(Gravity.END);
@@ -97,8 +103,10 @@ public class ResultLayoutAdapter extends RecyclerView.Adapter<ResultLayoutAdapte
         return localData.size();
     }
 
+    //
     public void updateItem(ArrayList<DiscountData> data){
         localData=data;
+        // localDataのサイズ分の変更をobserverに通知
         notifyItemRangeChanged(0,getItemCount());
     }
 

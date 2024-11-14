@@ -26,6 +26,7 @@ import com.example.discountcalc.CalculationPack.DiscountCalc;
 import com.example.discountcalc.CustomAdapters.ResultLayoutAdapter;
 import com.example.discountcalc.DataBase.CustomConfigDataStoreSingleton;
 import com.example.discountcalc.DataBase.DataStoreHelper;
+import com.example.discountcalc.DiscountType;
 import com.example.discountcalc.Params.DiscountData;
 import com.example.discountcalc.R;
 import com.example.discountcalc.ViewModels.DiscountCalcViewModel;
@@ -38,8 +39,6 @@ import java.util.ArrayList;
 public class ResultListFragment extends Fragment {
     // データ保存に使うキー達
 
-    // 設定ファイル名保存キー("xxx".preferences_pb)
-    private static final String TAG_STORE_NAME = "custom_setting_data";
     //　割引率キー(x%)
     private static final String DISCOUNT_KEY = "discount_key";
 
@@ -82,6 +81,9 @@ public class ResultListFragment extends Fragment {
     // 結果表示数
     int viewCount;
 
+    // 計算タイプ
+    DiscountType discountType=DiscountType.None;
+
     // 余白の適用フラグ
     boolean[] paddingFlags;
 
@@ -102,10 +104,13 @@ public class ResultListFragment extends Fragment {
 
         //　表示数取得
         getViewCountData();
-        // 初回起動時の場合、データストアから値取得しないように(初期値-1になる為)
-        if(!createDataStoreInstance) {
-            // 保存データ取得
-            loadDataStore();
+            // 初回起動時の場合、データストアから値取得しないように(初期値-1になる為)
+
+        // 保存データ取得
+        loadDataStore();
+
+        if(discountType==DiscountType.None){
+            createDiscountPreferenceData();
         }
 
         // 計算
@@ -175,26 +180,15 @@ public class ResultListFragment extends Fragment {
     }
 
 
-    // DataStore取得
+    // DataStore取得(MainActivityで取得済み)
     private void getDataStoreInstance() {
         dataStoreSingleton = CustomConfigDataStoreSingleton.getInstance();
-        // データストアのSingletonが存在してなければ、新たにデータストアを作成
-        if (dataStoreSingleton.getDatastore() == null) {
-            datastoreRX = new RxPreferenceDataStoreBuilder(view.getContext(), TAG_STORE_NAME).build();
-            createDiscountPreferenceData();
-            createDataStoreInstance=true;
-        } else {
-            // データストア取得
-            datastoreRX = dataStoreSingleton.getDatastore();
-        }
-        // Singletonのデータストアにセット
-        dataStoreSingleton.setDataStore(datastoreRX);
-
     }
 
     // DataStoreのヘルパー取得
     private void dataStoreHelperInitialize(RxDataStore<Preferences> dataStore) {
         if (dataStoreHelper == null)
+            // 子フラグメントとして使用しているので親フラグメントのFragmentを引数に
             dataStoreHelper = new DataStoreHelper(this.getParentFragment(), dataStore);
     }
 

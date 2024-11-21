@@ -46,6 +46,8 @@ public class ResultListFragment extends Fragment {
     private static final String CONFIG_ENUM_KEY = "config_enum_key";
     // 表示数保存キー
     private static final String VIEWCOUNT = "view_count";
+    // 設定の種類
+    private static final String CONFIG_TYPE="config_type";
 
     // デフォルトの表示数
     private final int DEFAULT_VIEWCOUNT = 10;
@@ -157,7 +159,7 @@ public class ResultListFragment extends Fragment {
         int count = dataStoreHelper.getIntValue(viewcountKey);
 
         // データが存在しない場合デフォルト値をviewCountとし、その値も保存する
-        if (count == -1) {
+        if (count <= -1) {
             viewCount = DEFAULT_VIEWCOUNT;
             if(!dataStoreHelper.putIntegerValue(viewcountKey, viewCount)){
                 Log.e("viewcount_put",viewcountKey+":put_error");
@@ -193,13 +195,19 @@ public class ResultListFragment extends Fragment {
     }
 
     // DataStoreに割引データの設定を保存
-    private void saveDataStore() {
+    private boolean saveDataStore() {
         for(int i=0;i<viewCount;i++){
             final String discountKey=DISCOUNT_KEY+i;
             if(!dataStoreHelper.putIntegerValue(discountKey, discountPers.get(i))){
-                Log.e("viewcount_put",discountKey+":put_error");
-            };
+                Log.e("viewCount_put",discountKey+":put_error");
+                return false;
+            }
+            if(!dataStoreHelper.putIntegerValue(CONFIG_TYPE,discountType.getValue())){
+                Log.e("configType_put",discountType.toString());
+                return false;
+            }
         }
+        return true;
     }
 
     // DataStoreから割引データの設定取得
@@ -212,6 +220,8 @@ public class ResultListFragment extends Fragment {
             discountPers.add(i,dataStoreHelper.getIntValue(DISCOUNT_KEY + i));
             configEnums.add(i,dataStoreHelper.getIntValue(CONFIG_ENUM_KEY+i));
         }
+        int type=dataStoreHelper.getIntValue(CONFIG_TYPE);
+        discountType=;
     }
 
     // 計算処理

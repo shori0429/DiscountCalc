@@ -25,7 +25,7 @@ import com.example.discountcalc.CalculationPack.DiscountCalc;
 import com.example.discountcalc.CustomAdapters.ResultLayoutAdapter;
 import com.example.discountcalc.DataBase.CustomConfigDataStoreSingleton;
 import com.example.discountcalc.DataBase.DataStoreHelper;
-import com.example.discountcalc.DiscountType;
+import com.example.discountcalc.Params.DiscountType;
 import com.example.discountcalc.Params.DiscountData;
 import com.example.discountcalc.R;
 import com.example.discountcalc.ViewModels.DiscountCalcViewModel;
@@ -195,6 +195,9 @@ public class ResultListFragment extends Fragment {
 
     // DataStoreに割引データの設定を保存
     private boolean saveDataStore() {
+        if(PreferenceManager.getDefaultSharedPreferences(requireContext()).getBoolean("isSavePreferences",false)){
+            return false;
+        }
         for (int i = 0; i < viewCount; i++) {
             final String discountKey = DISCOUNT_KEY + i;
             if (!dataStoreHelper.putIntegerValue(discountKey, discountPers.get(i))) {
@@ -221,8 +224,10 @@ public class ResultListFragment extends Fragment {
             discountPers.add(i, dataStoreHelper.getIntValue(DISCOUNT_KEY + i));
             configEnums.add(i, dataStoreHelper.getIntValue(CONFIG_ENUM_KEY + i));
         }
-        int type = dataStoreHelper.getIntValue(CONFIG_TYPE);
-        discountType = DiscountType.getType(type);
+        // Preferences.xmlで保存された設定データを呼び出し、discountTypeにセット
+        SharedPreferences preferences=PreferenceManager.getDefaultSharedPreferences(this.requireContext());
+        String settingType=preferences.getString("usingSetting","none");
+        discountType = DiscountType.valueOf(settingType);
     }
 
     // 計算処理
@@ -245,14 +250,16 @@ public class ResultListFragment extends Fragment {
     public void onPause() {
         super.onPause();
         // 一時中断で保存しておく
-        saveDataStore();
+        boolean isSave=saveDataStore();
+        Log.i("settingSave",String.valueOf(isSave));
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         // Fragmentが削除された際に保存しておく
-        saveDataStore();
+        boolean isSave=saveDataStore();
+        Log.i("settingSave",String.valueOf(isSave));
     }
 
     // あらかじめ用意された割引率取得し、一覧データに使用する割引率を設定する。
@@ -263,9 +270,9 @@ public class ResultListFragment extends Fragment {
             discountPers = new ArrayList<>();
         }
         for (int i = 0; i < discountData.length; i++) {
-            discountPers.set(i, discountData[i]);
+            discountPers.add(i, discountData[i]);
         }
-        discountType=DiscountType.Const;
+        discountType=DiscountType.Preset;
     }
 
     private void setClickListener(View view) {

@@ -1,4 +1,4 @@
-package com.example.discountcalc;
+package com.example.discountcalc.Params;
 
 public enum DiscountType {
     None(-1),

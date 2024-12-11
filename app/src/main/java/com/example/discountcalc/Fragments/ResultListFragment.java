@@ -25,7 +25,7 @@ import com.example.discountcalc.CalculationPack.DiscountCalc;
 import com.example.discountcalc.CustomAdapters.ResultLayoutAdapter;
 import com.example.discountcalc.DataBase.CustomConfigDataStoreSingleton;
 import com.example.discountcalc.DataBase.DataStoreHelper;
-import com.example.discountcalc.DiscountType;
+import com.example.discountcalc.Params.DiscountType;
 import com.example.discountcalc.Params.DiscountData;
 import com.example.discountcalc.R;
 import com.example.discountcalc.ViewModels.DiscountCalcViewModel;

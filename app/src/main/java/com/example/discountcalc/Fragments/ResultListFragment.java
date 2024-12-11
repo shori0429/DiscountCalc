@@ -6,7 +6,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.datastore.preferences.core.Preferences;
-import androidx.datastore.preferences.rxjava3.RxPreferenceDataStoreBuilder;
 import androidx.datastore.rxjava3.RxDataStore;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -202,10 +201,12 @@ public class ResultListFragment extends Fragment {
                 Log.e("viewCount_put", discountKey + ":put_error");
                 return false;
             }
-            if(!dataStoreHelper.putIntegerValue(CONFIG_TYPE,discountType.getValue())){
-                Log.e("configType_put",discountType.toString());
-                return false;
-            }
+        }
+        if (!dataStoreHelper.putIntegerValue(CONFIG_TYPE, discountType.getValue())) {
+            Log.e("configType_put", discountType.toString());
+            return false;
+        } else {
+            Log.i("configType_put", discountType.toString());
         }
         return true;
     }
@@ -261,9 +262,10 @@ public class ResultListFragment extends Fragment {
         if (discountPers == null) {
             discountPers = new ArrayList<>();
         }
-        for(int i=0;i<discountData.length;i++){
-            discountPers.add(i,discountData[i]);
+        for (int i = 0; i < discountData.length; i++) {
+            discountPers.set(i, discountData[i]);
         }
+        discountType=DiscountType.Const;
     }
 
     private void setClickListener(View view) {

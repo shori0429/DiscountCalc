@@ -11,4 +11,12 @@ public enum DiscountType {
     }
 
     public int getValue(){return value;}
+    public static DiscountType getType(int type){
+        for(DiscountType t : values()){
+            if(t.getValue()==type){
+                return t;
+            }
+        }
+        return null;
+    }
 }

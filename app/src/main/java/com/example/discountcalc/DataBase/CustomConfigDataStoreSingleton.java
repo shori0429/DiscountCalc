@@ -4,7 +4,9 @@ import androidx.datastore.preferences.core.Preferences;
 import androidx.datastore.rxjava3.RxDataStore;
 
 public class CustomConfigDataStoreSingleton {
+
     RxDataStore<Preferences>datastore;
+    // 複数のアクティビティを通して永続化させるためのシングルトン
     private static final CustomConfigDataStoreSingleton Instance=new CustomConfigDataStoreSingleton();
     public static CustomConfigDataStoreSingleton getInstance(){
         return Instance;

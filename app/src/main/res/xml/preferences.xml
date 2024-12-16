@@ -3,22 +3,23 @@
 
     <PreferenceCategory app:title="@string/messages_header">
         <ListPreference
-            app:key="using_setting"
-            app:title="使用する設定データ"
-            app:summary="カスタム設定・プリセット設定を切り替えます"
+            app:defaultValue="1"
             app:entries="@array/settings_params"
             app:entryValues="@array/settings_params"
-            app:useSimpleSummaryProvider="true"
-            />
+            app:key="@string/using_setting"
+            app:summary="カスタム設定・プリセット設定を切り替えます"
+            app:title="使用する設定データ"
+            app:useSimpleSummaryProvider="true" />
 
         <CheckBoxPreference
+            app:key="@string/is_save_parameters"
             app:title="パラメータの保存"
             app:defaultValue="true"
             />
 
         <SeekBarPreference
             app:title="表示数"
-            app:key="viewCount"
+            app:key="@string/viewcount"
             android:max="10"
             app:min="1"
             app:defaultValue="10"

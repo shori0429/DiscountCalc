@@ -18,7 +18,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 
 import com.example.discountcalc.CalculationPack.ConvertDisplayUnitsHelper;
 import com.example.discountcalc.CalculationPack.DiscountCalc;
@@ -40,7 +39,6 @@ public class ResultListFragment extends Fragment {
 
     //　割引率キー(x%)
     private static final String DISCOUNT_KEY = "discount_key";
-
     // 必要かわからん
     private static final String CONFIG_ENUM_KEY = "config_enum_key";
     // 表示数保存キー
@@ -55,16 +53,13 @@ public class ResultListFragment extends Fragment {
     private int price=0;
     private View view;
 
-    private boolean createDataStoreInstance = false;
+    SharedPreferences preferences;
 
     private RecyclerView recyclerView;
     private ResultLayoutAdapter resultLayoutAdapter;
-    InputMethodManager inputMethodManager;
 
     DiscountCalcViewModel discountCalcViewModel;
 
-    // データストア
-    RxDataStore<Preferences> datastoreRX;
     // データストアのインスタンス取得用
     CustomConfigDataStoreSingleton dataStoreSingleton;
 
@@ -83,7 +78,7 @@ public class ResultListFragment extends Fragment {
     int viewCount;
 
     // 計算タイプ
-    DiscountType discountType = DiscountType.None;
+    DiscountType discountType;
 
     // 余白の適用フラグ
     boolean[] paddingFlags;
@@ -224,9 +219,17 @@ public class ResultListFragment extends Fragment {
             discountPers.add(i, dataStoreHelper.getIntValue(DISCOUNT_KEY + i));
             configEnums.add(i, dataStoreHelper.getIntValue(CONFIG_ENUM_KEY + i));
         }
+        getPreferences();
+    }
+
+    // デフォルトの割引率設定を指定
+    private void getPreferences() {
         // Preferences.xmlで保存された設定データを呼び出し、discountTypeにセット
-        SharedPreferences preferences=PreferenceManager.getDefaultSharedPreferences(this.requireContext());
-        String settingType=preferences.getString("usingSetting","none");
+        preferences=PreferenceManager.getDefaultSharedPreferences(this.requireContext());
+
+        String useKey=getString(R.string.using_setting);
+        // SharedPreferencesに保存された設定キー取得しセット。存在しない場合はNone
+        String settingType=preferences.getString(useKey,DiscountType.None.name());
         discountType = DiscountType.valueOf(settingType);
     }
 
@@ -272,16 +275,12 @@ public class ResultListFragment extends Fragment {
         for (int i = 0; i < discountData.length; i++) {
             discountPers.add(i, discountData[i]);
         }
+        // 使用する割引率設定をプリセットに指定して保存しておく。
         discountType=DiscountType.Preset;
-    }
 
-    private void setClickListener(View view) {
-        view.setOnClickListener(v -> {
-            // キーボードを隠す
-            view.setOnClickListener(c -> {
-                inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-            });
-        });
+        // 使用する割引率設定を更新しておく。
+        String saveKey=getString(R.string.using_setting);
+        preferences.edit().putString(saveKey,discountType.toString()).apply();
     }
 
 }

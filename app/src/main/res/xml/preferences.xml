@@ -7,15 +7,10 @@
             app:entries="@array/settings_params"
             app:entryValues="@array/settings_params"
             app:key="@string/using_setting"
-            app:summary="カスタム設定・プリセット設定を切り替えます"
+            app:summary="カスタム設定・プリセット設定を切り替えます。"
             app:title="使用する設定データ"
             app:useSimpleSummaryProvider="true" />
 
-        <CheckBoxPreference
-            app:key="@string/is_save_parameters"
-            app:title="パラメータの保存"
-            app:defaultValue="true"
-            />
 
         <SeekBarPreference
             app:title="表示数"
@@ -24,6 +19,13 @@
             app:min="1"
             app:defaultValue="10"
             app:showSeekBarValue="true"
+            />
+
+        <CheckBoxPreference
+            app:key="@string/is_save_parameters"
+            app:title="パラメータの保存"
+            app:summary="アプリ終了時、設定されたパラメータを保存します。"
+            app:defaultValue="true"
             />
 
 

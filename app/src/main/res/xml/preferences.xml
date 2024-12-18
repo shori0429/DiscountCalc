@@ -1,11 +1,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
     <PreferenceCategory app:title="@string/messages_header">
         <ListPreference
-            app:defaultValue="1"
-            app:entries="@array/settings_params"
-            app:entryValues="@array/settings_params"
+            app:entries="@array/using_custom_types"
+            app:entryValues="@array/using_custom_types"
             app:key="@string/using_setting"
             app:summary="カスタム設定・プリセット設定を切り替えます。"
             app:title="使用する設定データ"
@@ -24,7 +24,7 @@
         <CheckBoxPreference
             app:key="@string/is_save_parameters"
             app:title="パラメータの保存"
-            app:summary="アプリ終了時、設定されたパラメータを保存します。"
+            app:summary="アプリ終了時、設定されたパラメータを保存します。表示数には適用されません。"
             app:defaultValue="true"
             />
 

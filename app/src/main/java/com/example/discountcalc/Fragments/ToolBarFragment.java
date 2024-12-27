@@ -5,11 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
@@ -43,7 +40,7 @@ public class ToolBarFragment extends Fragment implements ToolBarCustomViewDelega
 //        CustomToolBar customToolBar=new CustomToolBar(inflater.getContext());
 //        customToolBar.delegate=this;
 
-        String title="バー";
+        String title=getString(R.string.toolBarTitle);
 //        customToolBar.configure(title,false,false);
         binding.ActionTitle.setText(title);
 

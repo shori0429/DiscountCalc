@@ -6,6 +6,7 @@
         <ListPreference
             app:entries="@array/using_custom_types"
             app:entryValues="@array/using_custom_types"
+            app:defaultValue="@string/value_preset"
             app:key="@string/using_setting"
             app:summary="カスタム設定・プリセット設定を切り替えます。"
             app:title="使用する設定データ"

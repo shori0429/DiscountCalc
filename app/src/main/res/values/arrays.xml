@@ -1,8 +1,10 @@
 <resources>
     <!-- Reply Preference -->
+    <string name="value_preset">Preset</string>
+    <string name="value_custom">Custom</string>
     <string-array name="using_custom_types">
-        <item>Preset</item>
-        <item>Custom</item>
+        <item>@string/value_preset</item>
+        <item>@string/value_custom</item>
     </string-array>
 
     <integer-array name="preset_discount_values">

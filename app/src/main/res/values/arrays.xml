@@ -1,11 +1,11 @@
 <resources>
     <!-- Reply Preference -->
-    <string-array name="settings_params">
+    <string-array name="using_custom_types">
         <item>Preset</item>
         <item>Custom</item>
     </string-array>
 
-    <integer-array name="PresetDiscounts">
+    <integer-array name="preset_discount_values">
         <item>3</item>
         <item>5</item>
         <item>10</item>

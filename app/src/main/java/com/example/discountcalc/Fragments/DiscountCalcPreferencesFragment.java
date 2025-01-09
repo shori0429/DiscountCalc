@@ -11,7 +11,7 @@ import androidx.preference.PreferenceManager;
 import com.example.discountcalc.Params.DiscountType;
 import com.example.discountcalc.R;
 
-public class SettingsFragment extends PreferenceFragmentCompat {
+public class DiscountCalcPreferencesFragment extends PreferenceFragmentCompat {
     // 全体の設定データ
     SharedPreferences sharedPreferences;
     // 使用する設定データのPreference

@@ -26,8 +26,6 @@ public class DiscountCalcPreferencesFragment extends PreferenceFragmentCompat {
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.discount_preferences_toppage, rootKey);
         getPreferences();
-        // Navigation設定
-        setNavGraphDestination();
         // 「使用する設定データ」の初期パラメータに応じて、カスタム割引率を設定するページに移行する項目を表示・非表示させる
         customPreferenceSetting(DiscountType.valueOf(usingCustomPreference.getValue()),customDiscountPreference);
         setOnChangeListener();
@@ -48,7 +46,8 @@ public class DiscountCalcPreferencesFragment extends PreferenceFragmentCompat {
 
         // カスタム割引率設定の項目クリックリスナー
         customDiscountPreference.setOnPreferenceClickListener(c -> {
-
+            // Navigation設定
+            setNavGraphDestination();
             return true;
         });
     }

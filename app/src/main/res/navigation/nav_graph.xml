@@ -25,6 +25,18 @@
             android:id="@+id/action_settingsFragment_to_titleFragment"
             app:destination="@id/titleFragment"
             app:popUpTo="@id/titleFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_customDiscountPreferenceFragment"
+            app:destination="@id/customDiscountPreferenceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/customDiscountPreferenceFragment"
+        android:name="com.example.discountcalc.Fragments.CustomDiscountPreferenceFragment"
+        android:label="custom_discount_preference_fragment"
+        tools:layout="@layout/custom_discount_preference_fragment" >
+        <action
+            android:id="@+id/action_customDiscountPreferenceFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <!--Global Action-->
 </navigation>

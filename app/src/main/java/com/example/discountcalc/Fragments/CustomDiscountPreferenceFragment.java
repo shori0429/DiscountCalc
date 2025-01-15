@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class CustomDiscountPreferenceFragment extends Fragment {
 
-    CustomDiscountPreferenceFragmentBinding customDiscountPrefenreceFragmentBinding;
+    CustomDiscountPreferenceFragmentBinding customDiscountPreferenceFragmentBinding;
     RecyclerView recyclerView;
     CustomPreferenceAdapter customPreferenceAdapter;
     ArrayList<CustomPreferenceData> preferenceDataSet;
@@ -31,11 +31,11 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recyclerViewInitialize();
+        //recyclerViewInitialize();
     }
 
     private void recyclerViewInitialize() {
-        recyclerView=customDiscountPrefenreceFragmentBinding.PreferenceList;
+        recyclerView= customDiscountPreferenceFragmentBinding.PreferenceList;
         customPreferenceAdapter=new CustomPreferenceAdapter(preferenceDataSet);
         LinearLayoutManager llm=new LinearLayoutManager(view.getContext());
         recyclerView.setHasFixedSize(true);
@@ -46,8 +46,8 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        customDiscountPrefenreceFragmentBinding=CustomDiscountPreferenceFragmentBinding.inflate(inflater,container,false);
-        view=customDiscountPrefenreceFragmentBinding.getRoot();
+        customDiscountPreferenceFragmentBinding =CustomDiscountPreferenceFragmentBinding.inflate(inflater,container,false);
+        view= customDiscountPreferenceFragmentBinding.getRoot();
 
         return view;
     }

@@ -30,8 +30,8 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        //recyclerViewInitialize();
+        preferenceDataSet=new ArrayList<>();
+        recyclerViewInitialize();
     }
 
     private void recyclerViewInitialize() {

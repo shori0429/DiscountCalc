@@ -1,5 +1,6 @@
 package com.example.discountcalc.Fragments;
 
+import static com.example.discountcalc.DataBase.DataStoreKey.*;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -35,16 +36,6 @@ import java.util.ArrayList;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class ResultListFragment extends Fragment {
-    // データ保存に使うキー達
-
-    //　割引率キー(x%)
-    private static final String DISCOUNT_KEY = "discount_key";
-    // 必要かわからん
-    private static final String CONFIG_ENUM_KEY = "config_enum_key";
-    // 表示数保存キー
-    private static final String VIEWCOUNT = "view_count";
-    // 設定の種類
-    private static final String CONFIG_TYPE = "config_type";
 
     // デフォルトの表示数
     private final int DEFAULT_VIEWCOUNT = 10;
@@ -149,7 +140,8 @@ public class ResultListFragment extends Fragment {
 
     // 表示数取得
     private void getViewCountData() {
-        final String viewcountKey = VIEWCOUNT;
+        //
+        final String viewcountKey = VIEWCOUNT_KEY;
         int count = dataStoreHelper.getIntValue(viewcountKey);
 
         // データが存在しない場合デフォルト値をviewCountとし、その値も保存する
@@ -200,7 +192,7 @@ public class ResultListFragment extends Fragment {
                 return false;
             }
         }
-        if (!dataStoreHelper.putIntegerValue(CONFIG_TYPE, discountType.getValue())) {
+        if (!dataStoreHelper.putIntegerValue(CONFIG_TYPE_KEY, discountType.getValue())) {
             Log.e("configType_put", discountType.toString());
             return false;
         } else {

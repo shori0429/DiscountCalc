@@ -24,7 +24,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/PreferenceVolumeNum"
+                android:id="@+id/PreferenceVolume"
                 android:layout_width="30dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"

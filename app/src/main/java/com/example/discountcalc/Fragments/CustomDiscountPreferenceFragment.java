@@ -25,6 +25,9 @@ import java.util.ArrayList;
 
 public class CustomDiscountPreferenceFragment extends Fragment {
     final String saveCountKey =DISCOUNT_TYPE_CUSTOM_KEY+DISCOUNT_CUSTOM_SAVE_COUNT_KEY;
+    final String saveDiscountKey=DISCOUNT_TYPE_CUSTOM_KEY+DISCOUNT_KEY;
+
+    final String saveDiscountElementKey=DISCOUNT_TYPE_CUSTOM_KEY+DISCOUNT_ELEMENT_KEY;
 
     CustomDiscountPreferenceFragmentBinding customDiscountPreferenceFragmentBinding;
 
@@ -80,7 +83,6 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
     // カスタム割引率の要素数に関するデータ取得
     private void getCustomDiscountSaveCount() {
-
         dataMaxSize = dataStoreHelper.getIntValue(saveCountKey);
         if(dataMaxSize<=-1){
           dataMaxSize=0;
@@ -93,9 +95,11 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     }
 
     private boolean saveDataStore(){
-        for(int i;i<dataMaxSize;i++) {
-
+        for(int i=0;i<dataMaxSize;i++) {
+            dataStoreHelper.putIntegerValue(saveDiscountKey+i,preferenceDataSet.get(i).getDiscountPer());
+            dataStoreHelper.putIntegerValue(saveDiscountElementKey+i,preferenceDataSet.get(i).getDiscountElementName());
         }
+
     }
 
     private void dataStoreHelperInitialize(RxDataStore<Preferences> dataStore){

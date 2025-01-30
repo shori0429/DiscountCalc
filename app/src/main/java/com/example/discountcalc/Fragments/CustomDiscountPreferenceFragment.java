@@ -47,6 +47,8 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
     int elementMax;
 
+
+
     // データストア関連
     private DataStoreHelper dataStoreHelper;
     private CustomConfigDataStoreSingleton dataStoreSingleton;
@@ -85,8 +87,14 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onPause() {
+        super.onPause();
+        saveDataStore();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         saveDataStore();
     }
 
@@ -108,13 +116,13 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
     // データストアからカスタムの割引率設定に関するデータを取得
     private void loadCustomPreferenceDatas(){
-        final String discountKey=DISCOUNT_CUSTOM_SAVE_COUNT_KEY+DISCOUNT_KEY;
         loadCustomDiscountSaveCount();
     }
 
     // カスタム割引率の要素数に関するデータ取得
     private void loadCustomDiscountSaveCount() {
         elementMax = dataStoreHelper.getIntValue(saveCountKey);
+
         if(elementMax <=-1){
           elementMax =0;
         }
@@ -122,15 +130,20 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         // 要素数分初期化
         preferenceDataSet=new ArrayList<>();
         for (int i = 0; i < elementMax; i++) {
-            preferenceDataSet.set(i,new CustomPreferenceData());
+            preferenceDataSet.add(i,new CustomPreferenceData());
         }
-        elementNumberViewText.setText(preferenceDataSet.size());
+        String lSize=String.valueOf(preferenceDataSet.size());
+        elementNumberViewText.setText(lSize);
     }
 
     // データストアに保存
     private boolean saveDataStore(){
+        // 要素数の保存
+        dataStoreHelper.putIntegerValue(saveCountKey, preferenceDataSet.size());
+
         // TODO クラスごと保存できるようにしたい。Protobufを使ったデータ処理を実装できれば良
-        for(int i = 0; i< elementMax; i++) {
+        // 要素内の各データ保存
+        for(int i = 0; i< preferenceDataSet.size(); i++) {
             dataStoreHelper.putIntegerValue(saveDiscountKey+i,preferenceDataSet.get(i).getDiscountPer());
             dataStoreHelper.putIntegerValue(saveDiscountElementKey+i,preferenceDataSet.get(i).getDiscountElementName());
         }
@@ -140,7 +153,8 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     // 要素数追加
     private void addPreferenceDataElement(){
         preferenceDataSet.add(new CustomPreferenceData());
-        elementNumberViewText.setText(preferenceDataSet.size());
+        String lSize=String.valueOf(preferenceDataSet.size());
+        elementNumberViewText.setText(lSize);
     }
 
     private boolean removePreferenceDataElement(int removeElementNumber){

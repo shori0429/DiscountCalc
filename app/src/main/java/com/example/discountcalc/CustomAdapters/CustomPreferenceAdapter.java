@@ -25,8 +25,8 @@ public class CustomPreferenceAdapter extends RecyclerView.Adapter<CustomPreferen
 
         public CustomPreferenceViewHolder(View view) {
             super(view);
-            listDiscountTitleTextView = view.findViewById(R.id.custom_preference_title);
-            listDiscountNumTextView = view.findViewById(R.id.custom_preference_num);
+            listDiscountTitleTextView = view.findViewById(R.id.custom_preference_one_line_title);
+            listDiscountNumTextView = view.findViewById(R.id.custom_preference_one_line_num);
         }
 
         public TextView getListDiscountTitleTextView() {
@@ -46,14 +46,14 @@ public class CustomPreferenceAdapter extends RecyclerView.Adapter<CustomPreferen
     public CustomPreferenceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // リスト項目のUIを定義する新しいビューを作成する。
         View inflate = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.result_one_calc_view, parent, false);
+                .inflate(R.layout.custom_preference_one_line, parent, false);
         return new CustomPreferenceViewHolder(inflate);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CustomPreferenceViewHolder holder, int position) {
         // この位置のデータセットから要素を取得し、ビューの内容をその要素で置き換える
-        holder.listDiscountTitleTextView.setText(String.format(Locale.getDefault(), "%d%%,", localData.get(position).getDiscountElementName()));
+        holder.listDiscountTitleTextView.setText(String.format(Locale.getDefault(), "%d", localData.get(position).getDiscountElementName()));
         holder.listDiscountNumTextView.setText(String.format(Locale.getDefault(), "%d%%", localData.get(position).getDiscountPer()));
         // 文字のGravityを変更(右寄せ)
         holder.listDiscountTitleTextView.setGravity(Gravity.END);
@@ -66,4 +66,9 @@ public class CustomPreferenceAdapter extends RecyclerView.Adapter<CustomPreferen
         return localData.size();
     }
 
+    public void updateItems(ArrayList<CustomPreferenceData> data){
+        localData=data;
+        // localDataのサイズ分の変更をobserverに通知
+        notifyItemRangeChanged(0,getItemCount());
+    }
 }

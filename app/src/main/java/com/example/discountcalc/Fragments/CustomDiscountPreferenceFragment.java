@@ -155,6 +155,12 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         preferenceDataSet.add(new CustomPreferenceData());
         String lSize=String.valueOf(preferenceDataSet.size());
         elementNumberViewText.setText(lSize);
+        // 表示数が10未満の時、リサイクルビューのサイズ変更を許容する。
+        if(preferenceDataSet.size()<=10){
+            recyclerView.setHasFixedSize(false);
+        }
+        customPreferenceAdapter.updateItems(preferenceDataSet);
+        recyclerView.setHasFixedSize(true);
     }
 
     private boolean removePreferenceDataElement(int removeElementNumber){

@@ -18,6 +18,8 @@ import java.util.Locale;
 public class CustomPreferenceAdapter extends RecyclerView.Adapter<CustomPreferenceAdapter.CustomPreferenceViewHolder> {
 
     private ArrayList<CustomPreferenceData> localData;
+    // 文字サイズ
+    private int mainTextSize;
 
     public static class CustomPreferenceViewHolder extends RecyclerView.ViewHolder {
         private final TextView listDiscountTitleTextView;
@@ -53,8 +55,16 @@ public class CustomPreferenceAdapter extends RecyclerView.Adapter<CustomPreferen
     @Override
     public void onBindViewHolder(@NonNull CustomPreferenceViewHolder holder, int position) {
         // この位置のデータセットから要素を取得し、ビューの内容をその要素で置き換える
-        holder.listDiscountTitleTextView.setText(String.format(Locale.getDefault(), "%d", localData.get(position).getDiscountElementName()));
+        // 要素番号を1~表示させたいので、NaturalNumberで数値を取得(TODO:もっと綺麗な実装方法があるとは思う)
+        holder.listDiscountTitleTextView.setText(String.format(Locale.getDefault(), "%d", localData.get(position).getDiscountElementNaturalNumber()));
         holder.listDiscountNumTextView.setText(String.format(Locale.getDefault(), "%d%%", localData.get(position).getDiscountPer()));
+
+        if(mainTextSize>0) {
+            // 文字サイズ設定
+            holder.listDiscountTitleTextView.setTextSize(mainTextSize);
+            holder.listDiscountNumTextView.setTextSize(mainTextSize);
+        }
+
         // 文字のGravityを変更(右寄せ)
         holder.listDiscountTitleTextView.setGravity(Gravity.END);
         holder.listDiscountNumTextView.setGravity(Gravity.END);
@@ -70,5 +80,9 @@ public class CustomPreferenceAdapter extends RecyclerView.Adapter<CustomPreferen
         localData=data;
         // localDataのサイズ分の変更をobserverに通知
         notifyItemRangeChanged(0,getItemCount());
+    }
+    public void setTextSizes(int textSize){
+        this.mainTextSize =textSize;
+        notifyDataSetChanged();
     }
 }

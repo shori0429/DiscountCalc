@@ -21,6 +21,7 @@ import com.example.discountcalc.CustomAdapters.CustomPreferenceAdapter;
 import com.example.discountcalc.DataBase.CustomConfigDataStoreSingleton;
 import com.example.discountcalc.DataBase.DataStoreHelper;
 import com.example.discountcalc.Params.CustomPreferenceData;
+import com.example.discountcalc.R;
 import com.example.discountcalc.databinding.CustomDiscountPreferenceFragmentBinding;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     final String saveCountKey =DISCOUNT_TYPE_CUSTOM_KEY+DISCOUNT_CUSTOM_SAVE_COUNT_KEY;
 
     // 割引率保存用のキー
-    final String saveDiscountKey=DISCOUNT_TYPE_CUSTOM_KEY+DISCOUNT_KEY;
+    final String saveDiscountPerKey =DISCOUNT_TYPE_CUSTOM_KEY+DISCOUNT_KEY;
 
     // 何番目の要素かを保存するキー
     final String saveDiscountElementKey=DISCOUNT_TYPE_CUSTOM_KEY+DISCOUNT_ELEMENT_KEY;
@@ -57,6 +58,8 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     View view;
     TextView elementNumberViewText;
     Button elementAddButton;
+    Button changeTextSize;
+    int textSize;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -75,6 +78,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     private void bindingElements() {
         elementNumberViewText=customDiscountPreferenceFragmentBinding.PreferenceVolume;
         elementAddButton=customDiscountPreferenceFragmentBinding.AddElementButton;
+        changeTextSize=customDiscountPreferenceFragmentBinding.ChangeTextSizeButton;
     }
 
     @Override
@@ -102,6 +106,30 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         elementAddButton.setOnClickListener(b->{
             addPreferenceDataElement();
         });
+        changeTextSize.setOnClickListener(b->{
+            // TODO:文字サイズ変更は仮実装なのでちゃんとまとめたり整理する
+            if(textSize==0){
+                textSize=(int)elementNumberViewText.getTextSize();
+            }
+            int small=(int)getResources().getDimension(R.dimen.small_size);
+            int normal=(int)getResources().getDimension(R.dimen.normal_size);
+            int large=(int)getResources().getDimension(R.dimen.large_size);
+            if(textSize==small){
+                elementNumberViewText.setTextSize(normal);
+                customPreferenceAdapter.setTextSizes(normal);
+                textSize=normal;
+
+            }else if(textSize==normal){
+                elementNumberViewText.setTextSize(large);
+                customPreferenceAdapter.setTextSizes(large);
+                textSize=large;
+            }else if(textSize==large){
+                elementNumberViewText.setTextSize(small);
+                customPreferenceAdapter.setTextSizes(small);
+                textSize=small;
+            }
+        });
+
     }
 
     // リサイクルビューの初期化関数
@@ -126,14 +154,25 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         if(elementMax <=-1){
           elementMax =0;
         }
+        // データリスト配列初期化
+        InitializeCustomPreferenceDataSetArrayList(elementMax);
 
-        // 要素数分初期化
-        preferenceDataSet=new ArrayList<>();
-        for (int i = 0; i < elementMax; i++) {
-            preferenceDataSet.add(i,new CustomPreferenceData());
+        for(int i=0;i<elementMax;i++){
+            int per=dataStoreHelper.getIntValue(saveDiscountPerKey +i);
+            int element=dataStoreHelper.getIntValue(saveDiscountElementKey+i);
+            preferenceDataSet.set(i,new CustomPreferenceData(element,per));
         }
+
         String lSize=String.valueOf(preferenceDataSet.size());
         elementNumberViewText.setText(lSize);
+    }
+
+    private void InitializeCustomPreferenceDataSetArrayList(int max) {
+        // 要素数分初期化
+        preferenceDataSet=new ArrayList<>();
+        for (int i = 0; i < max; i++) {
+            preferenceDataSet.add(i,new CustomPreferenceData());
+        }
     }
 
     // データストアに保存
@@ -144,17 +183,23 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         // TODO クラスごと保存できるようにしたい。Protobufを使ったデータ処理を実装できれば良
         // 要素内の各データ保存
         for(int i = 0; i< preferenceDataSet.size(); i++) {
-            dataStoreHelper.putIntegerValue(saveDiscountKey+i,preferenceDataSet.get(i).getDiscountPer());
-            dataStoreHelper.putIntegerValue(saveDiscountElementKey+i,preferenceDataSet.get(i).getDiscountElementName());
+            dataStoreHelper.putIntegerValue(saveDiscountPerKey +i,preferenceDataSet.get(i).getDiscountPer());
+            // 今のリスト要素番号をセット
+            preferenceDataSet.get(i).setDiscountElement(i);
+            dataStoreHelper.putIntegerValue(saveDiscountElementKey+i,preferenceDataSet.get(i).getDiscountElement());
         }
         return true;
     }
 
     // 要素数追加
     private void addPreferenceDataElement(){
-        preferenceDataSet.add(new CustomPreferenceData());
+        // コンストラクタで実体生成→List.size()の順で呼ばれる
+        preferenceDataSet.add(new CustomPreferenceData( preferenceDataSet.size(),0));
+
+        // テキスト更新
         String lSize=String.valueOf(preferenceDataSet.size());
         elementNumberViewText.setText(lSize);
+
         // 表示数が10未満の時、リサイクルビューのサイズ変更を許容する。
         if(preferenceDataSet.size()<=10){
             recyclerView.setHasFixedSize(false);

@@ -44,6 +44,12 @@
             android:id="@+id/PreferenceList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/ChangeTextSizeButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="テキストサイズ変更" />
     </LinearLayout>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

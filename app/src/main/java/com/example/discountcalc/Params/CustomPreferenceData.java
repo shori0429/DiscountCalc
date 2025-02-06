@@ -4,28 +4,33 @@ package com.example.discountcalc.Params;
 public class CustomPreferenceData {
 
     // カスタム割引率の要素名
-    private int discountElementName;
+    private int discountElement;
 
     // 割引率
     private int discountPer;
 
     public CustomPreferenceData(){
-        discountElementName=0;
+        discountElement =0;
         discountPer=0;
     }
 
     public CustomPreferenceData(int elementName,int per){
-        this.discountElementName=elementName;
+        this.discountElement =elementName;
         this.discountPer=per;
     }
 
-    public int getDiscountElementName() {
-        return discountElementName;
+    public int getDiscountElement() {
+        return discountElement;
     }
 
-    public void setDiscountElementName(int discountElementName) {
-        this.discountElementName = discountElementName;
+    // 自然数を返す
+    public int getDiscountElementNaturalNumber(){
+        return discountElement+1;
     }
+    public void setDiscountElement(int discountElement) {
+        this.discountElement = discountElement;
+    }
+
 
     public int getDiscountPer() {
         return discountPer;

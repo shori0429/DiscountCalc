@@ -9,11 +9,12 @@
         android:id="@+id/custom_preference_one_line_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="id"
+        android:background="@drawable/shape_outer_frame"
+        android:hint="000"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:textSize="@dimen/normal_size"
-        android:background="@drawable/shape_outer_frame"
+        app:layout_constraintEnd_toStartOf="@+id/custom_preference_one_line_num"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -21,12 +22,12 @@
         android:id="@+id/custom_preference_one_line_num"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@drawable/shape_outer_frame"
         android:gravity="end"
         android:hint="n%"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:textSize="@dimen/normal_size"
-        android:background="@drawable/shape_outer_frame"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/custom_preference_one_line_title"
         app:layout_constraintTop_toTopOf="@+id/custom_preference_one_line_title" />

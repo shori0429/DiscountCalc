@@ -1,5 +1,6 @@
 package com.example.discountcalc.Fragments;
 
+import static com.example.discountcalc.DataBase.DataStoreKey.*;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -35,16 +36,6 @@ import java.util.ArrayList;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class ResultListFragment extends Fragment {
-    // データ保存に使うキー達
-
-    //　割引率キー(x%)
-    private static final String DISCOUNT_KEY = "discount_key";
-    // 必要かわからん
-    private static final String CONFIG_ENUM_KEY = "config_enum_key";
-    // 表示数保存キー
-    private static final String VIEWCOUNT = "view_count";
-    // 設定の種類
-    private static final String CONFIG_TYPE = "config_type";
 
     // デフォルトの表示数
     private final int DEFAULT_VIEWCOUNT = 10;
@@ -149,7 +140,8 @@ public class ResultListFragment extends Fragment {
 
     // 表示数取得
     private void getViewCountData() {
-        final String viewcountKey = VIEWCOUNT;
+        //
+        final String viewcountKey = VIEWCOUNT_KEY;
         int count = dataStoreHelper.getIntValue(viewcountKey);
 
         // データが存在しない場合デフォルト値をviewCountとし、その値も保存する
@@ -200,7 +192,7 @@ public class ResultListFragment extends Fragment {
                 return false;
             }
         }
-        if (!dataStoreHelper.putIntegerValue(CONFIG_TYPE, discountType.getValue())) {
+        if (!dataStoreHelper.putIntegerValue(CONFIG_TYPE_KEY, discountType.getValue())) {
             Log.e("configType_put", discountType.toString());
             return false;
         } else {
@@ -252,6 +244,10 @@ public class ResultListFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        boolean isSaveFlag=preferences.getBoolean(getString(R.string.is_save_parameters),false);
+        // パラメータ保存をしない設定であれば保存処理を実行しない。
+        if(!isSaveFlag) return;
+
         // 一時中断で保存しておく
         boolean isSave=saveDataStore();
         Log.i("settingSave",String.valueOf(isSave));
@@ -260,6 +256,10 @@ public class ResultListFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        boolean isSaveFlag=preferences.getBoolean(getString(R.string.is_save_parameters),false);
+        // パラメータ保存をしない設定であれば保存処理を実行しない。
+        if(!isSaveFlag) return;
+
         // Fragmentが削除された際に保存しておく
         boolean isSave=saveDataStore();
         Log.i("settingSave",String.valueOf(isSave));
@@ -268,7 +268,7 @@ public class ResultListFragment extends Fragment {
     // あらかじめ用意された割引率取得し、一覧データに使用する割引率を設定する。
     private void createDiscountPreferenceData() {
         // あらかじめ用意された割引率を取得
-        int[] discountData = getResources().getIntArray(R.array.PresetDiscounts);
+        int[] discountData = getResources().getIntArray(R.array.preset_discount_values);
         if (discountPers == null) {
             discountPers = new ArrayList<>();
         }

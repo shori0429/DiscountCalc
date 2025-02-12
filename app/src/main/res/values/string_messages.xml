@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="result_view_under_message">このツールでの割引額の算出は、小数点以下の数値を切り捨てています。\n割引計算時、小数点以下の数値は切り捨てる処理を行うことが一般的ですが、事業者によっては切り捨てる処理を行わない場合もございますので、ご注意ください。</string>
+
+</resources>

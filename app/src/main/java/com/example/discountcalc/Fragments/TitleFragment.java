@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -94,12 +93,6 @@ public class TitleFragment extends Fragment implements CustomTextWatcher {
 
 
     private void setClickListeners(View view) {
-        String text = "Button Click";
-        calcTitleBinding.configButton.setOnClickListener(v -> {
-            Toast.makeText(view.getContext(), text, Toast.LENGTH_SHORT).show();
-            Log.i("test", text);
-            //setNavGraphDestination();
-        });
         view.setOnClickListener(v->{
             // キーボードを隠す
             view.setOnClickListener(c-> inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS));

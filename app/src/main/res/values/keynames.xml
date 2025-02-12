@@ -3,4 +3,7 @@
     <string name="using_setting">usingSetting</string>
     <string name="is_save_parameters">isSaveParameters</string>
     <string name="viewcount">viewCount</string>
+    <string name="custom_discount_preference">custom_discount_setting</string>
+    <string name="custom_discount_quantity">custom_discount_quantity</string>
+    <string name="custom_preference_list">custom_preference_list</string>
 </resources>

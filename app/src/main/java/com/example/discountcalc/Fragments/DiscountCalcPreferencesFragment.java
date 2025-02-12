@@ -3,6 +3,9 @@ package com.example.discountcalc.Fragments;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -43,7 +46,8 @@ public class DiscountCalcPreferencesFragment extends PreferenceFragmentCompat {
 
         // カスタム割引率設定の項目クリックリスナー
         customDiscountPreference.setOnPreferenceClickListener(c -> {
-
+            // Navigation設定
+            setNavGraphDestination();
             return true;
         });
     }
@@ -60,4 +64,11 @@ public class DiscountCalcPreferencesFragment extends PreferenceFragmentCompat {
         return false;
     }
 
+    private void setNavGraphDestination(){
+        NavHostFragment navHostFragment=(NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.host_fragment);
+        assert navHostFragment != null:"null navHostFragment. DiscountCalcPreferencesFragment.java line:68";
+        NavController navHostController=navHostFragment.getNavController();
+        NavDirections navDirections=DiscountCalcPreferencesFragmentDirections.actionSettingsFragmentToCustomDiscountPreferenceFragment();
+        navHostController.navigate(navDirections);
+    }
 }

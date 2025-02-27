@@ -52,7 +52,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
     int elementMax;
 
-
+    DiscountCalcViewModel calcViewmodel;
 
     // データストア関連
     private DataStoreHelper dataStoreHelper;
@@ -83,6 +83,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         elementNumberViewText=customDiscountPreferenceFragmentBinding.PreferenceVolume;
         elementAddButton=customDiscountPreferenceFragmentBinding.AddElementButton;
         changeTextSize=customDiscountPreferenceFragmentBinding.ChangeTextSizeButton;
+
     }
 
     @Override
@@ -90,6 +91,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
                              Bundle savedInstanceState) {
         customDiscountPreferenceFragmentBinding =CustomDiscountPreferenceFragmentBinding.inflate(inflater,container,false);
         view= customDiscountPreferenceFragmentBinding.getRoot();
+
 
         return view;
     }

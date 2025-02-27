@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.discountcalc.Params.CustomPreferenceData;
 import com.example.discountcalc.R;
+import com.example.discountcalc.databinding.CustomPreferenceOneLineBinding;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -30,11 +31,21 @@ public class CustomPreferenceAdapter extends RecyclerView.Adapter<CustomPreferen
         private final EditText listDiscountNumEditView;
         private final LinearLayout linearLayout;
 
-        public CustomPreferenceViewHolder(View view) {
-            super(view);
-            listDiscountTitleTextView = view.findViewById(R.id.custom_preference_one_line_title);
-            listDiscountNumEditView = view.findViewById(R.id.custom_preference_one_line_num);
-            linearLayout=view.findViewById(R.id.custom_preference_one_line_num_container);
+        private final CustomPreferenceOneLineBinding binding;
+
+//        public CustomPreferenceViewHolder(View view) {
+//            super(view);
+//            listDiscountTitleTextView = view.findViewById(R.id.custom_preference_one_line_title);
+//            listDiscountNumEditView = view.findViewById(R.id.custom_preference_one_line_num);
+//            linearLayout=view.findViewById(R.id.custom_preference_one_line_num_container);
+//        }
+
+        public CustomPreferenceViewHolder(CustomPreferenceOneLineBinding binding) {
+            super(binding.getRoot());
+            this.binding=binding;
+            listDiscountTitleTextView = binding.customPreferenceOneLineTitle;
+            listDiscountNumEditView = binding.customPreferenceOneLineNum;
+            linearLayout=binding.customPreferenceOneLineNumContainer;
         }
 
         public TextView getListDiscountTitleTextView() {
@@ -54,9 +65,11 @@ public class CustomPreferenceAdapter extends RecyclerView.Adapter<CustomPreferen
     @Override
     public CustomPreferenceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // リスト項目のUIを定義する新しいビューを作成する。
-        View inflate = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.custom_preference_one_line, parent, false);
-        return new CustomPreferenceViewHolder(inflate);
+        LayoutInflater inflater=LayoutInflater.from(parent.getContext());
+        CustomPreferenceOneLineBinding binding=CustomPreferenceOneLineBinding.inflate(inflater,parent,false);
+//        View inflate = LayoutInflater.from(parent.getContext())
+//               .inflate(R.layout.custom_preference_one_line, parent, false);
+        return new CustomPreferenceViewHolder(binding);
     }
 
     @Override

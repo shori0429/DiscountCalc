@@ -10,26 +10,30 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LifecycleRegistry;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Transformations;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.discountcalc.Params.CustomPreferenceData;
-import com.example.discountcalc.R;
+import com.example.discountcalc.ViewModels.CustomPreferenceListViewModel;
 import com.example.discountcalc.databinding.CustomPreferenceOneLineBinding;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class CustomPreferenceAdapter extends RecyclerView.Adapter<CustomPreferenceAdapter.CustomPreferenceViewHolder> {
 
-    private ArrayList<CustomPreferenceData> localData;
+    private List<CustomPreferenceData> preferenceDataList;
     private View.OnClickListener onClickListener;
     // 文字サイズ
     private int mainTextSize;
 
-    public static class CustomPreferenceViewHolder extends RecyclerView.ViewHolder {
-        private final TextView listDiscountTitleTextView;
-        private final EditText listDiscountNumEditView;
-        private final LinearLayout linearLayout;
+    public static class CustomPreferenceViewHolder extends RecyclerView.ViewHolder implements LifecycleOwner{
+        LifecycleRegistry lifecycle=new LifecycleRegistry(this);
 
         private final CustomPreferenceOneLineBinding binding;
 
@@ -43,23 +47,51 @@ public class CustomPreferenceAdapter extends RecyclerView.Adapter<CustomPreferen
         public CustomPreferenceViewHolder(CustomPreferenceOneLineBinding binding) {
             super(binding.getRoot());
             this.binding=binding;
-            listDiscountTitleTextView = binding.customPreferenceOneLineTitle;
-            listDiscountNumEditView = binding.customPreferenceOneLineNum;
-            linearLayout=binding.customPreferenceOneLineNumContainer;
         }
 
-        public TextView getListDiscountTitleTextView() {
-            return listDiscountTitleTextView;
+        void bind(CustomPreferenceData viewModel){
+            viewModel.getDiscountElement().observe(this,t->binding.customPreferenceOneLineTitle.setText(t+1));
+            viewModel.getDiscountPer().observe(this, binding.customPreferenceOneLineNum::setText);
         }
 
-        public TextView getListDiscountNumEditView() {
-            return listDiscountNumEditView;
+
+        public void changeTextSize(int textSize){
+
+            if(textSize>0) {
+                // 文字サイズ設定
+                binding.customPreferenceOneLineTitle.setTextSize(textSize);
+                binding.customPreferenceOneLineNum.setTextSize(textSize);
+            }
         }
+
+        public void alignmentText(int gravity){
+            // 文字のGravityを変更(右寄せ)
+            binding.customPreferenceOneLineTitle.setGravity(gravity);
+            binding.customPreferenceOneLineNum.setGravity(gravity);
+            binding.customPreferenceOneLineNumContainer.setOnClickListener(l->{
+                Log.i("RecyclerViewClickEvent",binding.customPreferenceOneLineTitle.getText()+" : "+binding.customPreferenceOneLineNum.getText());
+            });
+        }
+        @NonNull
+        @Override
+        public Lifecycle getLifecycle() {
+            return lifecycle;
+        }
+
 
     }
 
-    public CustomPreferenceAdapter(ArrayList<CustomPreferenceData> dataset){
-        localData=dataset;
+    public CustomPreferenceAdapter(CustomPreferenceListViewModel dataset){
+        preferenceDataList= dataset.getCustomPreferenceDatas().getValue();
+    }
+
+    public CustomPreferenceAdapter(CustomPreferenceListViewModel viewModel, LifecycleOwner lifecycleOwner){
+        preferenceDataList=new ArrayList<>();
+        viewModel.getCustomPreferenceDatas().observe(lifecycleOwner,data->{
+            preferenceDataList=data;
+            notifyDataSetChanged();
+        });
+
     }
     @NonNull
     @Override
@@ -67,47 +99,29 @@ public class CustomPreferenceAdapter extends RecyclerView.Adapter<CustomPreferen
         // リスト項目のUIを定義する新しいビューを作成する。
         LayoutInflater inflater=LayoutInflater.from(parent.getContext());
         CustomPreferenceOneLineBinding binding=CustomPreferenceOneLineBinding.inflate(inflater,parent,false);
-//        View inflate = LayoutInflater.from(parent.getContext())
-//               .inflate(R.layout.custom_preference_one_line, parent, false);
         return new CustomPreferenceViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CustomPreferenceViewHolder holder, int position) {
+        holder.bind(preferenceDataList.get(position));
         // この位置のデータセットから要素を取得し、ビューの内容をその要素で置き換える
         // 要素番号を1~表示させたいので、NaturalNumberで数値を取得(TODO:もっと綺麗な実装方法があるとは思う)
-        int per=localData.get(position).getDiscountPer();
-        holder.listDiscountTitleTextView.setText(String.format(Locale.getDefault(), "%d", localData.get(position).getDiscountElementNaturalNumber()));
         // 0%なら入力を空にしてhintを表示させる
-        if(per==0){
-            holder.listDiscountNumEditView.setText("");
-        }else {
-            holder.listDiscountNumEditView.setText(String.format(Locale.getDefault(), "%d", localData.get(position).getDiscountPer()));
-        }
+        holder.changeTextSize(mainTextSize);
 
-        if(mainTextSize>0) {
-            // 文字サイズ設定
-            holder.listDiscountTitleTextView.setTextSize(mainTextSize);
-            holder.listDiscountNumEditView.setTextSize(mainTextSize);
-        }
-
-        // 文字のGravityを変更(右寄せ)
-        holder.listDiscountTitleTextView.setGravity(Gravity.END);
-        holder.listDiscountNumEditView.setGravity(Gravity.END);
-        holder.linearLayout.setOnClickListener(l->{
-            Log.i("RecyclerViewClickEvent",holder.listDiscountTitleTextView.getText()+" : "+holder.listDiscountNumEditView.getText());
-        });
+        holder.alignmentText(Gravity.END);
     }
 
     @Override
     public int getItemCount() {
-        return localData.size();
+        return preferenceDataList.size();
     }
 
 
 
+
     public void updateItems(ArrayList<CustomPreferenceData> data){
-        localData=data;
         // localDataのサイズ分の変更をobserverに通知
         notifyItemRangeChanged(0,getItemCount());
     }

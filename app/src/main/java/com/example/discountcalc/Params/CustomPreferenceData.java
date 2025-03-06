@@ -1,42 +1,48 @@
 package com.example.discountcalc.Params;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
+import java.util.concurrent.atomic.AtomicReference;
+
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.internal.disposables.DisposableHelper;
+
 // カスタム割引率設定に使用するデータクラス
 public class CustomPreferenceData {
 
     // カスタム割引率の要素名
-    private int discountElement;
+    private final MutableLiveData<Integer> discountElement=new MutableLiveData<>(0);
 
     // 割引率
-    private int discountPer;
+    private final MutableLiveData<Integer> discountPer=new MutableLiveData<>(0);
 
-    public CustomPreferenceData(){
-        discountElement =0;
-        discountPer=0;
+    public  CustomPreferenceData(){
+        discountElement.postValue(0);
+        discountPer.postValue(0);
     }
 
-    public CustomPreferenceData(int elementName,int per){
-        this.discountElement =elementName;
-        this.discountPer=per;
+    public CustomPreferenceData(int element,int per){
+        discountElement.postValue(element);
+        discountPer.postValue(per);
     }
 
-    public int getDiscountElement() {
+
+    public LiveData<Integer> getDiscountElement() {
         return discountElement;
     }
 
     // 自然数を返す
-    public int getDiscountElementNaturalNumber(){
-        return discountElement+1;
-    }
-    public void setDiscountElement(int discountElement) {
-        this.discountElement = discountElement;
+    public MutableLiveData<Integer> getDiscountElementNaturalNumber(){
+        return discountElement;
     }
 
 
-    public int getDiscountPer() {
+    public MutableLiveData<Integer> getDiscountPer() {
         return discountPer;
     }
 
-    public void setDiscountPer(int discountPer) {
-        this.discountPer = discountPer;
-    }
 }

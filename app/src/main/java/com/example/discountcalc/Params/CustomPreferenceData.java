@@ -1,15 +1,8 @@
 package com.example.discountcalc.Params;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-
-import java.util.concurrent.atomic.AtomicReference;
-
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.internal.disposables.DisposableHelper;
 
 // カスタム割引率設定に使用するデータクラス
 public class CustomPreferenceData {
@@ -45,4 +38,17 @@ public class CustomPreferenceData {
         return discountPer;
     }
 
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if(obj==null)return false;
+        if(obj instanceof CustomPreferenceData){
+            CustomPreferenceData data=(CustomPreferenceData) obj;
+            if(this.discountElement!=data.discountElement)return false;
+            if(this.discountPer!=data.discountPer)return false;
+            return true;
+        }
+
+        return false;
+    }
 }

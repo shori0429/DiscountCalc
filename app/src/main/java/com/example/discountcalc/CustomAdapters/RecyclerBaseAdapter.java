@@ -7,19 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.functions.BiFunction;
 import io.reactivex.rxjava3.functions.Function;
-import io.reactivex.rxjava3.processors.FlowableProcessor;
-import io.reactivex.rxjava3.processors.PublishProcessor;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 import io.reactivex.rxjava3.subjects.Subject;
 import kotlin.Pair;
 
 // リサイクルビューのベースアダプター
-
+// MUST CHECK:使用していないので別プロジェクトに退避した後に削除する等、要検討。
 public abstract class RecyclerBaseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     protected List<Object> items=new ArrayList<>();
     private final Subject<List<Object>> subject= PublishSubject.<List<Object>>create().toSerialized();
@@ -82,6 +78,7 @@ public abstract class RecyclerBaseAdapter extends RecyclerView.Adapter<RecyclerV
         items.addAll(newItems);
         subject.onNext(new ArrayList<>(items));
     }
+
 
     public void destroy(){
         compositeDisposable.clear();

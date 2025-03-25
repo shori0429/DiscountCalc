@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.datastore.preferences.core.Preferences;
 import androidx.datastore.rxjava3.RxDataStore;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -75,9 +76,11 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         // データストアヘルパー取得
         dataStoreHelperInitialize(dataStoreSingleton.getDatastore());
         loadCustomPreferenceDatas();
+        viewModelInitialize();
         recyclerViewInitialize();
         setOnClickListeners();
     }
+
 
     // Viewの要素をバインディング
     private void bindingElements() {
@@ -85,7 +88,16 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         elementAddButton=customDiscountPreferenceFragmentBinding.AddElementButton;
         changeTextSize=customDiscountPreferenceFragmentBinding.ChangeTextSizeButton;
 
-        customPreferenceListViewModel=CustomPreferenceListViewModel.getInstance();
+    }
+    private void viewModelInitialize() {
+        customPreferenceListViewModel=new ViewModelProvider(requireActivity()).get(CustomPreferenceListViewModel.class);
+        customPreferenceListViewModel.setPreferenceDatas(preferenceDataList);
+        customPreferenceListViewModel.getCustomPreferenceDatas().observe(getViewLifecycleOwner(), this::updateUI);
+    }
+
+    private void updateUI(List<CustomPreferenceData> preferenceDataList) {
+        if(preferenceDataList.size()>0) preferenceDataList.clear();
+        customPreferenceListAdapter.submitList(preferenceDataList);
     }
 
     @Override
@@ -150,7 +162,6 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(customPreferenceListAdapter);
 
-        customPreferenceListAdapter.submitList(preferenceDataList);
 
     }
 
@@ -190,7 +201,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
         provisionalPreferenceDataListInit();
         // ViewModelにデータ送信
-        customPreferenceListViewModel.postValue(preferenceDataList);
+        //customPreferenceListViewModel.setPreferenceDatas(preferenceDataList);
     }
     // 仮データ作成
     private void provisionalPreferenceDataListInit(){
@@ -220,7 +231,9 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     private void addPreferenceDataElement(){
 
         // コンストラクタで実体生成→List.size()の順で呼ばれる
-        preferenceDataList.add(new CustomPreferenceData( preferenceDataList.size(),0));
+        CustomPreferenceData newData=new CustomPreferenceData( preferenceDataList.size(),0);
+
+        preferenceDataList.add(newData);
 
         // テキスト更新
         String lSize=String.valueOf(preferenceDataList.size());
@@ -230,8 +243,8 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         if(preferenceDataList.size()<=10){
             recyclerView.setHasFixedSize(false);
         }
-        customPreferenceListViewModel.postValue(preferenceDataList);
         recyclerView.setHasFixedSize(true);
+        customPreferenceListViewModel.updatePreferenceDataAll(preferenceDataList);
     }
 
     private boolean removePreferenceDataElement(int removeElementNumber){

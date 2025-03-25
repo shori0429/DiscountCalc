@@ -1,4 +1,4 @@
-package com.example.discountcalc.CustomAdapters;
+package com.example.discountcalc.customAdapters;
 
 import android.util.Log;
 import android.view.Gravity;

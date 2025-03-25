@@ -1,4 +1,4 @@
-package com.example.discountcalc.Params;
+package com.example.discountcalc.params;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -18,30 +18,39 @@ public class CustomPreferenceData{
 
 
     public  CustomPreferenceData(){
-        discountElement.postValue(0);
-        discountPer.postValue(0);
+        discountElement.setValue(0);
+        discountPer.setValue(0);
     }
 
     public CustomPreferenceData(int element,int per){
-        discountElement.postValue(element);
-        discountPer.postValue(per);
+        discountElement.setValue(element);
+        discountPer.setValue(per);
     }
 
 
-    public LiveData<Integer> getDiscountElement() {
+    public void setDiscountElement(int value){
+            discountElement.setValue(value);
+    }
+
+    public MutableLiveData<Integer> getDiscountElement() {
         return discountElement;
+    }
+
+    public LiveData<String> discountElementString = Transformations.map(discountElement,String::valueOf);
+
+
+    public void setDiscountPer(int value){
+        discountPer.setValue(value);
+    }
+
+    public MutableLiveData<Integer> getDiscountPer() {
+        return discountPer;
     }
 
     // 自然数を返す
     public MutableLiveData<Integer> getDiscountElementNaturalNumber(){
         return discountElement;
     }
-
-
-    public MutableLiveData<Integer> getDiscountPer() {
-        return discountPer;
-    }
-
 
     @Override
     public boolean equals(@Nullable Object obj) {

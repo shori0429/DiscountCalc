@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,9 +96,15 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         customPreferenceListViewModel.getCustomPreferenceDatas().observe(getViewLifecycleOwner(), this::updateUI);
     }
 
-    private void updateUI(List<CustomPreferenceData> preferenceDataList) {
-        if(preferenceDataList.size()>0) preferenceDataList.clear();
+    private void updateUI(@NonNull List<CustomPreferenceData> dataList) {
+        if(dataList.size()>0) {
+            //preferenceDataList.clear();
+            //preferenceDataList.addAll(dataList);
+        }
+        Log.i("adapter_before",String.valueOf(customPreferenceListAdapter.getCurrentList().size()));
         customPreferenceListAdapter.submitList(preferenceDataList);
+
+        Log.i("adapter_after",String.valueOf(customPreferenceListAdapter.getCurrentList().size()));
     }
 
     @Override

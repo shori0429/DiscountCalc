@@ -24,14 +24,12 @@ import java.util.List;
 
 public class CustomPreferenceListAdapter extends ListAdapter<CustomPreferenceData, CustomPreferenceListAdapter.CustomPreferenceListViewHolder> {
 
-    private List<CustomPreferenceData> preferenceDataList=new ArrayList<>(0);
     private int mainTextSize;
     private final AsyncListDiffer<CustomPreferenceData> aDiffer=new AsyncListDiffer<>(this,DIFF_CALLBACK);
 
     public static class CustomPreferenceListViewHolder extends RecyclerView.ViewHolder implements LifecycleOwner {
         private final LifecycleRegistry lifecycle=new LifecycleRegistry(this);
         private final CustomPreferenceOneLineBinding binding;
-
 
         //
         public CustomPreferenceListViewHolder(CustomPreferenceOneLineBinding binding){
@@ -40,10 +38,9 @@ public class CustomPreferenceListAdapter extends ListAdapter<CustomPreferenceDat
         }
 
         // 各Viewに関連付け+購読
-        void bind(CustomPreferenceData viewmodel){
-            viewmodel.getDiscountElement().observe(this,t->binding.customPreferenceOneLineTitle.setText(String.valueOf(t+1)));
-            viewmodel.getDiscountPer().observe(this,v->binding.customPreferenceOneLineNum.setText(String.valueOf(v)));
-            Log.i("OneLineNum",binding.customPreferenceOneLineNum.getText().toString());
+        void bind(CustomPreferenceData preferenceData){
+           binding.customPreferenceOneLineTitle.setText(String.valueOf(preferenceData.getDiscountElement().getValue()));
+           binding.customPreferenceOneLineNum.setText(String.valueOf(preferenceData.getDiscountPer().getValue()));
         }
 
         public void changeTextSize(int textSize){
@@ -78,9 +75,7 @@ public class CustomPreferenceListAdapter extends ListAdapter<CustomPreferenceDat
 
     public CustomPreferenceListAdapter(CustomPreferenceListViewModel viewModel,LifecycleOwner lifecycleOwner){
         super(DIFF_CALLBACK);
-        viewModel.getCustomPreferenceDatas().observe(lifecycleOwner, data->{
-            preferenceDataList=data;
-        });
+        viewModel.getCustomPreferenceDatas().observe(lifecycleOwner, aDiffer::submitList);
     }
 
     @NonNull

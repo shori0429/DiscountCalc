@@ -1,6 +1,6 @@
-package com.example.discountcalc.Fragments;
+package com.example.discountcalc.fragments;
 
-import static com.example.discountcalc.DataBase.DataStoreKey.*;
+import static com.example.discountcalc.dataBase.DataStoreKey.*;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,16 +17,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.discountcalc.CustomAdapters.CustomPreferenceListAdapter;
-import com.example.discountcalc.DataBase.CustomConfigDataStoreSingleton;
-import com.example.discountcalc.DataBase.DataStoreHelper;
-import com.example.discountcalc.Params.CustomPreferenceData;
-import com.example.discountcalc.R;
-import com.example.discountcalc.ViewModels.CustomPreferenceListViewModel;
-import com.example.discountcalc.ViewModels.DiscountCalcViewModel;
+import com.example.discountcalc.customAdapters.CustomPreferenceListAdapter;
+import com.example.discountcalc.dataBase.CustomConfigDataStoreSingleton;
+import com.example.discountcalc.dataBase.DataStoreHelper;
 import com.example.discountcalc.databinding.CustomDiscountPreferenceFragmentBinding;
+import com.example.discountcalc.params.CustomPreferenceData;
+import com.example.discountcalc.R;
+import com.example.discountcalc.viewModels.CustomPreferenceListViewModel;
+import com.example.discountcalc.viewModels.DiscountCalcViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class CustomDiscountPreferenceFragment extends Fragment {

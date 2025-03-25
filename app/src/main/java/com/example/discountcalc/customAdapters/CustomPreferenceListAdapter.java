@@ -15,16 +15,16 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.discountcalc.Params.CustomPreferenceData;
-import com.example.discountcalc.ViewModels.CustomPreferenceListViewModel;
 import com.example.discountcalc.databinding.CustomPreferenceOneLineBinding;
+import com.example.discountcalc.params.CustomPreferenceData;
+import com.example.discountcalc.viewModels.CustomPreferenceListViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CustomPreferenceListAdapter extends ListAdapter<CustomPreferenceData, CustomPreferenceListAdapter.CustomPreferenceListViewHolder> {
 
-    private List<CustomPreferenceData> preferenceDataList=new ArrayList<>();
+    private List<CustomPreferenceData> preferenceDataList=new ArrayList<>(0);
     private int mainTextSize;
     private final AsyncListDiffer<CustomPreferenceData> aDiffer=new AsyncListDiffer<>(this,DIFF_CALLBACK);
 

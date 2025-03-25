@@ -1,4 +1,4 @@
-package com.example.discountcalc.DataBase;
+package com.example.discountcalc.dataBase;
 
 import androidx.datastore.preferences.core.Preferences;
 import androidx.datastore.rxjava3.RxDataStore;

@@ -1,4 +1,4 @@
-package com.example.discountcalc.CustomAdapters;
+package com.example.discountcalc.customAdapters;
 
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;

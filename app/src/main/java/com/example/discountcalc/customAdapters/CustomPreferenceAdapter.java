@@ -1,29 +1,23 @@
-package com.example.discountcalc.CustomAdapters;
+package com.example.discountcalc.customAdapters;
 
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Transformations;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.discountcalc.Params.CustomPreferenceData;
-import com.example.discountcalc.ViewModels.CustomPreferenceListViewModel;
 import com.example.discountcalc.databinding.CustomPreferenceOneLineBinding;
+import com.example.discountcalc.params.CustomPreferenceData;
+import com.example.discountcalc.viewModels.CustomPreferenceListViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class CustomPreferenceAdapter extends RecyclerView.Adapter<CustomPreferenceAdapter.CustomPreferenceViewHolder> {
 

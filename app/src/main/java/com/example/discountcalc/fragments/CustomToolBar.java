@@ -1,4 +1,4 @@
-package com.example.discountcalc.Fragments;
+package com.example.discountcalc.fragments;
 
 import android.content.Context;
 import android.util.AttributeSet;

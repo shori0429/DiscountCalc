@@ -1,10 +1,10 @@
-package com.example.discountcalc.ViewModels;
+package com.example.discountcalc.viewModels;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.discountcalc.Params.CustomPreferenceData;
+import com.example.discountcalc.params.CustomPreferenceData;
 
 import java.util.ArrayList;
 import java.util.List;

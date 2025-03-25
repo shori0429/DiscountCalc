@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/titleFragment"
-        android:name="com.example.discountcalc.Fragments.TitleFragment"
+        android:name="com.example.discountcalc.fragments.TitleFragment"
         android:label="TitleFragment"
         tools:layout="@layout/calc_title">
         <action
@@ -18,7 +18,7 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.example.discountcalc.Fragments.DiscountCalcPreferencesFragment"
+        android:name="com.example.discountcalc.fragments.DiscountCalcPreferencesFragment"
         android:label="SettingsFragment"
         tools:layout="@layout/config_main">
         <action
@@ -31,7 +31,7 @@
     </fragment>
     <fragment
         android:id="@+id/customDiscountPreferenceFragment"
-        android:name="com.example.discountcalc.Fragments.CustomDiscountPreferenceFragment"
+        android:name="com.example.discountcalc.fragments.CustomDiscountPreferenceFragment"
         android:label="custom_discount_preference_fragment"
         tools:layout="@layout/custom_discount_preference_fragment" >
         <action

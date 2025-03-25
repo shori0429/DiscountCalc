@@ -1,4 +1,4 @@
-package com.example.discountcalc.Params;
+package com.example.discountcalc.params;
 
 import androidx.annotation.IntDef;
 

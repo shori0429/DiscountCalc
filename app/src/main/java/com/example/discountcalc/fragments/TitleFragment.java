@@ -1,4 +1,4 @@
-package com.example.discountcalc.Fragments;
+package com.example.discountcalc.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -19,7 +19,7 @@ import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.discountcalc.R;
-import com.example.discountcalc.ViewModels.DiscountCalcViewModel;
+import com.example.discountcalc.viewModels.DiscountCalcViewModel;
 import com.example.discountcalc.databinding.CalcTitleBinding;
 
 public class TitleFragment extends Fragment implements CustomTextWatcher {

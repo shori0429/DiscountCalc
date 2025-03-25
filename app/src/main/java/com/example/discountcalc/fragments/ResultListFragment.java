@@ -1,6 +1,6 @@
-package com.example.discountcalc.Fragments;
+package com.example.discountcalc.fragments;
 
-import static com.example.discountcalc.DataBase.DataStoreKey.*;
+import static com.example.discountcalc.dataBase.DataStoreKey.*;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -20,15 +20,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.discountcalc.CalculationPack.ConvertDisplayUnitsHelper;
-import com.example.discountcalc.CalculationPack.DiscountCalc;
-import com.example.discountcalc.CustomAdapters.ResultLayoutAdapter;
-import com.example.discountcalc.DataBase.CustomConfigDataStoreSingleton;
-import com.example.discountcalc.DataBase.DataStoreHelper;
-import com.example.discountcalc.Params.DiscountType;
-import com.example.discountcalc.Params.DiscountData;
+import com.example.discountcalc.calculationPack.ConvertDisplayUnitsHelper;
+import com.example.discountcalc.calculationPack.DiscountCalc;
+import com.example.discountcalc.customAdapters.ResultLayoutAdapter;
+import com.example.discountcalc.dataBase.CustomConfigDataStoreSingleton;
+import com.example.discountcalc.dataBase.DataStoreHelper;
+import com.example.discountcalc.params.DiscountType;
+import com.example.discountcalc.params.DiscountData;
 import com.example.discountcalc.R;
-import com.example.discountcalc.ViewModels.DiscountCalcViewModel;
+import com.example.discountcalc.viewModels.DiscountCalcViewModel;
 import com.example.discountcalc.databinding.ResultPriceListBinding;
 
 import java.util.ArrayList;

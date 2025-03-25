@@ -1,4 +1,4 @@
-package com.example.discountcalc.Fragments;
+package com.example.discountcalc.fragments;
 
 import android.text.Editable;
 import android.text.TextWatcher;

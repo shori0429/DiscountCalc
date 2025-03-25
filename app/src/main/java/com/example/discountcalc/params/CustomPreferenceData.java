@@ -3,15 +3,19 @@ package com.example.discountcalc.Params;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
+import androidx.lifecycle.ViewModel;
 
 // カスタム割引率設定に使用するデータクラス
-public class CustomPreferenceData {
+
+public class CustomPreferenceData{
 
     // カスタム割引率の要素名
     private final MutableLiveData<Integer> discountElement=new MutableLiveData<>(0);
 
     // 割引率
     private final MutableLiveData<Integer> discountPer=new MutableLiveData<>(0);
+
 
     public  CustomPreferenceData(){
         discountElement.postValue(0);

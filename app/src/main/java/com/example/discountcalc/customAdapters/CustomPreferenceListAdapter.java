@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.discountcalc.BR;
 import com.example.discountcalc.databinding.CustomPreferenceOneLineBinding;
 import com.example.discountcalc.params.CustomPreferenceData;
 import com.example.discountcalc.viewModels.CustomPreferenceListViewModel;
@@ -31,10 +34,17 @@ public class CustomPreferenceListAdapter extends ListAdapter<CustomPreferenceDat
         private final LifecycleRegistry lifecycle=new LifecycleRegistry(this);
         private final CustomPreferenceOneLineBinding binding;
 
+        private ViewDataBinding viewDataBinding;
+
         //
         public CustomPreferenceListViewHolder(CustomPreferenceOneLineBinding binding){
             super(binding.getRoot());
             this.binding=binding;
+            viewDataBinding= DataBindingUtil.bind(binding.getRoot());
+        }
+
+        public ViewDataBinding getViewDataBinding(){
+            return viewDataBinding;
         }
 
         // 各Viewに関連付け+購読
@@ -89,7 +99,9 @@ public class CustomPreferenceListAdapter extends ListAdapter<CustomPreferenceDat
     @Override
     public void onBindViewHolder(@NonNull CustomPreferenceListViewHolder holder, int position) {
         CustomPreferenceData data=aDiffer.getCurrentList().get(position);
-        holder.bind(data);
+        holder.getViewDataBinding().setVariable(BR.preferenceData,data);
+        holder.getViewDataBinding().executePendingBindings();
+        //holder.bind(data);
 
         // テキストサイズ変更
         holder.changeTextSize(mainTextSize);

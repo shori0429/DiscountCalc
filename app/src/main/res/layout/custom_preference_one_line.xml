@@ -5,8 +5,8 @@
     <data>
         <import type="com.example.discountcalc.converters.WrapperDataConverters"/>
         <variable
-            name="viewModels"
-            type="com.example.discountcalc.viewModels.CustomPreferenceListViewModel" />
+            name="preferenceData"
+            type="com.example.discountcalc.params.CustomPreferenceData" />
     </data>
     
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/shape_outer_frame"
             android:hint="000"
-            android:text=""
+            android:text="@={``+preferenceData.discountElement}"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:textSize="@dimen/normal_size"
@@ -44,6 +44,7 @@
                 android:background="@null"
                 android:gravity="end"
                 android:hint="50"
+                android:text="@={``+preferenceData.discountPer}"
                 android:inputType="number"
                 android:paddingStart="16dp"
                 android:paddingEnd="0dp"

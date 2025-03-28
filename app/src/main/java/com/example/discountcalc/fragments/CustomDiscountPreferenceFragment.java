@@ -101,10 +101,10 @@ public class CustomDiscountPreferenceFragment extends Fragment {
             //preferenceDataList.clear();
             //preferenceDataList.addAll(dataList);
         }
-        Log.i("adapter_before",String.valueOf(customPreferenceListAdapter.getCurrentList().size()));
+        Log.i("adapter_before",String.valueOf(customPreferenceListAdapter.getItemCount()));
         customPreferenceListAdapter.submitList(preferenceDataList);
 
-        Log.i("adapter_after",String.valueOf(customPreferenceListAdapter.getCurrentList().size()));
+        Log.i("adapter_after",String.valueOf(customPreferenceListAdapter.getItemCount()));
     }
 
     @Override
@@ -242,16 +242,17 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
         preferenceDataList.add(newData);
 
+        customPreferenceListAdapter.submitList(preferenceDataList);
         // テキスト更新
-        String lSize=String.valueOf(preferenceDataList.size());
-        elementNumberViewText.setText(lSize);
-
-        // 表示数が10未満の時、リサイクルビューのサイズ変更を許容する。
-        if(preferenceDataList.size()<=10){
+        int listSize= preferenceDataList.size();
+        elementNumberViewText.setText(String.valueOf(listSize));
+        // 表示数が10未満の時、リサイクルビューのサイズ変更を固定にする。
+        if(listSize<=10){
             recyclerView.setHasFixedSize(false);
+        }else {
+            recyclerView.setHasFixedSize(true);
         }
-        recyclerView.setHasFixedSize(true);
-        customPreferenceListViewModel.updatePreferenceDataAll(preferenceDataList);
+
     }
 
     private boolean removePreferenceDataElement(int removeElementNumber){

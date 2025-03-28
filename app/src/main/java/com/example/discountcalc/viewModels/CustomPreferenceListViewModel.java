@@ -29,25 +29,20 @@ public class CustomPreferenceListViewModel extends ViewModel {
     }
 
     public void setPreferenceDatas(List<CustomPreferenceData> datas){
-        this.preferenceDatas.setValue(new ArrayList<>(datas));
+        this.preferenceDatas.setValue(datas);
     }
 
 
-    public void addPreferenceData(int index,CustomPreferenceData newData){
-        List<CustomPreferenceData> currentList=preferenceDatas.getValue();
-        if(currentList !=null && index >=0 && index< currentList.size()){
-            currentList.set(index,newData);
-            preferenceDatas.setValue(new ArrayList<>(currentList));
+    public void addPreferenceData(CustomPreferenceData newData){
+        if(newData!=null){
+            preferenceDatas.getValue().add(newData);
         }
     }
 
     // 指定したインデックスのデータを更新
     public void updatePreferenceDataAll(ArrayList<CustomPreferenceData> newData) {
-        List<CustomPreferenceData> currentList = preferenceDatas.getValue();
-        if (currentList != null) {
-            currentList.clear();
-            currentList.addAll(newData);
-            preferenceDatas.setValue(new ArrayList<>(currentList)); // 更新を通知
+        if (newData != null) {
+            preferenceDatas.postValue(newData);
         }
     }
 

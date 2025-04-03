@@ -30,6 +30,7 @@ import com.example.discountcalc.viewModels.DiscountCalcViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class CustomDiscountPreferenceFragment extends Fragment {
@@ -51,7 +52,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     CustomPreferenceListAdapter customPreferenceListAdapter;
 
     ArrayList<CustomPreferenceData> preferenceDataList;
-    CustomPreferenceListViewModel customPreferenceListViewModel;
+    CustomPreferenceListViewModel customPreferenceViewModel;
 
     int elementMax;
 
@@ -83,32 +84,8 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     }
 
 
-    // Viewの要素をバインディング
-    private void bindingElements() {
-        elementNumberViewText=customDiscountPreferenceFragmentBinding.PreferenceVolume;
-        elementAddButton=customDiscountPreferenceFragmentBinding.AddElementButton;
-        changeTextSize=customDiscountPreferenceFragmentBinding.ChangeTextSizeButton;
-
-    }
-    private void viewModelInitialize() {
-        customPreferenceListViewModel=new ViewModelProvider(requireActivity()).get(CustomPreferenceListViewModel.class);
-        customPreferenceListViewModel.setPreferenceDatas(preferenceDataList);
-        customPreferenceListViewModel.getCustomPreferenceDatas().observe(getViewLifecycleOwner(), this::updateUI);
-    }
-
-    private void updateUI(@NonNull List<CustomPreferenceData> dataList) {
-        if(dataList.size()>0) {
-            //preferenceDataList.clear();
-            //preferenceDataList.addAll(dataList);
-        }
-        Log.i("adapter_before",String.valueOf(customPreferenceListAdapter.getItemCount()));
-        customPreferenceListAdapter.submitList(preferenceDataList);
-
-        Log.i("adapter_after",String.valueOf(customPreferenceListAdapter.getItemCount()));
-    }
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         customDiscountPreferenceFragmentBinding =CustomDiscountPreferenceFragmentBinding.inflate(inflater,container,false);
         view= customDiscountPreferenceFragmentBinding.getRoot();
@@ -127,6 +104,24 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         //saveDataStore();
+    }
+
+    // Viewの要素をバインディング
+    private void bindingElements() {
+        elementNumberViewText=customDiscountPreferenceFragmentBinding.PreferenceVolume;
+        elementAddButton=customDiscountPreferenceFragmentBinding.AddElementButton;
+        changeTextSize=customDiscountPreferenceFragmentBinding.ChangeTextSizeButton;
+
+    }
+    private void viewModelInitialize() {
+        customPreferenceViewModel =new ViewModelProvider(requireActivity()).get(CustomPreferenceListViewModel.class);
+        customPreferenceViewModel.setPreferenceDatas(preferenceDataList);
+        customPreferenceViewModel.getCustomPreferenceDatas().observe(getViewLifecycleOwner(), this::updateUI);
+    }
+
+    private void updateUI(@NonNull List<CustomPreferenceData> dataList) {
+        Log.i("updateUI","updateUI");
+        customPreferenceListAdapter.submitList(dataList);
     }
 
     public void setOnClickListeners(){
@@ -162,7 +157,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     // リサイクルビューの初期化関数
     private void recyclerViewInitialize() {
         recyclerView= customDiscountPreferenceFragmentBinding.PreferenceList;
-        customPreferenceListAdapter=new CustomPreferenceListAdapter(customPreferenceListViewModel,this);
+        customPreferenceListAdapter=new CustomPreferenceListAdapter(customPreferenceViewModel,this);
 
         LinearLayoutManager llm=new LinearLayoutManager(view.getContext());
         recyclerView.setHasFixedSize(true);
@@ -185,7 +180,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 //          elementMax =0;
 //        }
         // 仮データ
-        elementMax=10;
+        elementMax=1;
         // データリスト配列初期化
         InitializeCustomPreferenceDataSetArrayList(elementMax);
 
@@ -205,10 +200,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         for (int i = 0; i < max; i++) {
             preferenceDataList.add(i, new CustomPreferenceData());
         }
-
-        provisionalPreferenceDataListInit();
-        // ViewModelにデータ送信
-        //customPreferenceListViewModel.setPreferenceDatas(preferenceDataList);
+        //provisionalPreferenceDataListInit();
     }
     // 仮データ作成
     private void provisionalPreferenceDataListInit(){
@@ -236,22 +228,16 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
     // 要素数追加
     private void addPreferenceDataElement(){
-
         // コンストラクタで実体生成→List.size()の順で呼ばれる
-        CustomPreferenceData newData=new CustomPreferenceData( preferenceDataList.size(),0);
+        CustomPreferenceData newData=new CustomPreferenceData( Objects.requireNonNull(customPreferenceViewModel.getCustomPreferenceDatas().getValue()).size(),0);
 
-        preferenceDataList.add(newData);
+        customPreferenceViewModel.addPreferenceData(newData);
 
-        customPreferenceListAdapter.submitList(preferenceDataList);
         // テキスト更新
-        int listSize= preferenceDataList.size();
+        int listSize= customPreferenceViewModel.getCustomPreferenceDatas().getValue().size();
         elementNumberViewText.setText(String.valueOf(listSize));
         // 表示数が10未満の時、リサイクルビューのサイズ変更を固定にする。
-        if(listSize<=10){
-            recyclerView.setHasFixedSize(false);
-        }else {
-            recyclerView.setHasFixedSize(true);
-        }
+        recyclerView.setHasFixedSize(listSize > 10);
 
     }
 

@@ -1,5 +1,6 @@
 package com.example.discountcalc.customAdapters;
 
+import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,7 +23,6 @@ import com.example.discountcalc.databinding.CustomPreferenceOneLineBinding;
 import com.example.discountcalc.params.CustomPreferenceData;
 import com.example.discountcalc.viewModels.CustomPreferenceListViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CustomPreferenceListAdapter extends ListAdapter<CustomPreferenceData, CustomPreferenceListAdapter.CustomPreferenceListViewHolder> {
@@ -34,7 +34,7 @@ public class CustomPreferenceListAdapter extends ListAdapter<CustomPreferenceDat
         private final LifecycleRegistry lifecycle=new LifecycleRegistry(this);
         private final CustomPreferenceOneLineBinding binding;
 
-        private ViewDataBinding viewDataBinding;
+        private final ViewDataBinding viewDataBinding;
 
         //
         public CustomPreferenceListViewHolder(CustomPreferenceOneLineBinding binding){
@@ -47,10 +47,10 @@ public class CustomPreferenceListAdapter extends ListAdapter<CustomPreferenceDat
             return viewDataBinding;
         }
 
-        // 各Viewに関連付け+購読
+
         void bind(CustomPreferenceData preferenceData){
-           binding.customPreferenceOneLineTitle.setText(String.valueOf(preferenceData.getDiscountElement().getValue()));
-           binding.customPreferenceOneLineNum.setText(String.valueOf(preferenceData.getDiscountPer().getValue()));
+            binding.setPreferenceData(preferenceData);
+            binding.executePendingBindings();
         }
 
         public void changeTextSize(int textSize){
@@ -79,9 +79,6 @@ public class CustomPreferenceListAdapter extends ListAdapter<CustomPreferenceDat
 
     }
 
-    public CustomPreferenceListAdapter(CustomPreferenceListViewModel viewModel){
-        super(DIFF_CALLBACK);
-    }
 
     public CustomPreferenceListAdapter(CustomPreferenceListViewModel viewModel,LifecycleOwner lifecycleOwner){
         super(DIFF_CALLBACK);
@@ -99,6 +96,34 @@ public class CustomPreferenceListAdapter extends ListAdapter<CustomPreferenceDat
     @Override
     public void onBindViewHolder(@NonNull CustomPreferenceListViewHolder holder, int position) {
         CustomPreferenceData data=aDiffer.getCurrentList().get(position);
+        // 各Viewに関連付け+購読
+        holder.bind(data);
+
+        // テキストサイズ変更
+        holder.changeTextSize(mainTextSize);
+
+        // テキストを右寄りに
+        holder.alignmentText(Gravity.END);
+
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull CustomPreferenceListViewHolder holder, int position, @NonNull List<Object> payloads) {
+        CustomPreferenceData data=aDiffer.getCurrentList().get(position);
+
+        //
+        if(!payloads.isEmpty()) {
+            Bundle diff = (Bundle) payloads.get(0);
+            if (diff.containsKey("element")) {
+                holder.binding.customPreferenceOneLineTitle.setText(diff.getString("element"));
+            }
+            if (diff.containsKey("per")) {
+                holder.binding.customPreferenceOneLineNum.setText(diff.getString("per"));
+            }
+        }else{
+            super.onBindViewHolder(holder, position,payloads);
+        }
+
         holder.getViewDataBinding().setVariable(BR.preferenceData,data);
         holder.getViewDataBinding().executePendingBindings();
         //holder.bind(data);
@@ -127,15 +152,32 @@ public class CustomPreferenceListAdapter extends ListAdapter<CustomPreferenceDat
 
     private static final DiffUtil.ItemCallback<CustomPreferenceData> DIFF_CALLBACK=
             new DiffUtil.ItemCallback<CustomPreferenceData>() {
+
                 @Override
                 public boolean areItemsTheSame(@NonNull CustomPreferenceData oldItem, @NonNull CustomPreferenceData newItem) {
-                    return oldItem.getDiscountPer()==newItem.getDiscountPer();
+                    return true;
 
                 }
 
                 @Override
                 public boolean areContentsTheSame(@NonNull CustomPreferenceData oldItem, @NonNull CustomPreferenceData newItem) {
                     return oldItem.equals(newItem);
+                }
+
+                @Nullable
+                @Override
+                public Object getChangePayload(@NonNull CustomPreferenceData oldItem, @NonNull CustomPreferenceData newItem) {
+                    Bundle diff=new Bundle();
+                    if(!newItem.getDiscountElement().getValue().equals(oldItem.getDiscountElement().getValue())){
+                        diff.putInt("element",newItem.getDiscountElement().getValue());
+                    }
+                    if(!newItem.getDiscountPer().getValue().equals(oldItem.getDiscountPer().getValue())){
+                        diff.putInt("per",newItem.getDiscountPer().getValue());
+                    }
+                    if(diff.size()==0){
+                        return null;
+                    }
+                    return diff;
                 }
             };
 }

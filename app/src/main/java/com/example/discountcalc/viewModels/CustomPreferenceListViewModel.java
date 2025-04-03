@@ -17,7 +17,7 @@ public class CustomPreferenceListViewModel extends ViewModel {
     private final MutableLiveData<List<CustomPreferenceData>> preferenceDatas;
 
     private CustomPreferenceListViewModel(){
-        preferenceDatas=new MutableLiveData<>(new ArrayList<>(1));
+        preferenceDatas=new MutableLiveData<>(new ArrayList<>(0));
     }
 
     public LiveData<List<CustomPreferenceData>> getCustomPreferenceDatas(){
@@ -34,15 +34,29 @@ public class CustomPreferenceListViewModel extends ViewModel {
 
 
     public void addPreferenceData(CustomPreferenceData newData){
-        if(newData!=null){
-            preferenceDatas.getValue().add(newData);
+        try {
+            List<CustomPreferenceData> currentList = new ArrayList<>(Objects.requireNonNull(preferenceDatas.getValue()));
+            currentList.add(newData);
+            preferenceDatas.setValue(currentList);
+        }catch (NullPointerException e){
+            e.getStackTrace();
         }
+    }
+
+    public void updatePreferenceData(int index,CustomPreferenceData newData){
+        List<CustomPreferenceData> currentList=new ArrayList<>(Objects.requireNonNull(preferenceDatas.getValue()));
+        if(index>=0&&index<currentList.size()){
+            currentList.get(index).getDiscountElement().setValue(currentList.get(index).getDiscountElement().getValue());
+            currentList.get(index).getDiscountPer().setValue(currentList.get(index).getDiscountPer().getValue());
+            preferenceDatas.setValue(currentList);
+        }
+
     }
 
     // 指定したインデックスのデータを更新
     public void updatePreferenceDataAll(ArrayList<CustomPreferenceData> newData) {
         if (newData != null) {
-            preferenceDatas.postValue(newData);
+            preferenceDatas.setValue(newData);
         }
     }
 

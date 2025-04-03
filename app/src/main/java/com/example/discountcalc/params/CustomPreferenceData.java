@@ -1,10 +1,9 @@
 package com.example.discountcalc.params;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Transformations;
-import androidx.lifecycle.ViewModel;
 
 // カスタム割引率設定に使用するデータクラス
 
@@ -36,8 +35,6 @@ public class CustomPreferenceData{
         return discountElement;
     }
 
-    public LiveData<String> discountElementString = Transformations.map(discountElement,String::valueOf);
-
 
     public void setDiscountPer(int value){
         discountPer.setValue(value);
@@ -57,8 +54,14 @@ public class CustomPreferenceData{
         if(obj==null)return false;
         if(obj instanceof CustomPreferenceData){
             CustomPreferenceData data=(CustomPreferenceData) obj;
-            if(this.discountElement!=data.discountElement)return false;
-            if(this.discountPer!=data.discountPer)return false;
+            if(this.discountElement!=data.discountElement){
+                Log.i("CustomPreferenceData_equal","discountElementFalse"+this.discountElement.getValue()+":"+data.discountElement.getValue());
+                return false;
+            }
+            if(this.discountPer!=data.discountPer){
+                Log.i("CustomPreferenceData_equal","discountPerFalse"+this.discountPer.getValue()+":"+data.discountPer.getValue());
+                return false;
+            }
             return true;
         }
 

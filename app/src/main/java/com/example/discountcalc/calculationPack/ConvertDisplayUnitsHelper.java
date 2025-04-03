@@ -1,4 +1,4 @@
-package com.example.discountcalc.CalculationPack;
+package com.example.discountcalc.calculationPack;
 
 import android.content.Context;
 import android.util.DisplayMetrics;

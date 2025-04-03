@@ -1,4 +1,4 @@
-package com.example.discountcalc.DataBase;
+package com.example.discountcalc.dataBase;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

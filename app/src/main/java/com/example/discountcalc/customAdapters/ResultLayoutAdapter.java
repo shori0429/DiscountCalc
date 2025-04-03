@@ -1,4 +1,4 @@
-package com.example.discountcalc.CustomAdapters;
+package com.example.discountcalc.customAdapters;
 
 import android.util.Log;
 import android.view.Gravity;
@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.discountcalc.Params.DiscountData;
+import com.example.discountcalc.params.DiscountData;
 import com.example.discountcalc.R;
 
 import java.util.ArrayList;

@@ -1,34 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <import type="com.example.discountcalc.converters.WrapperDataConverters"/>
+        <variable
+            name="preferenceData"
+            type="com.example.discountcalc.params.CustomPreferenceData" />
+    </data>
+    
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/custom_preference_one_line_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/shape_outer_frame"
-        android:hint="000"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:textSize="@dimen/normal_size"
-        app:layout_constraintEnd_toStartOf="@+id/custom_preference_one_line_num"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/custom_preference_one_line_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_outer_frame"
+            android:hint="000"
+            android:text="@={``+preferenceData.discountElement}"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:textSize="@dimen/normal_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/custom_preference_one_line_num"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/shape_outer_frame"
-        android:gravity="end"
-        android:hint="n%"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:textSize="@dimen/normal_size"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/custom_preference_one_line_title"
-        app:layout_constraintTop_toTopOf="@+id/custom_preference_one_line_title" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <LinearLayout
+            android:id="@+id/custom_preference_one_line_num_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_outer_frame"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/custom_preference_one_line_title"
+            app:layout_constraintTop_toTopOf="@+id/custom_preference_one_line_title">
+
+            <EditText
+                android:id="@+id/custom_preference_one_line_num"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="9"
+                android:background="@null"
+                android:gravity="end"
+                android:hint="50"
+                android:text="@={``+preferenceData.discountPer}"
+                android:inputType="number"
+                android:paddingStart="16dp"
+                android:paddingEnd="0dp"
+                android:textColorHint="#4D000000"
+                android:textSize="@dimen/normal_size" />
+
+            <TextView
+                android:id="@+id/custom_preference_one_line_num_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:paddingStart="0dp"
+                android:paddingEnd="8dp"
+                android:text="%"
+                android:textSize="@dimen/normal_size" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

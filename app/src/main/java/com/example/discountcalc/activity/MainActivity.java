@@ -1,4 +1,4 @@
-package com.example.discountcalc.Activity;
+package com.example.discountcalc.activity;
 
 import android.os.Bundle;
 
@@ -7,12 +7,9 @@ import androidx.datastore.preferences.core.Preferences;
 import androidx.datastore.preferences.rxjava3.RxPreferenceDataStoreBuilder;
 import androidx.datastore.rxjava3.RxDataStore;
 
-import com.example.discountcalc.DataBase.CustomConfigDataStoreSingleton;
-import com.example.discountcalc.DataBase.DataStoreHelper;
-import com.example.discountcalc.R;
+import com.example.discountcalc.dataBase.CustomConfigDataStoreSingleton;
+import com.example.discountcalc.dataBase.DataStoreHelper;
 import com.example.discountcalc.databinding.ActivityMainBinding;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity{
 

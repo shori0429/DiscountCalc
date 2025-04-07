@@ -63,7 +63,9 @@ dependencies {
     // DataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     // RxJava3
-    implementation("androidx.datastore:datastore-preferences-rxjava3:1.0.0")
+    implementation("androidx.datastore:datastore-preferences-rxjava3:1.1.3")
+    implementation("io.reactivex.rxjava3:rxandroid:3.0.2")
+    implementation("io.reactivex.rxjava2:rxjava:2.2.21")
     // lifecycleScope
     implementation("androidx.lifecycle:lifecycle-runtime:2.7.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")

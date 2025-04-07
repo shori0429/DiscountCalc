@@ -1,4 +1,4 @@
-package com.example.discountcalc.Fragments;
+package com.example.discountcalc.fragments;
 
 import android.os.Bundle;
 import android.util.Log;

@@ -1,4 +1,4 @@
-package com.example.discountcalc.ViewModels;
+package com.example.discountcalc.viewModels;
 
 import android.util.Log;
 

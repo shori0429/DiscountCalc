@@ -1,4 +1,4 @@
-package com.example.discountcalc.DataBase;
+package com.example.discountcalc.dataBase;
 
 // データ保存に使うキー達
 public class DataStoreKey {

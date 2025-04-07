@@ -1,4 +1,4 @@
-package com.example.discountcalc.CalculationPack;
+package com.example.discountcalc.calculationPack;
 
 //割引計算クラス
 public class DiscountCalc {

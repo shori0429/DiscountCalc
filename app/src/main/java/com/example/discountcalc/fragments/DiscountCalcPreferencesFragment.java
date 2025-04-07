@@ -1,4 +1,4 @@
-package com.example.discountcalc.Fragments;
+package com.example.discountcalc.fragments;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,7 +11,7 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
-import com.example.discountcalc.Params.DiscountType;
+import com.example.discountcalc.params.DiscountType;
 import com.example.discountcalc.R;
 
 public class DiscountCalcPreferencesFragment extends PreferenceFragmentCompat {

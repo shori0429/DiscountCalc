@@ -76,12 +76,12 @@ public class CustomPreferenceAdapter extends RecyclerView.Adapter<CustomPreferen
     }
 
     public CustomPreferenceAdapter(CustomPreferenceListViewModel dataset){
-        preferenceDataList= dataset.getCustomPreferenceDatas().getValue();
+        preferenceDataList= dataset.CustomPreferenceList().getValue();
     }
 
     public CustomPreferenceAdapter(CustomPreferenceListViewModel viewModel, LifecycleOwner lifecycleOwner){
         preferenceDataList=new ArrayList<>();
-        viewModel.getCustomPreferenceDatas().observe(lifecycleOwner,data->{
+        viewModel.CustomPreferenceList().observe(lifecycleOwner, data->{
             preferenceDataList=data;
             notifyDataSetChanged();
         });

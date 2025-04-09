@@ -82,7 +82,7 @@ public class CustomPreferenceListAdapter extends ListAdapter<CustomPreferenceDat
 
     public CustomPreferenceListAdapter(CustomPreferenceListViewModel viewModel,LifecycleOwner lifecycleOwner){
         super(DIFF_CALLBACK);
-        viewModel.getCustomPreferenceDatas().observe(lifecycleOwner, aDiffer::submitList);
+        viewModel.CustomPreferenceList().observe(lifecycleOwner, aDiffer::submitList);
     }
 
     @NonNull

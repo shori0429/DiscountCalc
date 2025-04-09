@@ -35,6 +35,11 @@ public class CustomPreferenceData{
         return discountElement;
     }
 
+    public int DiscountElement(){
+        if(discountElement.getValue()!=null)return discountElement.getValue();
+        else return -1;
+    }
+
 
     public void setDiscountPer(int value){
         discountPer.setValue(value);
@@ -43,6 +48,12 @@ public class CustomPreferenceData{
     public MutableLiveData<Integer> getDiscountPer() {
         return discountPer;
     }
+
+    public int DiscountPer(){
+        if(discountPer.getValue()!=null) return discountPer.getValue();
+        else return -1;
+    }
+
 
     // 自然数を返す
     public MutableLiveData<Integer> getDiscountElementNaturalNumber(){

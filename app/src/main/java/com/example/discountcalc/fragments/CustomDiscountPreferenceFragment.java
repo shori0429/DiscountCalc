@@ -39,8 +39,8 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     // 割引率保存用のキー
     final String saveDiscountPerKey =DISCOUNT_TYPE_CUSTOM_KEY+DISCOUNT_KEY;
 
-    // 何番目の要素かを保存するキー
-    final String saveDiscountElementKey=DISCOUNT_TYPE_CUSTOM_KEY+DISCOUNT_ELEMENT_KEY;
+    // 保存する設定名のキー
+    final String saveDiscountId=DISCOUNT_TYPE_CUSTOM_KEY+DISCOUNT_CUSTOM_SAVE_NAME;
 
     CustomDiscountPreferenceFragmentBinding customDiscountPreferenceFragmentBinding;
 
@@ -61,6 +61,8 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     TextView elementNumberViewText;
     Button elementAddButton;
     Button changeTextSize;
+
+    Button saveButton;
     int textSize;
 
     @Override
@@ -106,7 +108,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         elementNumberViewText=customDiscountPreferenceFragmentBinding.PreferenceVolume;
         elementAddButton=customDiscountPreferenceFragmentBinding.AddElementButton;
         changeTextSize=customDiscountPreferenceFragmentBinding.ChangeTextSizeButton;
-
+        saveButton=customDiscountPreferenceFragmentBinding.SaveButton;
     }
     private void viewModelInitialize() {
         customPreferenceViewModel =new ViewModelProvider(requireActivity()).get(CustomPreferenceListViewModel.class);
@@ -145,6 +147,10 @@ public class CustomDiscountPreferenceFragment extends Fragment {
                 customPreferenceListAdapter.setTextSizes(small);
                 textSize=small;
             }
+        });
+
+        saveButton.setOnClickListener(b->{
+            saveDataStore();
         });
 
     }
@@ -214,11 +220,12 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         // 現在の要素数の保存
         dataStoreHelper.putIntegerValue(saveCountKey, customPreferenceViewModel.listSize());
 
+        //
+        dataStoreHelper.putStringValue(saveDiscountId,/*保存する名前を取得*/);
+
         // TODO クラスごと保存できるようにしたい。Protobufを使ったデータ処理を実装できれば良
         // 要素内の各データ保存
         for(int i = 0; i< customPreferenceViewModel.listSize(); i++) {
-            // 今のリスト要素番号を保存
-            dataStoreHelper.putIntegerValue(saveDiscountElementKey+i, customPreferenceViewModel.getCustomPreferenceData(i).DiscountElement());
             // 入力されている割引率を保存
             int per=customPreferenceViewModel.getCustomPreferenceData(i).DiscountPer();
             dataStoreHelper.putIntegerValue(saveDiscountPerKey +i, per);

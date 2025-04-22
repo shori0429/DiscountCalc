@@ -63,6 +63,8 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     Button changeTextSize;
 
     Button saveButton;
+
+    TextView saveTitle;
     int textSize;
 
     @Override
@@ -109,6 +111,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         elementAddButton=customDiscountPreferenceFragmentBinding.AddElementButton;
         changeTextSize=customDiscountPreferenceFragmentBinding.ChangeTextSizeButton;
         saveButton=customDiscountPreferenceFragmentBinding.SaveButton;
+        saveTitle=customDiscountPreferenceFragmentBinding.saveTitle;
     }
     private void viewModelInitialize() {
         customPreferenceViewModel =new ViewModelProvider(requireActivity()).get(CustomPreferenceListViewModel.class);
@@ -220,8 +223,12 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         // 現在の要素数の保存
         dataStoreHelper.putIntegerValue(saveCountKey, customPreferenceViewModel.listSize());
 
-        //
-        dataStoreHelper.putStringValue(saveDiscountId,/*保存する名前を取得*/);
+        String title=saveTitle.getText().toString();
+        if(title.equals("")){
+            title="Custom001";
+        }
+        // 現在のプリセット名を保存
+        dataStoreHelper.putStringValue(saveDiscountId,title);
 
         // TODO クラスごと保存できるようにしたい。Protobufを使ったデータ処理を実装できれば良
         // 要素内の各データ保存

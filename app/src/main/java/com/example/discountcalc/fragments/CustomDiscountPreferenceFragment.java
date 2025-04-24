@@ -227,15 +227,20 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         if(title.equals("")){
             title="Custom001";
         }
-        // 現在のプリセット名を保存
-        dataStoreHelper.putStringValue(saveDiscountId,title);
+        Log.i("saveId","saveID : "+title);
+
+        if(dataStoreHelper.getStringValue(saveDiscountId).equals("null")) {
+            // 現在のプリセット名を保存
+            //dataStoreHelper.putStringValue(saveDiscountId,title);
+        }
 
         // TODO クラスごと保存できるようにしたい。Protobufを使ったデータ処理を実装できれば良
         // 要素内の各データ保存
         for(int i = 0; i< customPreferenceViewModel.listSize(); i++) {
             // 入力されている割引率を保存
             int per=customPreferenceViewModel.getCustomPreferenceData(i).DiscountPer();
-            dataStoreHelper.putIntegerValue(saveDiscountPerKey +i, per);
+            //dataStoreHelper.putIntegerValue(saveDiscountPerKey +i, per);
+            Log.i("savePer",title+":Per = "+per);
         }
         return true;
     }

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,12 +20,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.discountcalc.DAO.PreferenceParamDAO;
 import com.example.discountcalc.customAdapters.CustomPreferenceListAdapter;
+import com.example.discountcalc.dataBase.AppDataBase;
 import com.example.discountcalc.dataBase.CustomConfigDataStoreSingleton;
 import com.example.discountcalc.dataBase.DataStoreHelper;
 import com.example.discountcalc.databinding.CustomDiscountPreferenceFragmentBinding;
 import com.example.discountcalc.params.CustomPreferenceData;
 import com.example.discountcalc.R;
+import com.example.discountcalc.params.PreferenceParam;
 import com.example.discountcalc.viewModels.CustomPreferenceListViewModel;
 
 import java.util.ArrayList;
@@ -56,6 +60,8 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     private DataStoreHelper dataStoreHelper;
     private CustomConfigDataStoreSingleton dataStoreSingleton;
 
+    private AppDataBase dataBase;
+
     // ビュー関係
     View view;
     TextView elementNumberViewText;
@@ -71,6 +77,13 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         bindingElements();
+        // データベースのインスタンスの作成
+        dataBase= Room.databaseBuilder(requireActivity().getApplicationContext(),AppDataBase.class,"sample_db").build();
+        // データベース取得
+        PreferenceParamDAO preferenceParamDAO= dataBase.preferenceParamDAO();
+        List<PreferenceParam> preferenceParamList=preferenceParamDAO.getAll();
+
+
         // データストアインスタンス取得
         getDataStoreInstance();
         // データストアヘルパー取得

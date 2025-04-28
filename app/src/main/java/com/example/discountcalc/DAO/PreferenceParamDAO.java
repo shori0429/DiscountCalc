@@ -21,7 +21,7 @@ public interface PreferenceParamDAO {
 
     @Delete int deletePreferenceParams(PreferenceParam... params);
 
-    @Query("SELECT save_title FROM custom_preference_table")
-    public List<PreferenceParam> loadPreferenceParam();
+    @Query("SELECT * FROM custom_preference_table")
+    public List<PreferenceParam> getAll();
 
 }

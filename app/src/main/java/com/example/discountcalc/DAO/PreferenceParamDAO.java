@@ -1,5 +1,6 @@
 package com.example.discountcalc.DAO;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -21,7 +22,8 @@ public interface PreferenceParamDAO {
 
     @Delete int deletePreferenceParams(PreferenceParam... params);
 
+
     @Query("SELECT * FROM custom_preference_table")
-    public List<PreferenceParam> getAll();
+    LiveData<List<PreferenceParam>> getAll();
 
 }

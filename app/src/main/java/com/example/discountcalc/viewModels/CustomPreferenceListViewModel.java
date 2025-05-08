@@ -6,10 +6,13 @@ import android.content.Context;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+import androidx.room.Room;
 
+import com.example.discountcalc.DAO.PreferenceParamDAO;
+import com.example.discountcalc.dataBase.AppDataBase;
 import com.example.discountcalc.dataBase.PreferenceParamRepository;
 import com.example.discountcalc.params.CustomPreferenceData;
+import com.example.discountcalc.params.PreferenceParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,13 +21,25 @@ import java.util.Objects;
 public class CustomPreferenceListViewModel extends AndroidViewModel {
 
     private PreferenceParamRepository dataRepository;
+    AppDataBase dataBase;
     private final MutableLiveData<List<CustomPreferenceData>> preferenceDataList;
 
     private CustomPreferenceListViewModel(Application application){
         super(application);
         dataRepository=new PreferenceParamRepository(application);
 
+        // データベースのインスタンスの作成
+        dataBase= Room.databaseBuilder(application.getApplicationContext(), AppDataBase.class,"sample_db").build();
+        // データベース取得
+        PreferenceParamDAO preferenceParamDAO= dataBase.preferenceParamDAO();
+        LiveData<List<PreferenceParam>> preferenceParamList=preferenceParamDAO.getAll();
+
         preferenceDataList =new MutableLiveData<>(new ArrayList<>(0));
+        if(preferenceParamList.getValue()!=null) {
+            for (var v : preferenceParamList.getValue()) {
+                addPreferenceData(v.per());
+            }
+        }
     }
 
     public LiveData<List<CustomPreferenceData>> CustomPreferenceList(){

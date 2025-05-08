@@ -77,13 +77,6 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         bindingElements();
-        // データベースのインスタンスの作成
-        dataBase= Room.databaseBuilder(requireActivity().getApplicationContext(),AppDataBase.class,"sample_db").build();
-        // データベース取得
-        PreferenceParamDAO preferenceParamDAO= dataBase.preferenceParamDAO();
-        List<PreferenceParam> preferenceParamList=preferenceParamDAO.getAll();
-
-
         // データストアインスタンス取得
         getDataStoreInstance();
         // データストアヘルパー取得

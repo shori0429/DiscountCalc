@@ -2,6 +2,7 @@ package com.example.discountcalc.viewModels;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -24,7 +25,7 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
     AppDataBase dataBase;
     private final MutableLiveData<List<CustomPreferenceData>> preferenceDataList;
 
-    private CustomPreferenceListViewModel(Application application){
+    public CustomPreferenceListViewModel(Application application){
         super(application);
         dataRepository=new PreferenceParamRepository(application);
 

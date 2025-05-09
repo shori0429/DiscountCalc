@@ -30,6 +30,7 @@ import com.example.discountcalc.params.CustomPreferenceData;
 import com.example.discountcalc.R;
 import com.example.discountcalc.params.PreferenceParam;
 import com.example.discountcalc.viewModels.CustomPreferenceListViewModel;
+import com.example.discountcalc.viewModels.CustomPreferenceListViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,7 +121,8 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         saveTitle=customDiscountPreferenceFragmentBinding.saveTitle;
     }
     private void viewModelInitialize() {
-        customPreferenceViewModel =new ViewModelProvider(requireActivity()).get(CustomPreferenceListViewModel.class);
+        customPreferenceViewModel =new ViewModelProvider(this, new CustomPreferenceListViewModelFactory(requireActivity().getApplication()))
+                .get(CustomPreferenceListViewModel.class);
         //customPreferenceViewModel.setPreferenceDataList();
         customPreferenceViewModel.CustomPreferenceList().observe(getViewLifecycleOwner(), this::updateUI);
     }

@@ -18,9 +18,9 @@ public interface PreferenceParamDAO {
     public void insertPreferenceParam(PreferenceParam... params);
 
     @Update
-    public int updatePreferenceParam(PreferenceParam... params);
+    public int updatePreferenceParam(LiveData<PreferenceParam> params);
 
-    @Delete int deletePreferenceParams(PreferenceParam... params);
+    @Delete int deletePreferenceParams(LiveData<PreferenceParam> params);
 
 
     @Query("SELECT * FROM custom_preference_table")

@@ -15,6 +15,7 @@ import com.example.discountcalc.dataBase.PreferenceParamRepository;
 import com.example.discountcalc.params.CustomPreferenceData;
 import com.example.discountcalc.params.PreferenceParam;
 
+import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -27,10 +28,11 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
 
     public CustomPreferenceListViewModel(Application application){
         super(application);
-        dataRepository=new PreferenceParamRepository(application);
+        //dataRepository=new PreferenceParamRepository(application);
 
         // データベースのインスタンスの作成
         dataBase= Room.databaseBuilder(application.getApplicationContext(), AppDataBase.class,"sample_db").build();
+        Log.i("database", Objects.requireNonNull(dataBase.getOpenHelper().getDatabaseName()));
         // データベース取得
         PreferenceParamDAO preferenceParamDAO= dataBase.preferenceParamDAO();
         LiveData<List<PreferenceParam>> preferenceParamList=preferenceParamDAO.getAll();
@@ -40,6 +42,9 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
             for (var v : preferenceParamList.getValue()) {
                 addPreferenceData(v.per());
             }
+        }
+        else{
+            addPreferenceData(10);
         }
     }
 
@@ -101,5 +106,16 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         super.onCleared();
     }
 
+    public boolean updateDAO() {
+        if(preferenceDataList.getValue()!=null) {
+            // データベース取得
+            PreferenceParamDAO preferenceParamDAO = dataBase.preferenceParamDAO();
+            //TODO　保存処理を書く
 
+
+            Log.i("database", dataBase.preferenceParamDAO().getAll().getValue().stream().toString());
+        return true;
+        }
+        return false;
+    }
 }

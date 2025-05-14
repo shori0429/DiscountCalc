@@ -186,7 +186,12 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         for(int i=0;i<elementMax;i++){
             int per=dataStoreHelper.getIntValue(saveDiscountPerKey +i);
             //int element=dataStoreHelper.getIntValue(saveDiscountElementKey+i);
-            customPreferenceViewModel.addPreferenceData(per);
+            if(per<0) {
+                customPreferenceViewModel.addDefaultPreferenceData();
+            }else {
+                customPreferenceViewModel.addPreferenceData(per);
+            }
+
             //preferenceDataList.set(i,new CustomPreferenceData(element,per));
         }
         // viewModel更新
@@ -229,7 +234,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     // データストアに保存
     private boolean saveDataStore(){
         // 現在の要素数の保存
-        dataStoreHelper.putIntegerValue(saveCountKey, customPreferenceViewModel.listSize());
+        //dataStoreHelper.putIntegerValue(saveCountKey, customPreferenceViewModel.listSize());
 
         String title=saveTitle.getText().toString();
         if(title.equals("")){
@@ -237,10 +242,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         }
         Log.i("saveId","saveID : "+title);
 
-        if(dataStoreHelper.getStringValue(saveDiscountId).equals("null")) {
-            // 現在のプリセット名を保存
-            //dataStoreHelper.putStringValue(saveDiscountId,title);
-        }
+        customPreferenceViewModel.saveDataBase(title);
 
         // TODO クラスごと保存できるようにしたい。Protobufを使ったデータ処理を実装できれば良
         // 要素内の各データ保存

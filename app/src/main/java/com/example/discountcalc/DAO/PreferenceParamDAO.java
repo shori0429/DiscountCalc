@@ -7,6 +7,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
+import androidx.room.Upsert;
 
 import com.example.discountcalc.params.PreferenceParam;
 
@@ -17,11 +18,13 @@ public interface PreferenceParamDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public void insertPreferenceParam(PreferenceParam... params);
 
+    @Upsert
+    public void upsertPreferenceParam(PreferenceParam param);
+
     @Update
-    public int updatePreferenceParam(LiveData<PreferenceParam> params);
+    public int updatePreferenceParam(PreferenceParam param);
 
-    @Delete int deletePreferenceParams(LiveData<PreferenceParam> params);
-
+    @Delete int deletePreferenceParams(PreferenceParam param);
 
     @Query("SELECT * FROM custom_preference_table")
     LiveData<List<PreferenceParam>> getAll();

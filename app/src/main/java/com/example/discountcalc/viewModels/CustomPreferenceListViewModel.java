@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -24,20 +25,15 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
 
     private PreferenceParamRepository dataRepository;
     AppDataBase dataBase;
+    LiveData<List<PreferenceParam>> preferenceParamList;
     private final MutableLiveData<List<CustomPreferenceData>> preferenceDataList;
 
     public CustomPreferenceListViewModel(Application application){
         super(application);
-        //dataRepository=new PreferenceParamRepository(application);
-
-        // データベースのインスタンスの作成
-        dataBase= Room.databaseBuilder(application.getApplicationContext(), AppDataBase.class,"sample_db").build();
-        Log.i("database", Objects.requireNonNull(dataBase.getOpenHelper().getDatabaseName()));
-        // データベース取得
-        PreferenceParamDAO preferenceParamDAO= dataBase.preferenceParamDAO();
-        LiveData<List<PreferenceParam>> preferenceParamList=preferenceParamDAO.getAll();
+        dataRepository=new PreferenceParamRepository(application);
 
         preferenceDataList =new MutableLiveData<>(new ArrayList<>(0));
+        preferenceParamList= dataRepository.getAllPreferenceParam();
         if(preferenceParamList.getValue()!=null) {
             for (var v : preferenceParamList.getValue()) {
                 addPreferenceData(v.per());
@@ -66,11 +62,11 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
 
 
     public void addPreferenceData(int per){
-        preferenceDataList.getValue().add(new CustomPreferenceData(listSize(),per));
+        preferenceDataList.getValue().add(new CustomPreferenceData(listSize()+1,per));
     }
 
     public void addDefaultPreferenceData(){
-        CustomPreferenceData data=new CustomPreferenceData(listSize(),0);
+        CustomPreferenceData data=new CustomPreferenceData(listSize()+1,0);
         preferenceDataList.getValue().add(data);
     }
 
@@ -101,9 +97,14 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         Objects.requireNonNull(preferenceDataList.getValue()).get(index).setDiscountElement(value);
     }
 
-    @Override
-    protected void onCleared() {
-        super.onCleared();
+    public boolean saveDataBase(@NonNull String saveName){
+        if(preferenceDataList.getValue()!=null) {
+            for (var data : preferenceDataList.getValue()) {
+                PreferenceParam param = new PreferenceParam(data.DiscountElement(), saveName, data.DiscountPer());
+                dataRepository.upsert(param);
+            }
+        }
+        return false;
     }
 
     public boolean updateDAO() {

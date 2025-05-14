@@ -1,6 +1,7 @@
 package com.example.discountcalc.dataBase;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -8,6 +9,7 @@ import com.example.discountcalc.DAO.PreferenceParamDAO;
 import com.example.discountcalc.params.PreferenceParam;
 
 import java.util.List;
+import java.util.Objects;
 
 public class PreferenceParamRepository {
     private PreferenceParamDAO preferenceParamDAO;
@@ -21,6 +23,8 @@ public class PreferenceParamRepository {
         AppDataBase db = AppDataBase.getDatabase(application);
         preferenceParamDAO=db.preferenceParamDAO();
         preferenceParamList=preferenceParamDAO.getAll();
+        Log.i("database", Objects.requireNonNull(db.getOpenHelper().getDatabaseName()));
+
     }
 
     // Roomは全てのクエリを別スレッドで実行する。
@@ -35,5 +39,23 @@ public class PreferenceParamRepository {
         AppDataBase.databaseWriteExecutor.execute(()->{
             preferenceParamDAO.insertPreferenceParam(param);
         });
+    }
+
+    public void upsert(PreferenceParam param){
+        AppDataBase.databaseWriteExecutor.execute(()->{
+            preferenceParamDAO.upsertPreferenceParam(param);
+            //Log.i("upsert","saveName:"+param.saveName()+" per:"+param.per());
+        });
+    }
+
+    public void update(PreferenceParam param){
+        AppDataBase.databaseWriteExecutor.execute(()->{
+            preferenceParamDAO.updatePreferenceParam(param);
+        });
+    }
+
+    public void delete(PreferenceParam param){
+        AppDataBase.databaseWriteExecutor.execute(()->{});
+        preferenceParamDAO.deletePreferenceParams(param);
     }
 }

@@ -33,14 +33,14 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         dataRepository=new PreferenceParamRepository(application);
 
         preferenceDataList =new MutableLiveData<>(new ArrayList<>(0));
-        preferenceParamList= dataRepository.getAllPreferenceParam();
+        getDataBase();
         if(preferenceParamList.getValue()!=null) {
             for (var v : preferenceParamList.getValue()) {
                 addPreferenceData(v.per());
             }
         }
         else{
-            addPreferenceData(10);
+
         }
     }
 
@@ -99,10 +99,11 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
 
     public boolean saveDataBase(@NonNull String saveName){
         if(preferenceDataList.getValue()!=null) {
+            List<PreferenceParam> params=new ArrayList<>();
             for (var data : preferenceDataList.getValue()) {
-                PreferenceParam param = new PreferenceParam(data.DiscountElement(), saveName, data.DiscountPer());
-                dataRepository.upsert(param);
+                params.add(new PreferenceParam(data.DiscountElement(), saveName, data.DiscountPer()));
             }
+            dataRepository.upsertAll(params);
         }
         return false;
     }
@@ -118,5 +119,9 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         return true;
         }
         return false;
+    }
+
+    private void getDataBase(){
+        preferenceParamList= dataRepository.getAllPreferenceParam();
     }
 }

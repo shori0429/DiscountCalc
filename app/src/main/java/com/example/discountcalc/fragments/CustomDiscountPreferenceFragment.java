@@ -57,10 +57,6 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
     int elementMax;
 
-    // データストア関連
-    private DataStoreHelper dataStoreHelper;
-    private CustomConfigDataStoreSingleton dataStoreSingleton;
-
     private AppDataBase dataBase;
 
     // ビュー関係
@@ -72,19 +68,13 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     Button saveButton;
 
     TextView saveTitle;
-    int textSize;
+    int textSize=R.dimen.normal_size;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         bindingElements();
-        // データストアインスタンス取得
-        getDataStoreInstance();
-        // データストアヘルパー取得
-        dataStoreHelperInitialize(dataStoreSingleton.getDatastore());
-
         viewModelInitialize();
-        loadCustomPreferenceList();
         recyclerViewInitialize();
         setOnClickListeners();
     }
@@ -179,37 +169,15 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
     // データストアからカスタムの割引率設定に関するデータを取得
     private void loadCustomPreferenceList(){
-       int elementMax= loadCustomDiscountElementMax();
+       int elementMax= customPreferenceViewModel.listSize();
 
-        ArrayList<CustomPreferenceData> dataList=new ArrayList<>();
-        //MUST CHECK  なんか実装として変。要修正
-        for(int i=0;i<elementMax;i++){
-            int per=dataStoreHelper.getIntValue(saveDiscountPerKey +i);
-            //int element=dataStoreHelper.getIntValue(saveDiscountElementKey+i);
-            if(per<0) {
-                customPreferenceViewModel.addDefaultPreferenceData();
-            }else {
-//                customPreferenceViewModel.addPreferenceData(per);
-            }
-
-            //preferenceDataList.set(i,new CustomPreferenceData(element,per));
-        }
-        // viewModel更新
-        //customPreferenceViewModel.updatePreferenceDataAll(dataList);
-
-        String lSize=String.valueOf(customPreferenceViewModel.listSize());
-        elementNumberViewText.setText(lSize);
+        //elementNumberViewText.setText(lSize);
 
     }
 
     // カスタム割引率の要素数に関するデータ取得
     private int loadCustomDiscountElementMax() {
-        elementMax = dataStoreHelper.getIntValue(saveCountKey);
-        Log.i("loadElementCount","elementCount : "+elementMax);
 
-        if(elementMax <=-1){
-          elementMax =10;
-        }
         // 仮データ
 //        elementMax=1;
         // データリスト配列初期化
@@ -264,9 +232,10 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         customPreferenceViewModel.addDefaultPreferenceData();
         // テキスト更新
         int listSize= customPreferenceViewModel.listSize();
-        elementNumberViewText.setText(String.valueOf(listSize));
+        //elementNumberViewText.setText("viewmodel:"+listSize+"adapter"+customPreferenceListAdapter.getItemCount());
+        elementNumberViewText.setText(listSize+":"+customPreferenceListAdapter.getItemCount());
         // 表示数が10未満の時、リサイクルビューのサイズ変更を固定にする。
-        recyclerView.setHasFixedSize(listSize > 10);
+        //recyclerView.setHasFixedSize(listSize > 10);
 
     }
 
@@ -275,14 +244,5 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         return true;
     }
 
-    private void dataStoreHelperInitialize(RxDataStore<Preferences> dataStore){
-        if(dataStoreHelper==null){
-            dataStoreHelper=new DataStoreHelper(this.getParentFragment(),dataStore);
-        }
-    }
-
-    private void getDataStoreInstance(){
-        dataStoreSingleton=CustomConfigDataStoreSingleton.getInstance();
-    }
 
 }

@@ -114,8 +114,8 @@ public class CustomPreferenceListAdapter extends ListAdapter<CustomPreferenceDat
         //
         if(!payloads.isEmpty()) {
             Bundle diff = (Bundle) payloads.get(0);
-            if (diff.containsKey("element")) {
-                holder.binding.customPreferenceOneLineTitle.setText(diff.getString("element"));
+            if (diff.containsKey("no")) {
+                holder.binding.customPreferenceOneLineTitle.setText(diff.getString("no"));
             }
             if (diff.containsKey("per")) {
                 holder.binding.customPreferenceOneLineNum.setText(diff.getString("per"));
@@ -169,7 +169,7 @@ public class CustomPreferenceListAdapter extends ListAdapter<CustomPreferenceDat
                 public Object getChangePayload(@NonNull CustomPreferenceData oldItem, @NonNull CustomPreferenceData newItem) {
                     Bundle diff=new Bundle();
                     if(!newItem.getDiscountNo().getValue().equals(oldItem.getDiscountNo().getValue())){
-                        diff.putInt("element",newItem.getDiscountNo().getValue());
+                        diff.putInt("no",newItem.getDiscountNo().getValue());
                     }
                     if(!newItem.getDiscountPer().getValue().equals(oldItem.getDiscountPer().getValue())){
                         diff.putInt("per",newItem.getDiscountPer().getValue());

@@ -168,8 +168,8 @@ public class CustomPreferenceListAdapter extends ListAdapter<CustomPreferenceDat
                 @Override
                 public Object getChangePayload(@NonNull CustomPreferenceData oldItem, @NonNull CustomPreferenceData newItem) {
                     Bundle diff=new Bundle();
-                    if(!newItem.getDiscountElement().getValue().equals(oldItem.getDiscountElement().getValue())){
-                        diff.putInt("element",newItem.getDiscountElement().getValue());
+                    if(!newItem.getDiscountNo().getValue().equals(oldItem.getDiscountNo().getValue())){
+                        diff.putInt("element",newItem.getDiscountNo().getValue());
                     }
                     if(!newItem.getDiscountPer().getValue().equals(oldItem.getDiscountPer().getValue())){
                         diff.putInt("per",newItem.getDiscountPer().getValue());

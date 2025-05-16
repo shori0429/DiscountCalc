@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/shape_outer_frame"
             android:hint="000"
-            android:text="@={``+preferenceData.discountElement}"
+            android:text="@={``+preferenceData.discountNo}"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:textSize="@dimen/normal_size"

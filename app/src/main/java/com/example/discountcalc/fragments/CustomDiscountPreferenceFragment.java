@@ -189,7 +189,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
             if(per<0) {
                 customPreferenceViewModel.addDefaultPreferenceData();
             }else {
-                customPreferenceViewModel.addPreferenceData(per);
+//                customPreferenceViewModel.addPreferenceData(per);
             }
 
             //preferenceDataList.set(i,new CustomPreferenceData(element,per));

@@ -44,7 +44,7 @@ public class CustomPreferenceAdapter extends RecyclerView.Adapter<CustomPreferen
         }
 
         void bind(CustomPreferenceData viewModel){
-            viewModel.getDiscountElement().observe(this,t->binding.customPreferenceOneLineTitle.setText(t+1));
+            viewModel.getDiscountNo().observe(this, t->binding.customPreferenceOneLineTitle.setText(t+1));
             viewModel.getDiscountPer().observe(this, binding.customPreferenceOneLineNum::setText);
         }
 

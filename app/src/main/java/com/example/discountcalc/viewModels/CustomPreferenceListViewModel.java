@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.room.Room;
 
 import com.example.discountcalc.DAO.PreferenceParamDAO;
 import com.example.discountcalc.dataBase.AppDataBase;
@@ -16,7 +15,6 @@ import com.example.discountcalc.dataBase.PreferenceParamRepository;
 import com.example.discountcalc.params.CustomPreferenceData;
 import com.example.discountcalc.params.PreferenceParam;
 
-import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -36,7 +34,7 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         getDataBase();
         if(preferenceParamList.getValue()!=null) {
             for (var v : preferenceParamList.getValue()) {
-                addPreferenceData(v.per());
+                addPreferenceData(v.per(),v.saveName());
             }
         }
         else{
@@ -61,19 +59,19 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
     }
 
 
-    public void addPreferenceData(int per){
-        preferenceDataList.getValue().add(new CustomPreferenceData(listSize()+1,per));
+    public void addPreferenceData(int per,String saveName){
+        preferenceDataList.getValue().add(new CustomPreferenceData(listSize()+1,per,saveName));
     }
 
     public void addDefaultPreferenceData(){
-        CustomPreferenceData data=new CustomPreferenceData(listSize()+1,0);
+        CustomPreferenceData data=new CustomPreferenceData(listSize()+1,0,"");
         preferenceDataList.getValue().add(data);
     }
 
     public void updatePreferenceData(int index,CustomPreferenceData newData){
         List<CustomPreferenceData> currentList=new ArrayList<>(Objects.requireNonNull(preferenceDataList.getValue()));
         if(index>=0&&index<currentList.size()){
-            currentList.get(index).getDiscountElement().setValue(currentList.get(index).getDiscountElement().getValue());
+            currentList.get(index).getDiscountNo().setValue(currentList.get(index).getDiscountNo().getValue());
             currentList.get(index).getDiscountPer().setValue(currentList.get(index).getDiscountPer().getValue());
             preferenceDataList.setValue(currentList);
         }
@@ -94,14 +92,14 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
     }
 
     public void changeTextView(Context context, int index,int value){
-        Objects.requireNonNull(preferenceDataList.getValue()).get(index).setDiscountElement(value);
+        Objects.requireNonNull(preferenceDataList.getValue()).get(index).setDiscountNo(value);
     }
 
     public boolean saveDataBase(@NonNull String saveName){
         if(preferenceDataList.getValue()!=null) {
             List<PreferenceParam> params=new ArrayList<>();
             for (var data : preferenceDataList.getValue()) {
-                params.add(new PreferenceParam(data.DiscountElement(), saveName, data.DiscountPer()));
+                params.add(new PreferenceParam(data.DiscountNo(), saveName, data.DiscountPer()));
             }
             dataRepository.upsertAll(params);
         }

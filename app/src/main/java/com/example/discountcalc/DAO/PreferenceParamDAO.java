@@ -16,15 +16,21 @@ import java.util.List;
 @Dao
 public interface PreferenceParamDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public void insertPreferenceParam(PreferenceParam... params);
+    public void insert(List<PreferenceParam> params);
 
     @Upsert
-    public void upsertPreferenceParam(PreferenceParam param);
+    public void upsert(PreferenceParam param);
+
+
+    @Upsert
+    public void upsertAll(List<PreferenceParam> params);
 
     @Update
-    public int updatePreferenceParam(PreferenceParam param);
+    public int update(PreferenceParam param);
 
-    @Delete int deletePreferenceParams(PreferenceParam param);
+    @Delete int delete(PreferenceParam param);
+
+    @Delete int deleteAll(List<PreferenceParam> params);
 
     @Query("SELECT * FROM custom_preference_table")
     LiveData<List<PreferenceParam>> getAll();

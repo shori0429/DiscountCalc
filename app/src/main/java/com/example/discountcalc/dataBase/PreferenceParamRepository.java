@@ -34,28 +34,50 @@ public class PreferenceParamRepository {
 
     // これを非UIスレッド上で呼び出さないと、アプリが例外をスローする。
     // Roomは、メイン・スレッドで長時間実行する操作を行わず、UIをブロックしないようにする。
-    public void insert(PreferenceParam param){
+    public void insert(List<PreferenceParam> params){
         // メインスレッドで実行しないよう、ExecutorServiceで作成したAppDataBaseをバックグラウンドスレッドで挿入を実行
         AppDataBase.databaseWriteExecutor.execute(()->{
-            preferenceParamDAO.insertPreferenceParam(param);
+            preferenceParamDAO.insert(params);
         });
     }
 
     public void upsert(PreferenceParam param){
         AppDataBase.databaseWriteExecutor.execute(()->{
-            preferenceParamDAO.upsertPreferenceParam(param);
-            //Log.i("upsert","saveName:"+param.saveName()+" per:"+param.per());
+            try {
+                preferenceParamDAO.upsert(param);
+                //Log.i("upsert","saveName:"+param.saveName()+" per:"+param.per());
+            }catch(Exception e){
+                Log.e("database",e.getMessage());
+            }
         });
+    }
+
+    public void upsertAll(List<PreferenceParam> params){
+        AppDataBase.databaseWriteExecutor.execute(()->{
+            try{
+                preferenceParamDAO.upsertAll(params);
+            }catch(Exception e){
+                Log.e("database",e.getMessage());
+            }
+        });
+        Log.i("database","do_upsert");
     }
 
     public void update(PreferenceParam param){
         AppDataBase.databaseWriteExecutor.execute(()->{
-            preferenceParamDAO.updatePreferenceParam(param);
+            preferenceParamDAO.update(param);
         });
     }
 
     public void delete(PreferenceParam param){
-        AppDataBase.databaseWriteExecutor.execute(()->{});
-        preferenceParamDAO.deletePreferenceParams(param);
+        AppDataBase.databaseWriteExecutor.execute(()->{
+        preferenceParamDAO.delete(param);
+        });
+    }
+
+    public void deleteAll(List<PreferenceParam> params){
+        AppDataBase.databaseWriteExecutor.execute(()->{
+            preferenceParamDAO.deleteAll(params);
+        });
     }
 }

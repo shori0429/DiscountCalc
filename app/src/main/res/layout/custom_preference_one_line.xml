@@ -49,7 +49,9 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="0dp"
                 android:textColorHint="#4D000000"
-                android:textSize="@dimen/normal_size" />
+                android:textSize="@dimen/normal_size"
+                android:imeOptions="actionDone"
+                />
 
             <TextView
                 android:id="@+id/custom_preference_one_line_num_unit"

@@ -23,7 +23,6 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
 
     private PreferenceParamRepository dataRepository;
     AppDataBase dataBase;
-    LiveData<List<PreferenceParam>> preferenceParamList;
     private final MutableLiveData<List<CustomPreferenceData>> preferenceDataList;
 
     public CustomPreferenceListViewModel(Application application){
@@ -31,15 +30,7 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         dataRepository=new PreferenceParamRepository(application);
 
         preferenceDataList =new MutableLiveData<>(new ArrayList<>(0));
-        getDataBase();
-        if(preferenceParamList.getValue()!=null) {
-            for (var v : preferenceParamList.getValue()) {
-                addPreferenceData(v.per(),v.saveName());
-            }
-        }
-        else{
 
-        }
     }
 
     public LiveData<List<CustomPreferenceData>> CustomPreferenceList(){
@@ -60,12 +51,19 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
 
 
     public void addPreferenceData(int per,String saveName){
-        preferenceDataList.getValue().add(new CustomPreferenceData(listSize()+1,per,saveName));
+        List<CustomPreferenceData> currentList=CustomPreferenceList().getValue();
+        CustomPreferenceData data=new CustomPreferenceData(listSize()+1,per,saveName);
+        currentList.add(data);
+        preferenceDataList.setValue(currentList);
+
     }
 
     public void addDefaultPreferenceData(){
+        List<CustomPreferenceData> currentList=CustomPreferenceList().getValue();
         CustomPreferenceData data=new CustomPreferenceData(listSize()+1,0,"");
-        preferenceDataList.getValue().add(data);
+        currentList.add(data);
+        preferenceDataList.setValue(currentList);
+
     }
 
     public void updatePreferenceData(int index,CustomPreferenceData newData){
@@ -119,7 +117,5 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         return false;
     }
 
-    private void getDataBase(){
-        preferenceParamList= dataRepository.getAllPreferenceParam();
-    }
+
 }

@@ -25,10 +25,13 @@ import com.example.discountcalc.viewModels.CustomPreferenceListViewModel;
 
 import java.util.List;
 
-public class CustomPreferenceListAdapter extends ListAdapter<CustomPreferenceData, CustomPreferenceListAdapter.CustomPreferenceListViewHolder> {
+public class CustomPreferenceListAdapter
+        extends ListAdapter<CustomPreferenceData, CustomPreferenceListAdapter.CustomPreferenceListViewHolder> {
 
     private int mainTextSize;
-    private final AsyncListDiffer<CustomPreferenceData> aDiffer=new AsyncListDiffer<>(this,DIFF_CALLBACK);
+    //private final AsyncListDiffer<CustomPreferenceData> aDiffer=new AsyncListDiffer<>(this,DIFF_CALLBACK);
+
+    CustomPreferenceOneLineBinding binding;
 
     public static class CustomPreferenceListViewHolder extends RecyclerView.ViewHolder implements LifecycleOwner {
         private final LifecycleRegistry lifecycle=new LifecycleRegistry(this);
@@ -82,20 +85,20 @@ public class CustomPreferenceListAdapter extends ListAdapter<CustomPreferenceDat
 
     public CustomPreferenceListAdapter(CustomPreferenceListViewModel viewModel,LifecycleOwner lifecycleOwner){
         super(DIFF_CALLBACK);
-        viewModel.CustomPreferenceList().observe(lifecycleOwner, aDiffer::submitList);
+        viewModel.CustomPreferenceList().observe(lifecycleOwner, this::submitList);
     }
 
     @NonNull
     @Override
     public CustomPreferenceListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater=LayoutInflater.from(parent.getContext());
-        CustomPreferenceOneLineBinding binding=CustomPreferenceOneLineBinding.inflate(inflater,parent,false);
+        binding = CustomPreferenceOneLineBinding.inflate(inflater,parent,false);
         return new CustomPreferenceListViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CustomPreferenceListViewHolder holder, int position) {
-        CustomPreferenceData data=aDiffer.getCurrentList().get(position);
+        CustomPreferenceData data=getItem(position);
         // 各Viewに関連付け+購読
         holder.bind(data);
 
@@ -109,31 +112,21 @@ public class CustomPreferenceListAdapter extends ListAdapter<CustomPreferenceDat
 
     @Override
     public void onBindViewHolder(@NonNull CustomPreferenceListViewHolder holder, int position, @NonNull List<Object> payloads) {
-        CustomPreferenceData data=aDiffer.getCurrentList().get(position);
-
-        //
-        if(!payloads.isEmpty()) {
-            Bundle diff = (Bundle) payloads.get(0);
-            if (diff.containsKey("no")) {
-                holder.binding.customPreferenceOneLineTitle.setText(diff.getString("no"));
-            }
-            if (diff.containsKey("per")) {
-                holder.binding.customPreferenceOneLineNum.setText(diff.getString("per"));
-            }
+        CustomPreferenceData data = getItem(position);
+        if(payloads.isEmpty()){
+            holder.bind(data);
         }else{
-            super.onBindViewHolder(holder, position,payloads);
+            for (Object payload:payloads){
+                if("Per".equals(payload)){
+                    holder.getViewDataBinding().setVariable(BR.preferenceData, data);
+                    holder.getViewDataBinding().executePendingBindings();
+                }
+            }
         }
-
-        holder.getViewDataBinding().setVariable(BR.preferenceData,data);
-        holder.getViewDataBinding().executePendingBindings();
-        //holder.bind(data);
-
         // テキストサイズ変更
         holder.changeTextSize(mainTextSize);
 
-        //
         holder.alignmentText(Gravity.END);
-
     }
 
     public void setTextSizes(int textSize){
@@ -142,37 +135,43 @@ public class CustomPreferenceListAdapter extends ListAdapter<CustomPreferenceDat
 
     @Override
     public int getItemCount() {
-        return aDiffer.getCurrentList().size();
+        return super.getItemCount();
     }
 
     @Override
     public void submitList(@Nullable List<CustomPreferenceData> list) {
-        aDiffer.submitList(list);
+        super.submitList(list);
     }
+
+
 
     private static final DiffUtil.ItemCallback<CustomPreferenceData> DIFF_CALLBACK=
             new DiffUtil.ItemCallback<CustomPreferenceData>() {
 
                 @Override
                 public boolean areItemsTheSame(@NonNull CustomPreferenceData oldItem, @NonNull CustomPreferenceData newItem) {
-                    return true;
+                    boolean bool= oldItem.DiscountNo()== newItem.DiscountNo();
+                    Log.i("DiffUtil","areItemTheSame:"+bool);
+                    return bool;
 
                 }
 
                 @Override
                 public boolean areContentsTheSame(@NonNull CustomPreferenceData oldItem, @NonNull CustomPreferenceData newItem) {
-                    return oldItem.equals(newItem);
+                    boolean bool= oldItem.DiscountPer()== newItem.DiscountPer();
+                    Log.i("DiffUtil","areContentsTheSame:"+bool);
+                    return bool;
                 }
 
                 @Nullable
                 @Override
                 public Object getChangePayload(@NonNull CustomPreferenceData oldItem, @NonNull CustomPreferenceData newItem) {
                     Bundle diff=new Bundle();
-                    if(!newItem.getDiscountNo().getValue().equals(oldItem.getDiscountNo().getValue())){
-                        diff.putInt("no",newItem.getDiscountNo().getValue());
+                    if(newItem.DiscountNo()!=oldItem.DiscountNo()){
+                        diff.putInt("no",newItem.DiscountNo());
                     }
-                    if(!newItem.getDiscountPer().getValue().equals(oldItem.getDiscountPer().getValue())){
-                        diff.putInt("per",newItem.getDiscountPer().getValue());
+                    if(newItem.DiscountPer()!=oldItem.DiscountPer()){
+                        diff.putInt("per",newItem.DiscountPer());
                     }
                     if(diff.size()==0){
                         return null;

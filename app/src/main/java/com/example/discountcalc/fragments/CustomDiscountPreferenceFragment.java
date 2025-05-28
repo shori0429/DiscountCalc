@@ -159,7 +159,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     // リサイクルビューの初期化関数
     private void recyclerViewInitialize() {
         recyclerView= customDiscountPreferenceFragmentBinding.PreferenceList;
-        customPreferenceListAdapter=new CustomPreferenceListAdapter(customPreferenceViewModel,this);
+        customPreferenceListAdapter=new CustomPreferenceListAdapter(customPreferenceViewModel,this.requireActivity());
 
         LinearLayoutManager llm=new LinearLayoutManager(view.getContext());
         recyclerView.setHasFixedSize(true);
@@ -234,8 +234,9 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         int listSize= customPreferenceViewModel.listSize();
         //elementNumberViewText.setText("viewmodel:"+listSize+"adapter"+customPreferenceListAdapter.getItemCount());
         elementNumberViewText.setText(listSize+":"+customPreferenceListAdapter.getItemCount());
+        //customPreferenceListAdapter.notifyItemInserted(listSize-1);
         // 表示数が10未満の時、リサイクルビューのサイズ変更を固定にする。
-        //recyclerView.setHasFixedSize(listSize > 10);
+        recyclerView.setHasFixedSize(listSize >= 10);
 
     }
 

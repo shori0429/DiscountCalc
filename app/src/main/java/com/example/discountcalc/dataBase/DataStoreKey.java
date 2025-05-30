@@ -11,7 +11,7 @@ public class DataStoreKey {
     //　
     public static final String DISCOUNT_CUSTOM_SAVE_COUNT_KEY="use_save_count_key";
 
-    public static final String DISCOUNT_ELEMENT_KEY="element_key";
+    public static final String DISCOUNT_CUSTOM_SAVE_NAME="id_save_name";
 
 
     // 必要かわからん

@@ -9,30 +9,39 @@ import androidx.lifecycle.MutableLiveData;
 
 public class CustomPreferenceData{
 
-    // カスタム割引率の要素名
-    private final MutableLiveData<Integer> discountElement=new MutableLiveData<>(0);
+    // 何番目か
+    private final MutableLiveData<Integer> discountNo =new MutableLiveData<>(0);
 
     // 割引率
     private final MutableLiveData<Integer> discountPer=new MutableLiveData<>(0);
 
+    // どのカスタム設定に所属しているか
+    private String saveName="";
+
 
     public  CustomPreferenceData(){
-        discountElement.setValue(0);
+        discountNo.setValue(0);
         discountPer.setValue(0);
     }
 
-    public CustomPreferenceData(int element,int per){
-        discountElement.setValue(element);
+    public CustomPreferenceData(int no,int per,String saveName){
+        discountNo.setValue(no);
         discountPer.setValue(per);
+        this.saveName=saveName;
     }
 
 
-    public void setDiscountElement(int value){
-            discountElement.setValue(value);
+    public void setDiscountNo(int value){
+            discountNo.setValue(value);
     }
 
-    public MutableLiveData<Integer> getDiscountElement() {
-        return discountElement;
+    public MutableLiveData<Integer> getDiscountNo() {
+        return discountNo;
+    }
+
+    public int DiscountNo(){
+        if(discountNo.getValue()!=null)return discountNo.getValue();
+        else return -1;
     }
 
 
@@ -44,9 +53,19 @@ public class CustomPreferenceData{
         return discountPer;
     }
 
+    public int DiscountPer(){
+        if(discountPer.getValue()!=null) return discountPer.getValue();
+        else return -1;
+    }
+
+    public String SaveName(){
+        return saveName;
+    }
+
+
     // 自然数を返す
     public MutableLiveData<Integer> getDiscountElementNaturalNumber(){
-        return discountElement;
+        return discountNo;
     }
 
     @Override
@@ -54,12 +73,16 @@ public class CustomPreferenceData{
         if(obj==null)return false;
         if(obj instanceof CustomPreferenceData){
             CustomPreferenceData data=(CustomPreferenceData) obj;
-            if(this.discountElement!=data.discountElement){
-                Log.i("CustomPreferenceData_equal","discountElementFalse"+this.discountElement.getValue()+":"+data.discountElement.getValue());
+            if(this.discountNo !=data.discountNo){
+                Log.i("CustomPreferenceData_equal","discountNoFalse"+this.discountNo.getValue()+":"+data.discountNo.getValue());
                 return false;
             }
             if(this.discountPer!=data.discountPer){
                 Log.i("CustomPreferenceData_equal","discountPerFalse"+this.discountPer.getValue()+":"+data.discountPer.getValue());
+                return false;
+            }
+            if(!saveName.equals(data.saveName)){
+                Log.i("CustomPreferenceData_equal","discountSaveNameFalse["+this.saveName+"]:["+data.saveName+"]");
                 return false;
             }
             return true;

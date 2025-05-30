@@ -29,8 +29,8 @@ android {
     }
 
     compileOptions{
-        sourceCompatibility=JavaVersion.VERSION_1_8
-        targetCompatibility=JavaVersion.VERSION_1_8
+        sourceCompatibility= JavaVersion.VERSION_17
+        targetCompatibility= JavaVersion.VERSION_17
     }
 
     buildFeatures {
@@ -49,6 +49,13 @@ android {
 }
 
 dependencies {
+    val room_version="2.7.1"
+
+    // Room
+    implementation("androidx.room:room-rxjava3:$room_version")
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+
 
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
@@ -71,4 +78,5 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
 }

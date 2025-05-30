@@ -1,71 +1,121 @@
 package com.example.discountcalc.viewModels;
 
+import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
+import com.example.discountcalc.DAO.PreferenceParamDAO;
+import com.example.discountcalc.dataBase.AppDataBase;
+import com.example.discountcalc.dataBase.PreferenceParamRepository;
 import com.example.discountcalc.params.CustomPreferenceData;
+import com.example.discountcalc.params.PreferenceParam;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class CustomPreferenceListViewModel extends ViewModel {
+public class CustomPreferenceListViewModel extends AndroidViewModel {
 
-    private final MutableLiveData<List<CustomPreferenceData>> preferenceDatas;
+    private PreferenceParamRepository dataRepository;
+    AppDataBase dataBase;
+    private final MutableLiveData<List<CustomPreferenceData>> preferenceDataList;
 
-    private CustomPreferenceListViewModel(){
-        preferenceDatas=new MutableLiveData<>(new ArrayList<>(0));
+    public CustomPreferenceListViewModel(Application application){
+        super(application);
+        dataRepository=new PreferenceParamRepository(application);
+
+        preferenceDataList =new MutableLiveData<>(new ArrayList<>(0));
+
     }
 
-    public LiveData<List<CustomPreferenceData>> getCustomPreferenceDatas(){
-        return preferenceDatas;
+    public LiveData<List<CustomPreferenceData>> CustomPreferenceList(){
+        return preferenceDataList;
     }
 
     public CustomPreferenceData getCustomPreferenceData(int index){
-        return Objects.requireNonNull(preferenceDatas.getValue()).get(index);
+        return Objects.requireNonNull(preferenceDataList.getValue()).get(index);
     }
 
-    public void setPreferenceDatas(List<CustomPreferenceData> datas){
-        this.preferenceDatas.setValue(datas);
+    public int listSize(){
+        return Objects.requireNonNull(preferenceDataList.getValue()).size();
+    }
+
+    public void setPreferenceDataList(List<CustomPreferenceData> datas){
+        this.preferenceDataList.setValue(datas);
     }
 
 
-    public void addPreferenceData(CustomPreferenceData newData){
-        try {
-            List<CustomPreferenceData> currentList = new ArrayList<>(Objects.requireNonNull(preferenceDatas.getValue()));
-            currentList.add(newData);
-            preferenceDatas.setValue(currentList);
-        }catch (NullPointerException e){
-            e.getStackTrace();
-        }
+    public void addPreferenceData(int per,String saveName){
+        List<CustomPreferenceData> currentList=CustomPreferenceList().getValue();
+        CustomPreferenceData data=new CustomPreferenceData(listSize()+1,per,saveName);
+        currentList.add(data);
+        preferenceDataList.setValue(currentList);
+
+    }
+
+    public void addDefaultPreferenceData(){
+        List<CustomPreferenceData> currentList=CustomPreferenceList().getValue();
+        CustomPreferenceData data=new CustomPreferenceData(listSize()+1,0,"");
+        currentList.add(data);
+        preferenceDataList.setValue(currentList);
+
     }
 
     public void updatePreferenceData(int index,CustomPreferenceData newData){
-        List<CustomPreferenceData> currentList=new ArrayList<>(Objects.requireNonNull(preferenceDatas.getValue()));
+        List<CustomPreferenceData> currentList=new ArrayList<>(Objects.requireNonNull(preferenceDataList.getValue()));
         if(index>=0&&index<currentList.size()){
-            currentList.get(index).getDiscountElement().setValue(currentList.get(index).getDiscountElement().getValue());
+            currentList.get(index).getDiscountNo().setValue(currentList.get(index).getDiscountNo().getValue());
             currentList.get(index).getDiscountPer().setValue(currentList.get(index).getDiscountPer().getValue());
-            preferenceDatas.setValue(currentList);
+            preferenceDataList.setValue(currentList);
         }
 
     }
 
     // 指定したインデックスのデータを更新
-    public void updatePreferenceDataAll(ArrayList<CustomPreferenceData> newData) {
+    public void updatePreferenceDataAll(List<CustomPreferenceData> newData) {
         if (newData != null) {
-            preferenceDatas.setValue(newData);
+            preferenceDataList.setValue(newData);
+        }
+    }
+
+    public void removePreferenceData(int index){
+        if(0<index&&index<preferenceDataList.getValue().size()){
+            preferenceDataList.getValue().remove(index);
         }
     }
 
     public void changeTextView(Context context, int index,int value){
-        Objects.requireNonNull(preferenceDatas.getValue()).get(index).setDiscountElement(value);
+        Objects.requireNonNull(preferenceDataList.getValue()).get(index).setDiscountNo(value);
     }
 
-    @Override
-    protected void onCleared() {
-        super.onCleared();
+    public boolean saveDataBase(@NonNull String saveName){
+        if(preferenceDataList.getValue()!=null) {
+            List<PreferenceParam> params=new ArrayList<>();
+            for (var data : preferenceDataList.getValue()) {
+                params.add(new PreferenceParam(data.DiscountNo(), saveName, data.DiscountPer()));
+            }
+            dataRepository.upsertAll(params);
+        }
+        return false;
     }
+
+    public boolean updateDAO() {
+        if(preferenceDataList.getValue()!=null) {
+            // データベース取得
+            PreferenceParamDAO preferenceParamDAO = dataBase.preferenceParamDAO();
+            //TODO　保存処理を書く
+
+
+            Log.i("database", dataBase.preferenceParamDAO().getAll().getValue().stream().toString());
+        return true;
+        }
+        return false;
+    }
+
+
 }

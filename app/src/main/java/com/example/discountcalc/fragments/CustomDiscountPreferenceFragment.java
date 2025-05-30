@@ -113,13 +113,12 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     private void viewModelInitialize() {
         customPreferenceViewModel =new ViewModelProvider(this, new CustomPreferenceListViewModelFactory(requireActivity().getApplication()))
                 .get(CustomPreferenceListViewModel.class);
-        //customPreferenceViewModel.setPreferenceDataList();
-        customPreferenceViewModel.CustomPreferenceList().observe(getViewLifecycleOwner(), this::updateUI);
+        elementNumberViewText.setText(""+customPreferenceViewModel.listSize());
     }
 
-    private void updateUI(@NonNull List<CustomPreferenceData> dataList) {
+    private void updateUI() {
         Log.i("updateUI","updateUI");
-        customPreferenceListAdapter.submitList(dataList);
+        customPreferenceListAdapter.submitList(new ArrayList<>(customPreferenceViewModel.CustomPreferenceList().getValue()));
     }
 
     public void setOnClickListeners(){
@@ -159,7 +158,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     // リサイクルビューの初期化関数
     private void recyclerViewInitialize() {
         recyclerView= customDiscountPreferenceFragmentBinding.PreferenceList;
-        customPreferenceListAdapter=new CustomPreferenceListAdapter(customPreferenceViewModel,this.requireActivity());
+        customPreferenceListAdapter=new CustomPreferenceListAdapter();
 
         LinearLayoutManager llm=new LinearLayoutManager(view.getContext());
         recyclerView.setHasFixedSize(true);
@@ -233,11 +232,12 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         // テキスト更新
         int listSize= customPreferenceViewModel.listSize();
         //elementNumberViewText.setText("viewmodel:"+listSize+"adapter"+customPreferenceListAdapter.getItemCount());
-        elementNumberViewText.setText(listSize+":"+customPreferenceListAdapter.getItemCount());
         //customPreferenceListAdapter.notifyItemInserted(listSize-1);
         // 表示数が10未満の時、リサイクルビューのサイズ変更を固定にする。
         recyclerView.setHasFixedSize(listSize >= 10);
 
+        elementNumberViewText.setText(listSize+"");
+        updateUI();
     }
 
     private boolean removePreferenceDataElement(int removeElementNumber){

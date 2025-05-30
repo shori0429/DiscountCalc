@@ -82,7 +82,7 @@ public class CustomPreferenceData{
                 return false;
             }
             if(!saveName.equals(data.saveName)){
-                Log.i("CustomPreferenceData_equal","discountSaveName["+this.saveName+"]:["+data.saveName+"]");
+                Log.i("CustomPreferenceData_equal","discountSaveNameFalse["+this.saveName+"]:["+data.saveName+"]");
                 return false;
             }
             return true;

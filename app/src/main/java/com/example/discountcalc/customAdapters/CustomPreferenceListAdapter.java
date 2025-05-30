@@ -29,7 +29,6 @@ public class CustomPreferenceListAdapter
         extends ListAdapter<CustomPreferenceData, CustomPreferenceListAdapter.CustomPreferenceListViewHolder> {
 
     private int mainTextSize;
-    //private final AsyncListDiffer<CustomPreferenceData> aDiffer=new AsyncListDiffer<>(this,DIFF_CALLBACK);
 
     CustomPreferenceOneLineBinding binding;
 
@@ -83,9 +82,8 @@ public class CustomPreferenceListAdapter
     }
 
 
-    public CustomPreferenceListAdapter(CustomPreferenceListViewModel viewModel,LifecycleOwner lifecycleOwner){
+    public CustomPreferenceListAdapter(){
         super(DIFF_CALLBACK);
-        viewModel.CustomPreferenceList().observe(lifecycleOwner, this::submitList);
     }
 
     @NonNull
@@ -151,15 +149,16 @@ public class CustomPreferenceListAdapter
                 @Override
                 public boolean areItemsTheSame(@NonNull CustomPreferenceData oldItem, @NonNull CustomPreferenceData newItem) {
                     boolean bool= oldItem.DiscountNo()== newItem.DiscountNo();
-                    Log.i("DiffUtil","areItemTheSame:"+bool);
+                    Log.i("DiffUtil","areItemTheSame:"+oldItem.DiscountNo()+":"+newItem.DiscountNo()+"->"+bool);
                     return bool;
 
                 }
 
                 @Override
                 public boolean areContentsTheSame(@NonNull CustomPreferenceData oldItem, @NonNull CustomPreferenceData newItem) {
-                    boolean bool= oldItem.DiscountPer()== newItem.DiscountPer();
-                    Log.i("DiffUtil","areContentsTheSame:"+bool);
+                    boolean bool = oldItem.equals(newItem);
+                    Log.i("DiffUtil","areContentsTheSame:"+oldItem.DiscountNo()+"["+oldItem.DiscountPer()+"]\n"+
+                            newItem.DiscountNo()+"["+newItem.DiscountPer()+"]");
                     return bool;
                 }
 

@@ -7,4 +7,4 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "custom_preference_table")
 public record PreferenceParam (@PrimaryKey(autoGenerate = true) int uid,
                                @ColumnInfo(name = "save_name") String saveName,
-                               int per){ }
+                               @ColumnInfo(name = "per") int per){ }

@@ -111,11 +111,15 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
             //TODO　保存処理を書く
 
 
-            Log.i("database", dataBase.preferenceParamDAO().getAll().getValue().stream().toString());
+            Log.i("database", dataBase.preferenceParamDAO().getAll().stream().toString());
         return true;
         }
         return false;
     }
 
+    private void getAllDAO(){
+        List<PreferenceParam> params=dataRepository.getAllPreferenceParam();
+
+    }
 
 }

@@ -13,7 +13,7 @@ import java.util.Objects;
 
 public class PreferenceParamRepository {
     private PreferenceParamDAO preferenceParamDAO;
-    private LiveData<List<PreferenceParam>> preferenceParamList;
+    private List<PreferenceParam> preferenceParamList;
 
     // WordRepositoryをユニットテストするには、Application依存関係を削除する必要があることに注意
 
@@ -28,7 +28,7 @@ public class PreferenceParamRepository {
     }
 
     // Roomは全てのクエリを別スレッドで実行する。
-    public LiveData<List<PreferenceParam>> getAllPreferenceParam(){
+    public List<PreferenceParam> getAllPreferenceParam(){
         return preferenceParamList;
     }
 
@@ -78,6 +78,12 @@ public class PreferenceParamRepository {
     public void deleteAll(List<PreferenceParam> params){
         AppDataBase.databaseWriteExecutor.execute(()->{
             preferenceParamDAO.deleteAll(params);
+        });
+    }
+
+    public void getSave(String getName){
+        AppDataBase.databaseWriteExecutor.execute(()->{
+            preferenceParamDAO.getSave(getName);
         });
     }
 }

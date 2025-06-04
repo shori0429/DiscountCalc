@@ -33,6 +33,9 @@ public interface PreferenceParamDAO {
     @Delete int deleteAll(List<PreferenceParam> params);
 
     @Query("SELECT * FROM custom_preference_table")
-    LiveData<List<PreferenceParam>> getAll();
+    List<PreferenceParam> getAll();
+
+    @Query("SELECT uid,save_name,per FROM custom_preference_table WHERE save_name = :getName")
+    List<PreferenceParam> getSave(String getName);
 
 }

@@ -168,20 +168,6 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
     // データストアからカスタムの割引率設定に関するデータを取得
     private void loadCustomPreferenceList(){
-       int elementMax= customPreferenceViewModel.listSize();
-
-        //elementNumberViewText.setText(lSize);
-
-    }
-
-    // カスタム割引率の要素数に関するデータ取得
-    private int loadCustomDiscountElementMax() {
-
-        // 仮データ
-//        elementMax=1;
-        // データリスト配列初期化
-        //InitializeCustomPreferenceDataSetArrayList(elementMax);
-        return elementMax;
     }
 
     private void InitializeCustomPreferenceDataSetArrayList(int max) {
@@ -211,15 +197,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
         customPreferenceViewModel.saveDataBase(title);
 
-        // TODO クラスごと保存できるようにしたい。Protobufを使ったデータ処理を実装できれば良
-        // 要素内の各データ保存
-        for(int i = 0; i< customPreferenceViewModel.listSize(); i++) {
-            // 入力されている割引率を保存
-            int per=customPreferenceViewModel.getCustomPreferenceData(i).DiscountPer();
-            //dataStoreHelper.putIntegerValue(saveDiscountPerKey +i, per);
-            Log.i("savePer",title+":Per = "+per);
-        }
-        return true;
+       return true;
     }
 
     // 要素数追加

@@ -30,7 +30,8 @@ public interface PreferenceParamDAO {
 
     @Delete int delete(PreferenceParam param);
 
-    @Delete int deleteAll(List<PreferenceParam> params);
+    @Query("DELETE FROM custom_preference_table")
+    int deleteAll();
 
     @Query("SELECT * FROM custom_preference_table")
     List<PreferenceParam> getAll();

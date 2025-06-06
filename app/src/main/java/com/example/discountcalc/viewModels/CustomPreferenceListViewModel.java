@@ -30,7 +30,7 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         dataRepository=new PreferenceParamRepository(application);
 
         preferenceDataList =new MutableLiveData<>(new ArrayList<>(0));
-        //getAllDAO();
+        getAllDAO();
     }
 
     public LiveData<List<CustomPreferenceData>> CustomPreferenceList(){
@@ -115,6 +115,12 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         return true;
         }
         return false;
+    }
+
+    public boolean existingCheckDAO(String name){
+        List<PreferenceParam> params;
+        params= dataRepository.getSave(name);
+        return params != null;
     }
 
     public void getAllDAO(){

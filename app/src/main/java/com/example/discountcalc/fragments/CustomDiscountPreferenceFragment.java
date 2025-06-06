@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.discountcalc.DAO.PreferenceParamDAO;
 import com.example.discountcalc.customAdapters.CustomPreferenceListAdapter;
@@ -191,11 +192,18 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
         String title=saveTitle.getText().toString();
         if(title.equals("")){
+            //TODO:入力無しは未入力ダイアログ出して保存しないほうがいいかも。
             title="Custom001";
         }
         Log.i("saveId","saveID : "+title);
-
-        customPreferenceViewModel.saveDataBase(title);
+        if(!customPreferenceViewModel.existingCheckDAO(title)){
+            customPreferenceViewModel.saveDataBase(title);
+            Toast.makeText(getContext(),title+"の名前で保存しました。",Toast.LENGTH_SHORT).show();
+        }else{
+            // TODO:上書き確認を表示するフラグメントを作成して、表示する処理を作成する。
+            // はいで上書き、いいえでキャンセル
+            Log.e("saveDataBase",title+"is ExistingSaveName. SaveCanceled.");
+        }
 
        return true;
     }

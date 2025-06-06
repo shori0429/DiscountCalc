@@ -13,30 +13,35 @@ import com.example.discountcalc.params.PreferenceParam;
 
 import java.util.List;
 
+/*
+* バッググラウンド実行を行う実装メソッドをリポジトリクラスに書く
+* */
 @Dao
 public interface PreferenceParamDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public void insert(List<PreferenceParam> params);
+    void insert(List<PreferenceParam> params);
 
     @Upsert
-    public void upsert(PreferenceParam param);
+    void upsert(PreferenceParam param);
 
 
     @Upsert
-    public void upsertAll(List<PreferenceParam> params);
+    void upsertAll(List<PreferenceParam> params);
 
     @Update
-    public int update(PreferenceParam param);
+    int update(PreferenceParam param);
 
     @Delete int delete(PreferenceParam param);
 
+    @Query("DELETE FROM custom_preference_table where save_name=:saveName")
+    int deleteForSaveName(String saveName);
     @Query("DELETE FROM custom_preference_table")
     int deleteAll();
 
     @Query("SELECT * FROM custom_preference_table")
     List<PreferenceParam> getAll();
 
-    @Query("SELECT uid,save_name,per FROM custom_preference_table WHERE save_name = :getName")
-    List<PreferenceParam> getSave(String getName);
+    @Query("SELECT uid,save_name,per FROM custom_preference_table WHERE save_name = :saveName")
+    List<PreferenceParam> getSave(String saveName);
 
 }

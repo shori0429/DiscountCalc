@@ -17,6 +17,8 @@ public class PreferenceParamRepository {
     private PreferenceParamDAO preferenceParamDAO;
     private List<PreferenceParam> preferenceParamList;
 
+    private int result;
+
     // WordRepositoryをユニットテストするには、Application依存関係を削除する必要があることに注意
 
     // DAOにデータベースの読み取り/書き込みメソッドがすべて含まれているため、
@@ -73,22 +75,31 @@ public class PreferenceParamRepository {
         });
     }
 
-    public void delete(PreferenceParam param){
+    public int delete(PreferenceParam param){
         AppDataBase.databaseWriteExecutor.execute(()->{
-        preferenceParamDAO.delete(param);
+        result= preferenceParamDAO.delete(param);
         });
+        return result;
     }
 
-    public void deleteAll(){
+    public int deleteForSaveName(String saveName){
         AppDataBase.databaseWriteExecutor.execute(()->{
-            Log.i("database_deleteAll",preferenceParamDAO.deleteAll()+"");
-
+            result= preferenceParamDAO.deleteForSaveName(saveName);
         });
+        return result;
     }
 
-    public void getSave(String getName){
+    public int deleteAll(){
         AppDataBase.databaseWriteExecutor.execute(()->{
-            preferenceParamDAO.getSave(getName);
+           result= preferenceParamDAO.deleteAll();
         });
+        return result;
+    }
+
+    public List<PreferenceParam> getSave(String getName){
+        AppDataBase.databaseWriteExecutor.execute(()->{
+            preferenceParamList=preferenceParamDAO.getSave(getName);
+        });
+        return preferenceParamList;
     }
 }

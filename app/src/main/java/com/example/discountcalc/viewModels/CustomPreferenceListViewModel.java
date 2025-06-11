@@ -30,7 +30,7 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         dataRepository=new PreferenceParamRepository(application);
 
         preferenceDataList =new MutableLiveData<>(new ArrayList<>(0));
-
+        getAllDAO();
     }
 
     public LiveData<List<CustomPreferenceData>> CustomPreferenceList(){
@@ -111,11 +111,34 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
             //TODO　保存処理を書く
 
 
-            Log.i("database", dataBase.preferenceParamDAO().getAll().getValue().stream().toString());
+            Log.i("database", dataBase.preferenceParamDAO().getAll().stream().toString());
         return true;
         }
         return false;
     }
 
+    public boolean existingCheckDAO(String name){
+        List<PreferenceParam> params;
+        params= dataRepository.getSave(name);
+        return params != null;
+    }
+
+    public void getAllDAO(){
+        List<PreferenceParam> params;
+        params= dataRepository.getAllPreferenceParam();
+        if(params!=null) {
+            Log.i("repository","connectSuccess");
+            Log.i("getAllDAO",params.size()+"");
+            params.forEach(t->{
+                Log.i("repository",t.toString());
+            });
+        }else{
+            Log.i("repository","notConnect");
+        }
+    }
+
+    public void deleteAllDAO(){
+        dataRepository.deleteAll();
+    }
 
 }

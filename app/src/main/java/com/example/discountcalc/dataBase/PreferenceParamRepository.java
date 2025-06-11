@@ -1,5 +1,6 @@
 package com.example.discountcalc.dataBase;
 
+import android.adservices.common.AdData;
 import android.app.Application;
 import android.util.Log;
 
@@ -8,12 +9,15 @@ import androidx.lifecycle.LiveData;
 import com.example.discountcalc.DAO.PreferenceParamDAO;
 import com.example.discountcalc.params.PreferenceParam;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class PreferenceParamRepository {
     private PreferenceParamDAO preferenceParamDAO;
-    private LiveData<List<PreferenceParam>> preferenceParamList;
+    private List<PreferenceParam> preferenceParamList;
+
+    private int result;
 
     // WordRepositoryをユニットテストするには、Application依存関係を削除する必要があることに注意
 
@@ -22,13 +26,15 @@ public class PreferenceParamRepository {
     public PreferenceParamRepository(Application application){
         AppDataBase db = AppDataBase.getDatabase(application);
         preferenceParamDAO=db.preferenceParamDAO();
-        preferenceParamList=preferenceParamDAO.getAll();
+        preferenceParamList=new ArrayList<>();
         Log.i("database", Objects.requireNonNull(db.getOpenHelper().getDatabaseName()));
-
     }
 
     // Roomは全てのクエリを別スレッドで実行する。
-    public LiveData<List<PreferenceParam>> getAllPreferenceParam(){
+    public List<PreferenceParam> getAllPreferenceParam(){
+        AppDataBase.databaseWriteExecutor.execute(()->{
+            preferenceParamList = preferenceParamDAO.getAll();
+        });
         return preferenceParamList;
     }
 
@@ -69,15 +75,31 @@ public class PreferenceParamRepository {
         });
     }
 
-    public void delete(PreferenceParam param){
+    public int delete(PreferenceParam param){
         AppDataBase.databaseWriteExecutor.execute(()->{
-        preferenceParamDAO.delete(param);
+        result= preferenceParamDAO.delete(param);
         });
+        return result;
     }
 
-    public void deleteAll(List<PreferenceParam> params){
+    public int deleteForSaveName(String saveName){
         AppDataBase.databaseWriteExecutor.execute(()->{
-            preferenceParamDAO.deleteAll(params);
+            result= preferenceParamDAO.deleteForSaveName(saveName);
         });
+        return result;
+    }
+
+    public int deleteAll(){
+        AppDataBase.databaseWriteExecutor.execute(()->{
+           result= preferenceParamDAO.deleteAll();
+        });
+        return result;
+    }
+
+    public List<PreferenceParam> getSave(String getName){
+        AppDataBase.databaseWriteExecutor.execute(()->{
+            preferenceParamList=preferenceParamDAO.getSave(getName);
+        });
+        return preferenceParamList;
     }
 }

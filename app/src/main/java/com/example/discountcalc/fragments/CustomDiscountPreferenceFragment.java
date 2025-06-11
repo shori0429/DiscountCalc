@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.discountcalc.DAO.PreferenceParamDAO;
 import com.example.discountcalc.customAdapters.CustomPreferenceListAdapter;
@@ -168,20 +169,6 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
     // データストアからカスタムの割引率設定に関するデータを取得
     private void loadCustomPreferenceList(){
-       int elementMax= customPreferenceViewModel.listSize();
-
-        //elementNumberViewText.setText(lSize);
-
-    }
-
-    // カスタム割引率の要素数に関するデータ取得
-    private int loadCustomDiscountElementMax() {
-
-        // 仮データ
-//        elementMax=1;
-        // データリスト配列初期化
-        //InitializeCustomPreferenceDataSetArrayList(elementMax);
-        return elementMax;
     }
 
     private void InitializeCustomPreferenceDataSetArrayList(int max) {
@@ -205,21 +192,20 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
         String title=saveTitle.getText().toString();
         if(title.equals("")){
+            //TODO:入力無しは未入力ダイアログ出して保存しないほうがいいかも。
             title="Custom001";
         }
         Log.i("saveId","saveID : "+title);
-
-        customPreferenceViewModel.saveDataBase(title);
-
-        // TODO クラスごと保存できるようにしたい。Protobufを使ったデータ処理を実装できれば良
-        // 要素内の各データ保存
-        for(int i = 0; i< customPreferenceViewModel.listSize(); i++) {
-            // 入力されている割引率を保存
-            int per=customPreferenceViewModel.getCustomPreferenceData(i).DiscountPer();
-            //dataStoreHelper.putIntegerValue(saveDiscountPerKey +i, per);
-            Log.i("savePer",title+":Per = "+per);
+        if(customPreferenceViewModel.existingCheckDAO(title)){
+            customPreferenceViewModel.saveDataBase(title);
+            Toast.makeText(getContext(),title+"の名前で保存しました。",Toast.LENGTH_SHORT).show();
+        }else{
+            // TODO:上書き確認を表示するフラグメントを作成して、表示する処理を作成する。
+            // はいで上書き、いいえでキャンセル
+            Log.e("saveDataBase",title+" is ExistingSaveName. SaveCanceled.");
         }
-        return true;
+
+       return true;
     }
 
     // 要素数追加

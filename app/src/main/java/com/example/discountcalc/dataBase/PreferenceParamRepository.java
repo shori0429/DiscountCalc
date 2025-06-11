@@ -1,10 +1,7 @@
 package com.example.discountcalc.dataBase;
 
-import android.adservices.common.AdData;
 import android.app.Application;
 import android.util.Log;
-
-import androidx.lifecycle.LiveData;
 
 import com.example.discountcalc.DAO.PreferenceParamDAO;
 import com.example.discountcalc.params.PreferenceParam;
@@ -31,7 +28,7 @@ public class PreferenceParamRepository {
     }
 
     // Roomは全てのクエリを別スレッドで実行する。
-    public List<PreferenceParam> getAllPreferenceParam(){
+    public List<PreferenceParam> getAll(){
         AppDataBase.databaseWriteExecutor.execute(()->{
             preferenceParamList = preferenceParamDAO.getAll();
         });

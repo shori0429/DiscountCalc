@@ -2,18 +2,14 @@ package com.example.discountcalc.customAdapters;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.discountcalc.BR;
 import com.example.discountcalc.databinding.SavedataListviewOnelineBinding;
 import com.example.discountcalc.params.PreferenceParam;
 
@@ -30,11 +26,6 @@ public class SaveDataListViewAdapter
 
         private final SavedataListviewOnelineBinding binding;
 
-//        public SaveDataListViewHolder(View view, List<PreferenceParam> params){
-//            super(view);
-//            preferenceParamList=params;
-//
-//        }
         public SaveDataListViewHolder(SavedataListviewOnelineBinding binding){
             super(binding.getRoot());
             this.binding=binding;

@@ -41,7 +41,7 @@ public interface PreferenceParamDAO {
     @Query("SELECT * FROM custom_preference_table")
     List<PreferenceParam> getAll();
 
-    @Query("SELECT uid,save_name,per FROM custom_preference_table WHERE save_name = :saveName")
+    @Query("SELECT uid,save_name,per FROM custom_preference_table WHERE save_name LIKE :saveName")
     List<PreferenceParam> getSave(String saveName);
 
 }

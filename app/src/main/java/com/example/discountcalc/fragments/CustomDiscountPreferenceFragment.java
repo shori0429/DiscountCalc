@@ -23,8 +23,10 @@ import com.example.discountcalc.customAdapters.SaveDataListViewAdapter;
 import com.example.discountcalc.dataBase.AppDataBase;
 import com.example.discountcalc.databinding.CustomDiscountPreferenceFragmentBinding;
 import com.example.discountcalc.R;
+import com.example.discountcalc.viewModels.SaveTitleViewOneLineParamViewModel;
 import com.example.discountcalc.viewModels.CustomPreferenceListViewModel;
 import com.example.discountcalc.viewModels.CustomPreferenceListViewModelFactory;
+import com.example.discountcalc.viewModels.SaveTitleViewOneLineParamViewModelFactory;
 
 import java.util.ArrayList;
 
@@ -45,6 +47,8 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     RecyclerView customPreferenceListView;
     CustomPreferenceListAdapter customPreferenceListAdapter;
     CustomPreferenceListViewModel customPreferenceViewModel;
+
+    SaveTitleViewOneLineParamViewModel saveTitleViewOneLineParamViewModel;
 
     // データベースに保存されている設定名
     RecyclerView saveDataListView;
@@ -81,7 +85,6 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         customDiscountPreferenceFragmentBinding =CustomDiscountPreferenceFragmentBinding.inflate(inflater,container,false);
         view= customDiscountPreferenceFragmentBinding.getRoot();
 
-
         return view;
     }
 
@@ -108,6 +111,8 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     private void viewModelInitialize() {
         customPreferenceViewModel =new ViewModelProvider(this, new CustomPreferenceListViewModelFactory(requireActivity().getApplication()))
                 .get(CustomPreferenceListViewModel.class);
+        saveTitleViewOneLineParamViewModel=new ViewModelProvider(this,new SaveTitleViewOneLineParamViewModelFactory(requireActivity().getApplication()))
+                .get(SaveTitleViewOneLineParamViewModel.class);
         elementNumberViewText.setText(""+customPreferenceViewModel.listSize());
     }
 

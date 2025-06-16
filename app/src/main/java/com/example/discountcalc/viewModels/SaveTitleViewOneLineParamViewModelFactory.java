@@ -19,7 +19,7 @@ public class SaveTitleViewOneLineParamViewModelFactory extends ViewModelProvider
     @Override
     @SuppressWarnings("unchecked")
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if(CustomPreferenceListViewModel.class.isAssignableFrom(modelClass)){
+        if(SaveTitleViewOneLineParamViewModel.class.isAssignableFrom(modelClass)){
             return (T) new SaveTitleViewOneLineParamViewModel(mApplication);
         }
         return super.create(modelClass);

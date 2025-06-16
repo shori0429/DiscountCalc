@@ -201,7 +201,8 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         String title=saveTitle.getText().toString();
         if(title.equals("")){
             //TODO:入力無しは未入力ダイアログ出して保存しないほうがいいかも。
-            title="Custom001";
+            Toast.makeText(getContext(),"未入力",Toast.LENGTH_SHORT).show();
+            return false;
         }
         Log.i("saveId","saveID : "+title);
         if(!customPreferenceViewModel.existingCheckDAO(title)){

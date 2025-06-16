@@ -15,6 +15,8 @@ public class PreferenceParamRepository {
     private PreferenceParamDAO preferenceParamDAO;
     private List<PreferenceParam> preferenceParamList;
 
+    private List<String> saveNameList;
+
     private int result;
 
     // WordRepositoryをユニットテストするには、Application依存関係を削除する必要があることに注意
@@ -25,6 +27,7 @@ public class PreferenceParamRepository {
         AppDataBase db = AppDataBase.getDatabase(application);
         preferenceParamDAO=db.preferenceParamDAO();
         preferenceParamList=new ArrayList<>();
+        saveNameList=new ArrayList<>();
         Log.i("database", Objects.requireNonNull(db.getOpenHelper().getDatabaseName()));
     }
 
@@ -99,5 +102,12 @@ public class PreferenceParamRepository {
             preferenceParamList=preferenceParamDAO.getSave(getName);
         });
         return preferenceParamList;
+    }
+
+    public List<String> getSaveNameColumnsList(){
+        AppDataBase.databaseWriteExecutor.execute(()->{
+            saveNameList=preferenceParamDAO.getSaveNameColumnsList();
+        });
+        return saveNameList;
     }
 }

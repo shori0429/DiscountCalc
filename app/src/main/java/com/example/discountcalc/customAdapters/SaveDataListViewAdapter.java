@@ -16,7 +16,7 @@ import com.example.discountcalc.params.PreferenceParam;
 import java.util.List;
 
 public class SaveDataListViewAdapter
-        extends ListAdapter<PreferenceParam, SaveDataListViewAdapter.SaveDataListViewHolder>{
+        extends ListAdapter<String, SaveDataListViewAdapter.SaveDataListViewHolder>{
 
     private SavedataListviewOnelineBinding binding;
 
@@ -31,8 +31,8 @@ public class SaveDataListViewAdapter
             this.binding=binding;
         }
 
-        public void bind(PreferenceParam param){
-            binding.saveTitle.setText(param.saveName());
+        public void bind(String param){
+            binding.saveTitle.setText(param);
             binding.executePendingBindings();
         }
     }
@@ -48,14 +48,14 @@ public class SaveDataListViewAdapter
 
     @Override
     public void onBindViewHolder(@NonNull SaveDataListViewHolder holder, int position) {
-        PreferenceParam data=getItem(position);
+        String data=getItem(position);
 
         holder.bind(data);
     }
 
     @Override
     public void onBindViewHolder(@NonNull SaveDataListViewHolder holder, int position, @NonNull List<Object> payloads) {
-        PreferenceParam data=getItem(position);
+        String data=getItem(position);
 
         if(payloads.isEmpty()){
             holder.bind(data);
@@ -71,28 +71,28 @@ public class SaveDataListViewAdapter
     }
 
     @Override
-    public void submitList(@Nullable List<PreferenceParam> list) {
+    public void submitList(@Nullable List<String> list) {
         super.submitList(list);
     }
 
-    private static final DiffUtil.ItemCallback<PreferenceParam> DIFF_CALLBACK=
-            new DiffUtil.ItemCallback<PreferenceParam>() {
+    private static final DiffUtil.ItemCallback<String> DIFF_CALLBACK=
+            new DiffUtil.ItemCallback<String>() {
                 @Override
-                public boolean areItemsTheSame(@NonNull PreferenceParam oldItem, @NonNull PreferenceParam newItem) {
-                    return oldItem.saveName().equals(newItem.saveName());
+                public boolean areItemsTheSame(@NonNull String oldItem, @NonNull String newItem) {
+                    return oldItem.equals(newItem);
                 }
 
                 @Override
-                public boolean areContentsTheSame(@NonNull PreferenceParam oldItem, @NonNull PreferenceParam newItem) {
+                public boolean areContentsTheSame(@NonNull String oldItem, @NonNull String newItem) {
                     return oldItem.equals(newItem);
                 }
 
                 @Nullable
                 @Override
-                public Object getChangePayload(@NonNull PreferenceParam oldItem, @NonNull PreferenceParam newItem) {
+                public Object getChangePayload(@NonNull String oldItem, @NonNull String newItem) {
                     Bundle diff=new Bundle();
-                    if(oldItem.saveName().equals(newItem.saveName())){
-                        diff.putString("saveName", newItem.saveName());
+                    if(oldItem.equals(newItem)){
+                        diff.putString("saveName", newItem);
                     }
                     return diff;
                 }

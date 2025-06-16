@@ -40,9 +40,8 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         return preferenceDataList;
     }
 
-    public List<PreferenceParam> SaveNameList(){
-        getSaveNameListDAO();
-        return allSaveDataList;
+    public List<String> SaveNameList(){
+        return getSaveNameListDAO();
     }
 
     public CustomPreferenceData getCustomPreferenceData(int index){
@@ -151,8 +150,8 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         dataRepository.deleteAll();
     }
 
-    public void getSaveNameListDAO(){
-        allSaveDataList=dataRepository.getAll();
+    public List<String> getSaveNameListDAO(){
+        return dataRepository.getSaveNameColumnsList();
     }
 
 }

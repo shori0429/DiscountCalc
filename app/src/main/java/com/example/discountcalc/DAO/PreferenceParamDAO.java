@@ -6,10 +6,13 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.RawQuery;
 import androidx.room.Update;
 import androidx.room.Upsert;
+import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.example.discountcalc.params.PreferenceParam;
+import com.example.discountcalc.params.SQLiteTableInfo;
 
 import java.util.List;
 
@@ -44,7 +47,6 @@ public interface PreferenceParamDAO {
     @Query("SELECT uid,save_name,per FROM custom_preference_table WHERE save_name LIKE :saveName")
     List<PreferenceParam> getSave(String saveName);
 
-    @Query("PRAGMA table_info(custom_preference_table)")
-    List<String> getSaveNameColumnsList();
-
+    @RawQuery
+    List<SQLiteTableInfo> getSaveNameColumnsList(SupportSQLiteQuery query);
 }

@@ -3,8 +3,11 @@ package com.example.discountcalc.dataBase;
 import android.app.Application;
 import android.util.Log;
 
+import androidx.sqlite.db.SimpleSQLiteQuery;
+
 import com.example.discountcalc.DAO.PreferenceParamDAO;
 import com.example.discountcalc.params.PreferenceParam;
+import com.example.discountcalc.params.SQLiteTableInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +18,7 @@ public class PreferenceParamRepository {
     private PreferenceParamDAO preferenceParamDAO;
     private List<PreferenceParam> preferenceParamList;
 
-    private List<String> saveNameList;
+    private List<SQLiteTableInfo> sqLiteTableInfoList;
 
     private int result;
 
@@ -27,7 +30,7 @@ public class PreferenceParamRepository {
         AppDataBase db = AppDataBase.getDatabase(application);
         preferenceParamDAO=db.preferenceParamDAO();
         preferenceParamList=new ArrayList<>();
-        saveNameList=new ArrayList<>();
+        sqLiteTableInfoList =new ArrayList<>();
         Log.i("database", Objects.requireNonNull(db.getOpenHelper().getDatabaseName()));
     }
 
@@ -106,8 +109,13 @@ public class PreferenceParamRepository {
 
     public List<String> getSaveNameColumnsList(){
         AppDataBase.databaseWriteExecutor.execute(()->{
-            saveNameList=preferenceParamDAO.getSaveNameColumnsList();
+            SimpleSQLiteQuery query=new SimpleSQLiteQuery("PRAGMA table_info(custom_preference_table)");
+            sqLiteTableInfoList =preferenceParamDAO.getSaveNameColumnsList(query);
         });
+        List<String> saveNameList=new ArrayList<>();
+        for(SQLiteTableInfo info: sqLiteTableInfoList){
+            saveNameList.add(info.name());
+        }
         return saveNameList;
     }
 }

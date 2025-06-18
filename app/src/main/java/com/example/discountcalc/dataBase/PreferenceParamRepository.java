@@ -20,6 +20,8 @@ public class PreferenceParamRepository {
 
     private List<SQLiteTableInfo> sqLiteTableInfoList;
 
+    private List<String> saveNameList;
+
     private int result;
 
     // WordRepositoryをユニットテストするには、Application依存関係を削除する必要があることに注意
@@ -31,6 +33,7 @@ public class PreferenceParamRepository {
         preferenceParamDAO=db.preferenceParamDAO();
         preferenceParamList=new ArrayList<>();
         sqLiteTableInfoList =new ArrayList<>();
+        saveNameList=new ArrayList<>();
         Log.i("database", Objects.requireNonNull(db.getOpenHelper().getDatabaseName()));
     }
 
@@ -109,8 +112,15 @@ public class PreferenceParamRepository {
 
     public List<String> getSaveNameColumnsList(){
         AppDataBase.databaseWriteExecutor.execute(()->{
+            saveNameList= preferenceParamDAO.getSaveNameColumnsList();
+        });
+        return saveNameList;
+    }
+
+    public List<String> getTableInfoList(){
+        AppDataBase.databaseWriteExecutor.execute(()->{
             SimpleSQLiteQuery query=new SimpleSQLiteQuery("PRAGMA table_info(custom_preference_table)");
-            sqLiteTableInfoList =preferenceParamDAO.getSaveNameColumnsList(query);
+            sqLiteTableInfoList =preferenceParamDAO.getTableInfoList(query);
         });
         List<String> saveNameList=new ArrayList<>();
         for(SQLiteTableInfo info: sqLiteTableInfoList){

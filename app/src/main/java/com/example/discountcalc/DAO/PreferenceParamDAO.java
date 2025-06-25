@@ -3,7 +3,6 @@ package com.example.discountcalc.DAO;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.RawQuery;
 import androidx.room.Update;
@@ -20,18 +19,17 @@ import java.util.List;
 * */
 @Dao
 public interface PreferenceParamDAO {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     void insert(List<PreferenceParam> params);
 
     @Upsert
-    void upsert(PreferenceParam param);
-
+    void upsert(List<PreferenceParam> param);
 
     @Upsert
     void upsertAll(List<PreferenceParam> params);
 
     @Update
-    int update(PreferenceParam param);
+    int update(List<PreferenceParam> param);
 
     @Delete int delete(PreferenceParam param);
 

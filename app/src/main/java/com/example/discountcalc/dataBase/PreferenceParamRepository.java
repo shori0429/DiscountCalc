@@ -54,7 +54,7 @@ public class PreferenceParamRepository {
         });
     }
 
-    public void upsert(PreferenceParam param){
+    public void upsert(List<PreferenceParam> param){
         AppDataBase.databaseWriteExecutor.execute(()->{
             try {
                 preferenceParamDAO.upsert(param);
@@ -76,7 +76,7 @@ public class PreferenceParamRepository {
         Log.i("database","do_upsert");
     }
 
-    public void update(PreferenceParam param){
+    public void update(List<PreferenceParam> param){
         AppDataBase.databaseWriteExecutor.execute(()->{
             preferenceParamDAO.update(param);
         });

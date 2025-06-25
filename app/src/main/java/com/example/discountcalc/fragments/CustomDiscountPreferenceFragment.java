@@ -215,8 +215,11 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         }
         Log.i("saveId","saveID : "+title);
         if(!customPreferenceViewModel.existingCheckDAO(title)){
-            customPreferenceViewModel.saveDataBase(title);
-            Toast.makeText(getContext(),title+"の名前で保存しました。",Toast.LENGTH_SHORT).show();
+            if(customPreferenceViewModel.saveNewData(title)) {
+                Toast.makeText(getContext(), title + "の名前で保存しました。", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(getContext(), "保存できませんでした。", Toast.LENGTH_SHORT).show();
+            }
         }else{
             // TODO:上書き確認を表示するフラグメントを作成して、表示する処理を作成する。
             // はいで上書き、いいえでキャンセル

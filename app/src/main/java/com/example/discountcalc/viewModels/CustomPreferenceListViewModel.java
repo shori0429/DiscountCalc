@@ -99,13 +99,26 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         Objects.requireNonNull(preferenceDataList.getValue()).get(index).setDiscountNo(value);
     }
 
-    public boolean saveDataBase(@NonNull String saveName){
+    public boolean saveNewData(@NonNull String saveName){
         if(preferenceDataList.getValue()!=null) {
             List<PreferenceParam> params=new ArrayList<>();
             for (var data : preferenceDataList.getValue()) {
                 params.add(PreferenceParam.createPreferenceParam(saveName, data.DiscountPer()));
             }
-            dataRepository.upsertAll(params);
+            dataRepository.insert(params);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean SaveUpdateData(@NonNull String saveName){
+        if(preferenceDataList.getValue()!=null){
+            List<PreferenceParam> params=new ArrayList<>();
+            for (var data : preferenceDataList.getValue()) {
+                params.add(PreferenceParam.createPreferenceParam(saveName, data.DiscountPer()));
+            }
+            dataRepository.update(params);
+            return true;
         }
         return false;
     }
@@ -126,8 +139,10 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
     public boolean existingCheckDAO(String name){
         List<PreferenceParam> params;
         params= dataRepository.getSave(name);
-        Log.i("existingCheck",""+params.size());
-        return params != null;
+        for(PreferenceParam param:params){
+            if(param.saveName().equals(name))return true;
+        }
+        return false;
     }
 
     public void getAllDAO(){

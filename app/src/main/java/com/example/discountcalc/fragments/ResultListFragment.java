@@ -50,9 +50,9 @@ public class ResultListFragment extends Fragment {
 
     ArrayList<DiscountData> configDataList;
 
-    ArrayList<Integer> discountPers;
+    ArrayList<Integer> discountPerList;
 
-    ArrayList<Integer> configEnums;
+    ArrayList<Integer> configEnumList;
 
     // 結果表示数
     int viewCount;
@@ -192,13 +192,13 @@ public class ResultListFragment extends Fragment {
 
     // DataStoreから割引データの設定取得
     private void loadDataStore() {
-        discountPers = new ArrayList<>();
-        configEnums = new ArrayList<>();
+        discountPerList = new ArrayList<>();
+        configEnumList = new ArrayList<>();
 
         for (int i = 0; i < viewCount; i++) {
             //ロード処理
-            discountPers.add(i, dataStoreHelper.getIntValue(DISCOUNT_KEY + i));
-            configEnums.add(i, dataStoreHelper.getIntValue(CONFIG_ENUM_KEY + i));
+            discountPerList.add(i, dataStoreHelper.getIntValue(DISCOUNT_KEY + i));
+            configEnumList.add(i, dataStoreHelper.getIntValue(CONFIG_ENUM_KEY + i));
         }
         getPreferences();
     }
@@ -218,7 +218,7 @@ public class ResultListFragment extends Fragment {
     private void calcDiscounts() {
         for (int i = 0; i < viewCount; i++) {
             // 割引率取得
-            int discountPer = discountPers.get(i);
+            int discountPer = discountPerList.get(i);
             // 割引額算出
             int discountPrice = DiscountCalc.discountCalculationIntPercentage(price, discountPer);
             // 割引後の価格算出
@@ -258,11 +258,11 @@ public class ResultListFragment extends Fragment {
     private void createDiscountPreferenceData() {
         // あらかじめ用意された割引率を取得
         int[] discountData = getResources().getIntArray(R.array.preset_discount_values);
-        if (discountPers == null) {
-            discountPers = new ArrayList<>();
+        if (discountPerList == null) {
+            discountPerList = new ArrayList<>();
         }
         for (int i = 0; i < discountData.length; i++) {
-            discountPers.add(i, discountData[i]);
+            discountPerList.add(i, discountData[i]);
         }
         // 使用する割引率設定をプリセットに指定して保存しておく。
         discountType=DiscountType.Preset;

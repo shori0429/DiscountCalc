@@ -1,6 +1,5 @@
 package com.example.discountcalc.fragments;
 
-import static com.example.discountcalc.dataBase.DataStoreKey.*;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -32,15 +31,6 @@ import com.example.discountcalc.viewModels.SaveTitleViewOneLineParamViewModelFac
 import java.util.ArrayList;
 
 public class CustomDiscountPreferenceFragment extends Fragment {
-
-    // 要素数保存用のキー
-    final String saveCountKey =DISCOUNT_TYPE_CUSTOM_KEY+DISCOUNT_CUSTOM_SAVE_COUNT_KEY;
-
-    // 割引率保存用のキー
-    final String saveDiscountPerKey =DISCOUNT_TYPE_CUSTOM_KEY+DISCOUNT_KEY;
-
-    // 保存する設定名のキー
-    final String saveDiscountId=DISCOUNT_TYPE_CUSTOM_KEY+DISCOUNT_CUSTOM_SAVE_NAME;
 
     CustomDiscountPreferenceFragmentBinding customDiscountPreferenceFragmentBinding;
 

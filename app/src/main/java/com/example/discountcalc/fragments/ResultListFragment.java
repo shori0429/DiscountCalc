@@ -1,13 +1,10 @@
 package com.example.discountcalc.fragments;
 
-import static com.example.discountcalc.dataBase.DataStoreKey.*;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.datastore.preferences.core.Preferences;
-import androidx.datastore.rxjava3.RxDataStore;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -23,8 +20,6 @@ import android.view.ViewGroup;
 import com.example.discountcalc.calculationPack.ConvertDisplayUnitsHelper;
 import com.example.discountcalc.calculationPack.DiscountCalc;
 import com.example.discountcalc.customAdapters.ResultLayoutAdapter;
-import com.example.discountcalc.dataBase.CustomConfigDataStoreSingleton;
-import com.example.discountcalc.dataBase.DataStoreHelper;
 import com.example.discountcalc.params.DiscountType;
 import com.example.discountcalc.params.DiscountData;
 import com.example.discountcalc.R;
@@ -50,12 +45,6 @@ public class ResultListFragment extends Fragment {
     private ResultLayoutAdapter resultLayoutAdapter;
 
     DiscountCalcViewModel discountCalcViewModel;
-
-    // データストアのインスタンス取得用
-    CustomConfigDataStoreSingleton dataStoreSingleton;
-
-    // データストアヘルパー取得用
-    private DataStoreHelper dataStoreHelper;
 
     private ResultPriceListBinding resultPriceListBinding;
 

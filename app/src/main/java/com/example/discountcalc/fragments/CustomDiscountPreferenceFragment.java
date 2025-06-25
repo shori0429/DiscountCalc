@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -150,8 +151,16 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         });
 
         saveButton.setOnClickListener(b->{
+            b.setEnabled(false);
             saveDataStore();
             saveDataListViewAdapter.submitList(new ArrayList<>(customPreferenceViewModel.SaveNameList()));
+            // 1秒後にボタン再使用可能に
+            Handler handler=new Handler();
+            handler.postDelayed(() ->{
+                Log.d("button","recasting");
+                b.setEnabled(true);
+            },1000);
+            Log.i("button","available");
         });
 
     }

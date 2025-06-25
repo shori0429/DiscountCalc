@@ -23,6 +23,8 @@ import com.example.discountcalc.customAdapters.ResultLayoutAdapter;
 import com.example.discountcalc.params.DiscountType;
 import com.example.discountcalc.params.DiscountData;
 import com.example.discountcalc.R;
+import com.example.discountcalc.viewModels.CustomPreferenceListViewModel;
+import com.example.discountcalc.viewModels.CustomPreferenceListViewModelFactory;
 import com.example.discountcalc.viewModels.DiscountCalcViewModel;
 import com.example.discountcalc.databinding.ResultPriceListBinding;
 
@@ -46,16 +48,16 @@ public class ResultListFragment extends Fragment {
 
     DiscountCalcViewModel discountCalcViewModel;
 
+    // カスタム設定データのViewModel
+    CustomPreferenceListViewModel customPreferenceListViewModel;
+
     private ResultPriceListBinding resultPriceListBinding;
 
     ArrayList<DiscountData> configDataList;
 
     ArrayList<Integer> discountPerList;
 
-    ArrayList<Integer> configEnumList;
 
-    // 結果表示数
-    int viewCount;
 
     // 計算タイプ
     DiscountType discountType;
@@ -69,7 +71,7 @@ public class ResultListFragment extends Fragment {
 
         // Get the ViewModel.
         Log.i("ResultListFragment", "Called ViewModelProvider.get");
-        discountCalcViewModel = new ViewModelProvider(requireActivity()).get(DiscountCalcViewModel.class);
+        viewModelInitialize();
 
         LivedataInit();
 
@@ -78,7 +80,7 @@ public class ResultListFragment extends Fragment {
         // 初回起動時の場合、データストアから値取得しないように(初期値-1になる為)
 
         // 保存データ取得
-        loadDataStore();
+        loadSettingData();
 
         if (discountType == DiscountType.None) {
             createDiscountPreferenceData();
@@ -98,6 +100,12 @@ public class ResultListFragment extends Fragment {
         recyclerView.setLayoutManager(llm);
         recyclerView.setAdapter(resultLayoutAdapter);
 
+    }
+
+    private void viewModelInitialize() {
+        discountCalcViewModel = new ViewModelProvider(requireActivity()).get(DiscountCalcViewModel.class);
+        customPreferenceListViewModel =new ViewModelProvider(this,new CustomPreferenceListViewModelFactory(requireActivity().getApplication()))
+                .get(CustomPreferenceListViewModel.class);
     }
 
     //入力価格データ購読設定
@@ -125,46 +133,20 @@ public class ResultListFragment extends Fragment {
     // 表示数取得
     private void getViewCountData() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
-        viewCount = sharedPreferences.getInt("viewCount", -1);
-        Log.i("viewCount", "Result-sharedPreferences:" + viewCount);
 
         // リスト初期化
         configDataList = new ArrayList<>();
-        for (int i = 0; i < viewCount; i++) {
-            configDataList.add(i, new DiscountData());
-        }
     }
 
     private boolean saveDataStore() {
-        if(PreferenceManager.getDefaultSharedPreferences(requireContext()).getBoolean("isSavePreferences",false)){
-            return false;
-        }
-        for (int i = 0; i < viewCount; i++) {
-            final String discountKey = DISCOUNT_KEY + i;
-
-            if (!dataStoreHelper.putIntegerValue(discountKey, discountPerList.get(i))) {
-                Log.e("viewCount_put", discountKey + ":put_error");
-                return false;
-            }
-        }
-        if (!dataStoreHelper.putIntegerValue(CONFIG_TYPE_KEY, discountType.getValue())) {
-            Log.e("configType_put", discountType.toString());
-            return false;
-        } else {
-            Log.i("configType_put", discountType.toString());
-        }
-        return true;
+        return !PreferenceManager.getDefaultSharedPreferences(requireContext()).getBoolean("isSavePreferences", false);
     }
 
-    // DataStoreから割引データの設定取得
-    private void loadDataStore() {
+    private void loadSettingData() {
         discountPerList = new ArrayList<>();
-        configEnumList = new ArrayList<>();
-
-        for (int i = 0; i < viewCount; i++) {
+        for (int i = 0; i < customPreferenceListViewModel.listSize(); i++) {
             //ロード処理
-            discountPerList.add(i, dataStoreHelper.getIntValue(DISCOUNT_KEY + i));
-            configEnumList.add(i, dataStoreHelper.getIntValue(CONFIG_ENUM_KEY + i));
+            discountPerList.add(i, customPreferenceListViewModel.getCustomPreferenceData(i).DiscountPer());
         }
         getPreferences();
     }
@@ -189,7 +171,6 @@ public class ResultListFragment extends Fragment {
             int discountPrice = DiscountCalc.discountCalculationIntPercentage(price, discountPer);
             // 割引後の価格算出
             int afterPrice = price - discountPrice;
-            //int enumKey = configEnums.get(i);
 
             DiscountData data = new DiscountData(discountPer, discountPrice, afterPrice, 0);
             configDataList.set(i, data);

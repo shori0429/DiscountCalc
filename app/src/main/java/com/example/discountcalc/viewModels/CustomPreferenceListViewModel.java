@@ -103,7 +103,7 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         if(preferenceDataList.getValue()!=null) {
             List<PreferenceParam> params=new ArrayList<>();
             for (var data : preferenceDataList.getValue()) {
-                params.add(new PreferenceParam(data.DiscountNo(), saveName, data.DiscountPer()));
+                params.add(PreferenceParam.createPreferenceParam(saveName, data.DiscountPer()));
             }
             dataRepository.upsertAll(params);
         }

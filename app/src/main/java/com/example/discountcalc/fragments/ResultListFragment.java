@@ -73,11 +73,6 @@ public class ResultListFragment extends Fragment {
 
         LivedataInit();
 
-        // データストアインスタンス取得
-        getDataStoreInstance();
-        // データストアヘルパー取得
-        dataStoreHelperInitialize(dataStoreSingleton.getDatastore());
-
         //　表示数取得
         getViewCountData();
         // 初回起動時の場合、データストアから値取得しないように(初期値-1になる為)
@@ -129,25 +124,9 @@ public class ResultListFragment extends Fragment {
 
     // 表示数取得
     private void getViewCountData() {
-        //
-        final String viewcountKey = VIEWCOUNT_KEY;
-        int count = dataStoreHelper.getIntValue(viewcountKey);
-
-        // データが存在しない場合デフォルト値をviewCountとし、その値も保存する
-        if (count <= -1) {
-            viewCount = DEFAULT_VIEWCOUNT;
-            if (!dataStoreHelper.putIntegerValue(viewcountKey, viewCount)) {
-                Log.e("viewcount_put", viewcountKey + ":put_error");
-            }
-        } else {
-            viewCount = count;
-            Log.i("viewCount", Integer.toString(count));
-
-            //
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
-            viewCount = sharedPreferences.getInt("viewCount", -1);
-            Log.i("viewCount", "Result-sharedPreferences:" + count);
-        }
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        viewCount = sharedPreferences.getInt("viewCount", -1);
+        Log.i("viewCount", "Result-sharedPreferences:" + viewCount);
 
         // リスト初期化
         configDataList = new ArrayList<>();
@@ -156,27 +135,14 @@ public class ResultListFragment extends Fragment {
         }
     }
 
-
-    // DataStore取得(MainActivityで取得済み)
-    private void getDataStoreInstance() {
-        dataStoreSingleton = CustomConfigDataStoreSingleton.getInstance();
-    }
-
-    // DataStoreのヘルパー取得
-    private void dataStoreHelperInitialize(RxDataStore<Preferences> dataStore) {
-        if (dataStoreHelper == null)
-            // 子フラグメントとして使用しているので親フラグメントのFragmentを引数に
-            dataStoreHelper = new DataStoreHelper(this.getParentFragment(), dataStore);
-    }
-
-    // DataStoreに割引データの設定を保存
     private boolean saveDataStore() {
         if(PreferenceManager.getDefaultSharedPreferences(requireContext()).getBoolean("isSavePreferences",false)){
             return false;
         }
         for (int i = 0; i < viewCount; i++) {
             final String discountKey = DISCOUNT_KEY + i;
-            if (!dataStoreHelper.putIntegerValue(discountKey, discountPers.get(i))) {
+
+            if (!dataStoreHelper.putIntegerValue(discountKey, discountPerList.get(i))) {
                 Log.e("viewCount_put", discountKey + ":put_error");
                 return false;
             }

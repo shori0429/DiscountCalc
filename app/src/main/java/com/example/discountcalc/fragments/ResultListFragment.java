@@ -134,12 +134,23 @@ public class ResultListFragment extends Fragment {
     }
 
     private void loadSettingData() {
-        discountPerList = new ArrayList<>();
-        for (int i = 0; i < customPreferenceListViewModel.listSize(); i++) {
-            //ロード処理
-            discountPerList.add(i, customPreferenceListViewModel.getCustomPreferenceData(i).DiscountPer());
-        }
+        // 設定データ取得
         getPreferences();
+
+        // 割引率のリスト初期化
+        discountPerList=new ArrayList<>();
+        switch (discountType) {
+            case None, Preset -> createDiscountPreferenceData();
+            case Custom -> {
+                if(customPreferenceListViewModel.listSize()==0){
+                    createDiscountPreferenceData();
+                    break;
+                }
+                for (int i = 0; i < customPreferenceListViewModel.listSize(); i++) {
+                    discountPerList.add(i, customPreferenceListViewModel.getCustomPreferenceData(i).DiscountPer());
+                }
+            }
+        }
     }
 
     // デフォルトの割引率設定を指定

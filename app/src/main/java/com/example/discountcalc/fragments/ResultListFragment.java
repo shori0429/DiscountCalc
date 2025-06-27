@@ -58,9 +58,8 @@ public class ResultListFragment extends Fragment {
     // 結果表示用のリスト
     ArrayList<DiscountData> resultDataList;
 
+    // 使用する割引率のリスト
     ArrayList<Integer> discountPerList;
-
-
 
     // 計算タイプ
     DiscountType discountType;
@@ -153,9 +152,8 @@ public class ResultListFragment extends Fragment {
         }
     }
 
-    // デフォルトの割引率設定を指定
     private void getPreferences() {
-        // Preferences.xmlで保存された設定データを呼び出し、discountTypeにセット
+        // discount_preferences_toppage.xmlで保存された設定データを呼び出し、discountTypeにセット
         preferences=PreferenceManager.getDefaultSharedPreferences(this.requireContext());
 
         // 表示数取得

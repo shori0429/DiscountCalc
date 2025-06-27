@@ -36,6 +36,8 @@ public class ResultListFragment extends Fragment {
 
     // デフォルトの表示数
     private final int DEFAULT_VIEWCOUNT = 10;
+    // 表示数
+    private int viewCount=0;
 
     // 価格
     private int price=0;
@@ -74,10 +76,6 @@ public class ResultListFragment extends Fragment {
         viewModelInitialize();
 
         LivedataInit();
-
-        //　表示数取得
-        getViewCountData();
-        // 初回起動時の場合、データストアから値取得しないように(初期値-1になる為)
 
         // 保存データ取得
         loadSettingData();
@@ -130,14 +128,6 @@ public class ResultListFragment extends Fragment {
         return view;
     }
 
-    // 表示数取得
-    private void getViewCountData() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
-
-        // リスト初期化
-        configDataList = new ArrayList<>();
-    }
-
     private boolean saveDataStore() {
         return !PreferenceManager.getDefaultSharedPreferences(requireContext()).getBoolean("isSavePreferences", false);
     }
@@ -155,6 +145,9 @@ public class ResultListFragment extends Fragment {
     private void getPreferences() {
         // Preferences.xmlで保存された設定データを呼び出し、discountTypeにセット
         preferences=PreferenceManager.getDefaultSharedPreferences(this.requireContext());
+
+        // 表示数取得
+        viewCount=preferences.getInt(getString(R.string.view_count),DEFAULT_VIEWCOUNT);
 
         String useKey=getString(R.string.using_setting);
         // SharedPreferencesに保存された設定キー取得しセット。存在しない場合はNone

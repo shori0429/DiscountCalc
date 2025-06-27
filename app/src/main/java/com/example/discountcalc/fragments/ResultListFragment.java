@@ -55,7 +55,8 @@ public class ResultListFragment extends Fragment {
 
     private ResultPriceListBinding resultPriceListBinding;
 
-    ArrayList<DiscountData> configDataList;
+    // 結果表示用のリスト
+    ArrayList<DiscountData> resultDataList;
 
     ArrayList<Integer> discountPerList;
 
@@ -91,7 +92,7 @@ public class ResultListFragment extends Fragment {
         paddingFlags[2] = true;
 
         recyclerView = resultPriceListBinding.resultPriceList;
-        resultLayoutAdapter = new ResultLayoutAdapter(configDataList, ConvertDisplayUnitsHelper.dpToPx(30, requireContext()), paddingFlags);
+        resultLayoutAdapter = new ResultLayoutAdapter(resultDataList, ConvertDisplayUnitsHelper.dpToPx(30, requireContext()), paddingFlags);
         // 縦方向のLayoutManagerを作成
         LinearLayoutManager llm = new LinearLayoutManager(resultPriceListBinding.getRoot().getContext());
         recyclerView.setHasFixedSize(true);
@@ -112,7 +113,7 @@ public class ResultListFragment extends Fragment {
         final Observer<Integer> priceObserver = integer -> {
             price = integer;
             calcDiscounts();
-            resultLayoutAdapter.updateItem(configDataList);
+            resultLayoutAdapter.updateItem(resultDataList);
         };
         discountCalcViewModel.getPrice().observe(getViewLifecycleOwner(), priceObserver);
     }
@@ -153,10 +154,12 @@ public class ResultListFragment extends Fragment {
         // SharedPreferencesに保存された設定キー取得しセット。存在しない場合はNone
         String settingType=preferences.getString(useKey,DiscountType.None.name());
         discountType = DiscountType.valueOf(settingType);
+        resultDataList =new ArrayList<>();
     }
 
     // 計算処理
     private void calcDiscounts() {
+        resultDataList.clear();
         for (int i = 0; i < viewCount; i++) {
             // 割引率取得
             int discountPer = discountPerList.get(i);
@@ -165,8 +168,9 @@ public class ResultListFragment extends Fragment {
             // 割引後の価格算出
             int afterPrice = price - discountPrice;
 
+            // 結果用のリストに追加
             DiscountData data = new DiscountData(discountPer, discountPrice, afterPrice, 0);
-            configDataList.set(i, data);
+            resultDataList.add(i, data);
         }
     }
 

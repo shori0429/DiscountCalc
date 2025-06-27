@@ -1,15 +1,16 @@
 package com.example.discountcalc.DAO;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.RawQuery;
 import androidx.room.Update;
 import androidx.room.Upsert;
+import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.example.discountcalc.params.PreferenceParam;
+import com.example.discountcalc.params.SQLiteTableInfo;
 
 import java.util.List;
 
@@ -18,18 +19,17 @@ import java.util.List;
 * */
 @Dao
 public interface PreferenceParamDAO {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     void insert(List<PreferenceParam> params);
 
     @Upsert
-    void upsert(PreferenceParam param);
-
+    void upsert(List<PreferenceParam> param);
 
     @Upsert
     void upsertAll(List<PreferenceParam> params);
 
     @Update
-    int update(PreferenceParam param);
+    int update(List<PreferenceParam> param);
 
     @Delete int delete(PreferenceParam param);
 
@@ -41,7 +41,12 @@ public interface PreferenceParamDAO {
     @Query("SELECT * FROM custom_preference_table")
     List<PreferenceParam> getAll();
 
-    @Query("SELECT uid,save_name,per FROM custom_preference_table WHERE save_name = :saveName")
+    @Query("SELECT uid,save_name,per FROM custom_preference_table WHERE save_name LIKE :saveName")
     List<PreferenceParam> getSave(String saveName);
 
+    @Query("SELECT DISTINCT save_name from custom_preference_table")
+    List<String> getSaveNameColumnsList();
+
+    @RawQuery
+    List<SQLiteTableInfo> getTableInfoList(SupportSQLiteQuery query);
 }

@@ -23,7 +23,7 @@
 
         <SeekBarPreference
             app:title="表示数"
-            app:key="@string/viewcount"
+            app:key="@string/view_count"
             android:max="10"
             app:min="1"
             app:defaultValue="10"

@@ -1,18 +1,15 @@
 package com.example.discountcalc.fragments;
 
-import static com.example.discountcalc.dataBase.DataStoreKey.*;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.datastore.preferences.core.Preferences;
-import androidx.datastore.rxjava3.RxDataStore;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,40 +18,32 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.discountcalc.DAO.PreferenceParamDAO;
 import com.example.discountcalc.customAdapters.CustomPreferenceListAdapter;
+import com.example.discountcalc.customAdapters.SaveDataListViewAdapter;
 import com.example.discountcalc.dataBase.AppDataBase;
-import com.example.discountcalc.dataBase.CustomConfigDataStoreSingleton;
-import com.example.discountcalc.dataBase.DataStoreHelper;
 import com.example.discountcalc.databinding.CustomDiscountPreferenceFragmentBinding;
-import com.example.discountcalc.params.CustomPreferenceData;
 import com.example.discountcalc.R;
-import com.example.discountcalc.params.PreferenceParam;
+import com.example.discountcalc.viewModels.SaveTitleViewOneLineParamViewModel;
 import com.example.discountcalc.viewModels.CustomPreferenceListViewModel;
 import com.example.discountcalc.viewModels.CustomPreferenceListViewModelFactory;
+import com.example.discountcalc.viewModels.SaveTitleViewOneLineParamViewModelFactory;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 public class CustomDiscountPreferenceFragment extends Fragment {
 
-    // 要素数保存用のキー
-    final String saveCountKey =DISCOUNT_TYPE_CUSTOM_KEY+DISCOUNT_CUSTOM_SAVE_COUNT_KEY;
-
-    // 割引率保存用のキー
-    final String saveDiscountPerKey =DISCOUNT_TYPE_CUSTOM_KEY+DISCOUNT_KEY;
-
-    // 保存する設定名のキー
-    final String saveDiscountId=DISCOUNT_TYPE_CUSTOM_KEY+DISCOUNT_CUSTOM_SAVE_NAME;
-
     CustomDiscountPreferenceFragmentBinding customDiscountPreferenceFragmentBinding;
 
-    // リスト表示に使用するデータ
-    RecyclerView recyclerView;
+    // 設定データ表示に使用するデータ
+    RecyclerView customPreferenceListView;
     CustomPreferenceListAdapter customPreferenceListAdapter;
-
     CustomPreferenceListViewModel customPreferenceViewModel;
+
+    SaveTitleViewOneLineParamViewModel saveTitleViewOneLineParamViewModel;
+
+    // データベースに保存されている設定名
+    RecyclerView saveDataListView;
+    SaveDataListViewAdapter saveDataListViewAdapter;
 
     int elementMax;
 
@@ -87,7 +76,6 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         customDiscountPreferenceFragmentBinding =CustomDiscountPreferenceFragmentBinding.inflate(inflater,container,false);
         view= customDiscountPreferenceFragmentBinding.getRoot();
 
-
         return view;
     }
 
@@ -114,6 +102,8 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     private void viewModelInitialize() {
         customPreferenceViewModel =new ViewModelProvider(this, new CustomPreferenceListViewModelFactory(requireActivity().getApplication()))
                 .get(CustomPreferenceListViewModel.class);
+        saveTitleViewOneLineParamViewModel=new ViewModelProvider(this,new SaveTitleViewOneLineParamViewModelFactory(requireActivity().getApplication()))
+                .get(SaveTitleViewOneLineParamViewModel.class);
         elementNumberViewText.setText(""+customPreferenceViewModel.listSize());
     }
 
@@ -151,20 +141,37 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         });
 
         saveButton.setOnClickListener(b->{
+            b.setEnabled(false);
             saveDataStore();
+            saveDataListViewAdapter.submitList(new ArrayList<>(customPreferenceViewModel.SaveNameList()));
+            // 1秒後にボタン再使用可能に
+            Handler handler=new Handler();
+            handler.postDelayed(() ->{
+                Log.d("button","recasting");
+                b.setEnabled(true);
+            },1000);
+            Log.i("button","available");
         });
 
     }
 
     // リサイクルビューの初期化関数
     private void recyclerViewInitialize() {
-        recyclerView= customDiscountPreferenceFragmentBinding.PreferenceList;
+        customPreferenceListView = customDiscountPreferenceFragmentBinding.PreferenceList;
         customPreferenceListAdapter=new CustomPreferenceListAdapter();
 
         LinearLayoutManager llm=new LinearLayoutManager(view.getContext());
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(llm);
-        recyclerView.setAdapter(customPreferenceListAdapter);
+        customPreferenceListView.setHasFixedSize(true);
+        customPreferenceListView.setLayoutManager(llm);
+        customPreferenceListView.setAdapter(customPreferenceListAdapter);
+
+
+        saveDataListView=customDiscountPreferenceFragmentBinding.saveDataList;
+        saveDataListViewAdapter=new SaveDataListViewAdapter();
+        LinearLayoutManager llm2=new LinearLayoutManager(view.getContext());
+        saveDataListView.setHasFixedSize(true);
+        saveDataListView.setLayoutManager(llm2);
+        saveDataListView.setAdapter(saveDataListViewAdapter);
     }
 
     // データストアからカスタムの割引率設定に関するデータを取得
@@ -193,12 +200,16 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         String title=saveTitle.getText().toString();
         if(title.equals("")){
             //TODO:入力無しは未入力ダイアログ出して保存しないほうがいいかも。
-            title="Custom001";
+            Toast.makeText(getContext(),"未入力",Toast.LENGTH_SHORT).show();
+            return false;
         }
         Log.i("saveId","saveID : "+title);
-        if(customPreferenceViewModel.existingCheckDAO(title)){
-            customPreferenceViewModel.saveDataBase(title);
-            Toast.makeText(getContext(),title+"の名前で保存しました。",Toast.LENGTH_SHORT).show();
+        if(!customPreferenceViewModel.existingCheckDAO(title)){
+            if(customPreferenceViewModel.saveNewData(title)) {
+                Toast.makeText(getContext(), title + "の名前で保存しました。", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(getContext(), "保存できませんでした。", Toast.LENGTH_SHORT).show();
+            }
         }else{
             // TODO:上書き確認を表示するフラグメントを作成して、表示する処理を作成する。
             // はいで上書き、いいえでキャンセル
@@ -220,7 +231,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         //elementNumberViewText.setText("viewmodel:"+listSize+"adapter"+customPreferenceListAdapter.getItemCount());
         //customPreferenceListAdapter.notifyItemInserted(listSize-1);
         // 表示数が10未満の時、リサイクルビューのサイズ変更を固定にする。
-        recyclerView.setHasFixedSize(listSize >= 10);
+        customPreferenceListView.setHasFixedSize(listSize >= 10);
 
         elementNumberViewText.setText(listSize+"");
         updateUI();

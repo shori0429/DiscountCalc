@@ -1,21 +1,26 @@
 package com.example.discountcalc.dataBase;
 
-import android.adservices.common.AdData;
 import android.app.Application;
 import android.util.Log;
 
-import androidx.lifecycle.LiveData;
+import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.example.discountcalc.DAO.PreferenceParamDAO;
 import com.example.discountcalc.params.PreferenceParam;
+import com.example.discountcalc.params.SQLiteTableInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+// TODO:Singletonで実装したほうがいい気はする。
 public class PreferenceParamRepository {
     private PreferenceParamDAO preferenceParamDAO;
     private List<PreferenceParam> preferenceParamList;
+
+    private List<SQLiteTableInfo> sqLiteTableInfoList;
+
+    private List<String> saveNameList;
 
     private int result;
 
@@ -27,11 +32,13 @@ public class PreferenceParamRepository {
         AppDataBase db = AppDataBase.getDatabase(application);
         preferenceParamDAO=db.preferenceParamDAO();
         preferenceParamList=new ArrayList<>();
+        sqLiteTableInfoList =new ArrayList<>();
+        saveNameList=new ArrayList<>();
         Log.i("database", Objects.requireNonNull(db.getOpenHelper().getDatabaseName()));
     }
 
     // Roomは全てのクエリを別スレッドで実行する。
-    public List<PreferenceParam> getAllPreferenceParam(){
+    public List<PreferenceParam> getAll(){
         AppDataBase.databaseWriteExecutor.execute(()->{
             preferenceParamList = preferenceParamDAO.getAll();
         });
@@ -47,7 +54,7 @@ public class PreferenceParamRepository {
         });
     }
 
-    public void upsert(PreferenceParam param){
+    public void upsert(List<PreferenceParam> param){
         AppDataBase.databaseWriteExecutor.execute(()->{
             try {
                 preferenceParamDAO.upsert(param);
@@ -69,7 +76,7 @@ public class PreferenceParamRepository {
         Log.i("database","do_upsert");
     }
 
-    public void update(PreferenceParam param){
+    public void update(List<PreferenceParam> param){
         AppDataBase.databaseWriteExecutor.execute(()->{
             preferenceParamDAO.update(param);
         });
@@ -101,5 +108,24 @@ public class PreferenceParamRepository {
             preferenceParamList=preferenceParamDAO.getSave(getName);
         });
         return preferenceParamList;
+    }
+
+    public List<String> getSaveNameColumnsList(){
+        AppDataBase.databaseWriteExecutor.execute(()->{
+            saveNameList= preferenceParamDAO.getSaveNameColumnsList();
+        });
+        return saveNameList;
+    }
+
+    public List<String> getTableInfoList(){
+        AppDataBase.databaseWriteExecutor.execute(()->{
+            SimpleSQLiteQuery query=new SimpleSQLiteQuery("PRAGMA table_info(custom_preference_table)");
+            sqLiteTableInfoList =preferenceParamDAO.getTableInfoList(query);
+        });
+        List<String> saveNameList=new ArrayList<>();
+        for(SQLiteTableInfo info: sqLiteTableInfoList){
+            saveNameList.add(info.name());
+        }
+        return saveNameList;
     }
 }

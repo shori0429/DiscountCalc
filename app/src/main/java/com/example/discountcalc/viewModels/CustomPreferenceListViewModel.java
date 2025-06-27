@@ -25,16 +25,22 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
     AppDataBase dataBase;
     private final MutableLiveData<List<CustomPreferenceData>> preferenceDataList;
 
+    private List<PreferenceParam> allSaveDataList;
+
     public CustomPreferenceListViewModel(Application application){
         super(application);
         dataRepository=new PreferenceParamRepository(application);
-
         preferenceDataList =new MutableLiveData<>(new ArrayList<>(0));
+        allSaveDataList=new ArrayList<>(0);
         getAllDAO();
     }
 
     public LiveData<List<CustomPreferenceData>> CustomPreferenceList(){
         return preferenceDataList;
+    }
+
+    public List<String> SaveNameList(){
+        return SaveNameColumnsList();
     }
 
     public CustomPreferenceData getCustomPreferenceData(int index){
@@ -93,13 +99,26 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         Objects.requireNonNull(preferenceDataList.getValue()).get(index).setDiscountNo(value);
     }
 
-    public boolean saveDataBase(@NonNull String saveName){
+    public boolean saveNewData(@NonNull String saveName){
         if(preferenceDataList.getValue()!=null) {
             List<PreferenceParam> params=new ArrayList<>();
             for (var data : preferenceDataList.getValue()) {
-                params.add(new PreferenceParam(data.DiscountNo(), saveName, data.DiscountPer()));
+                params.add(PreferenceParam.createPreferenceParam(saveName, data.DiscountPer()));
             }
-            dataRepository.upsertAll(params);
+            dataRepository.insert(params);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean SaveUpdateData(@NonNull String saveName){
+        if(preferenceDataList.getValue()!=null){
+            List<PreferenceParam> params=new ArrayList<>();
+            for (var data : preferenceDataList.getValue()) {
+                params.add(PreferenceParam.createPreferenceParam(saveName, data.DiscountPer()));
+            }
+            dataRepository.update(params);
+            return true;
         }
         return false;
     }
@@ -120,15 +139,19 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
     public boolean existingCheckDAO(String name){
         List<PreferenceParam> params;
         params= dataRepository.getSave(name);
-        return params != null;
+        for(PreferenceParam param:params){
+            if(param.saveName().equals(name))return true;
+        }
+        return false;
     }
 
     public void getAllDAO(){
         List<PreferenceParam> params;
-        params= dataRepository.getAllPreferenceParam();
+        params= dataRepository.getAll();
         if(params!=null) {
             Log.i("repository","connectSuccess");
             Log.i("getAllDAO",params.size()+"");
+            allSaveDataList=params;
             params.forEach(t->{
                 Log.i("repository",t.toString());
             });
@@ -139,6 +162,10 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
 
     public void deleteAllDAO(){
         dataRepository.deleteAll();
+    }
+
+    private List<String> SaveNameColumnsList(){
+        return dataRepository.getSaveNameColumnsList();
     }
 
 }

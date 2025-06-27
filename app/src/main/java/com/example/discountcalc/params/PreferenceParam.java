@@ -9,6 +9,10 @@ import androidx.room.PrimaryKey;
 public record PreferenceParam (@PrimaryKey(autoGenerate = true) int uid,
                                @ColumnInfo(name = "save_name") String saveName,
                                @ColumnInfo(name = "per") int per){
+    // id指定をしないことでデータベースのuidをオートインクリメントさせる。
+    public static PreferenceParam createPreferenceParam(String saveName, int per){
+        return new PreferenceParam(0,saveName,per);
+    }
 
     @NonNull
     @Override

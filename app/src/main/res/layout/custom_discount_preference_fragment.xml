@@ -59,15 +59,28 @@
             android:id="@+id/saveTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="保存する名前"
-            android:gravity="end"
-            android:layout_marginRight="8sp"
             android:layout_marginLeft="8sp"
+            android:layout_marginRight="8sp"
+            android:ems="10"
+            android:gravity="end"
+            android:hint="保存する名前"
             android:inputType="text" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/PreferenceList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/saveDataListTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="保存されたデータ"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/saveDataList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

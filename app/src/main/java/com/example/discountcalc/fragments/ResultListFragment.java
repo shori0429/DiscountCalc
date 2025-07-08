@@ -75,28 +75,7 @@ public class ResultListFragment extends Fragment {
         Log.i("ResultListFragment", "Called ViewModelProvider.get");
         viewModelInitialize();
 
-        LivedataInit();
 
-        // 保存データ取得
-        loadSettingData();
-
-        if (discountType == DiscountType.None) {
-            createDiscountPreferenceData();
-        }
-
-        // 計算
-        calcDiscounts();
-
-        paddingFlags = new boolean[4];
-        paddingFlags[2] = true;
-
-        recyclerView = resultPriceListBinding.resultPriceList;
-        resultLayoutAdapter = new ResultLayoutAdapter(resultDataList, ConvertDisplayUnitsHelper.dpToPx(30, requireContext()), paddingFlags);
-        // 縦方向のLayoutManagerを作成
-        LinearLayoutManager llm = new LinearLayoutManager(resultPriceListBinding.getRoot().getContext());
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(llm);
-        recyclerView.setAdapter(resultLayoutAdapter);
 
     }
 
@@ -104,6 +83,33 @@ public class ResultListFragment extends Fragment {
         discountCalcViewModel = new ViewModelProvider(requireActivity()).get(DiscountCalcViewModel.class);
         customPreferenceListViewModel =new ViewModelProvider(this,new CustomPreferenceListViewModelFactory(requireActivity().getApplication()))
                 .get(CustomPreferenceListViewModel.class);
+
+        // ViewModelのリポジトリLiveDataを購読。
+        customPreferenceListViewModel.RepoPreferenceParamList().observe(getViewLifecycleOwner(),preferenceParams->{
+            // 保存データ取得
+            loadSettingData();
+
+            if (discountType == DiscountType.None) {
+                createDiscountPreferenceData();
+            }
+
+            // 計算
+            calcDiscounts();
+
+            paddingFlags = new boolean[4];
+            paddingFlags[2] = true;
+
+            recyclerView = resultPriceListBinding.resultPriceList;
+            resultLayoutAdapter = new ResultLayoutAdapter(resultDataList, ConvertDisplayUnitsHelper.dpToPx(30, requireContext()), paddingFlags);
+            // 縦方向のLayoutManagerを作成
+            LinearLayoutManager llm = new LinearLayoutManager(resultPriceListBinding.getRoot().getContext());
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(llm);
+            recyclerView.setAdapter(resultLayoutAdapter);
+
+
+            LivedataInit();
+        });
     }
 
     //入力価格データ購読設定
@@ -138,15 +144,16 @@ public class ResultListFragment extends Fragment {
 
         // 割引率のリスト初期化
         discountPerList=new ArrayList<>();
+
         switch (discountType) {
             case None, Preset -> createDiscountPreferenceData();
             case Custom -> {
-                if(customPreferenceListViewModel.listSize()==0){
+                if(customPreferenceListViewModel.RepoPreferenceParamList().getValue().size()==0){
                     createDiscountPreferenceData();
                     break;
                 }
-                for (int i = 0; i < customPreferenceListViewModel.listSize(); i++) {
-                    discountPerList.add(i, customPreferenceListViewModel.getCustomPreferenceData(i).DiscountPer());
+                for (int i = 0; i < customPreferenceListViewModel.RepoPreferenceParamList().getValue().size(); i++) {
+                    discountPerList.add(i, customPreferenceListViewModel.RepoPreferenceParamList().getValue().get(i).per());
                 }
             }
         }
@@ -169,6 +176,8 @@ public class ResultListFragment extends Fragment {
     // 計算処理
     private void calcDiscounts() {
         resultDataList.clear();
+        // 表示数が利用する割引率のリストよりも大きければ、利用する割引率のリストに合わせる。OutOfBoundsの防止
+        if(viewCount>discountPerList.size())viewCount=discountPerList.size();
         for (int i = 0; i < viewCount; i++) {
             // 割引率取得
             int discountPer = discountPerList.get(i);

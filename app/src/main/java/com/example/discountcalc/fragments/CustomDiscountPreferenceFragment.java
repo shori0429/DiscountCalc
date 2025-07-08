@@ -23,12 +23,16 @@ import com.example.discountcalc.customAdapters.SaveDataListViewAdapter;
 import com.example.discountcalc.dataBase.AppDataBase;
 import com.example.discountcalc.databinding.CustomDiscountPreferenceFragmentBinding;
 import com.example.discountcalc.R;
+import com.example.discountcalc.params.CustomPreferenceData;
+import com.example.discountcalc.params.PreferenceParam;
 import com.example.discountcalc.viewModels.SaveTitleViewOneLineParamViewModel;
 import com.example.discountcalc.viewModels.CustomPreferenceListViewModel;
 import com.example.discountcalc.viewModels.CustomPreferenceListViewModelFactory;
 import com.example.discountcalc.viewModels.SaveTitleViewOneLineParamViewModelFactory;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class CustomDiscountPreferenceFragment extends Fragment {
 
@@ -66,7 +70,6 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         bindingElements();
         viewModelInitialize();
         recyclerViewInitialize();
-        setOnClickListeners();
     }
 
 
@@ -104,12 +107,35 @@ public class CustomDiscountPreferenceFragment extends Fragment {
                 .get(CustomPreferenceListViewModel.class);
         saveTitleViewOneLineParamViewModel=new ViewModelProvider(this,new SaveTitleViewOneLineParamViewModelFactory(requireActivity().getApplication()))
                 .get(SaveTitleViewOneLineParamViewModel.class);
-        elementNumberViewText.setText(""+customPreferenceViewModel.listSize());
+
+        // ViewModel内のリポジトリLiveDataの購読。
+        customPreferenceViewModel.RepoPreferenceParamList().observe(getViewLifecycleOwner(),preferenceParams -> {
+            if(customPreferenceViewModel.PreferenceParamList().getValue()==null){
+                // PreferenceListが存在していないときにDBの情報をセットさせる。
+                // 初期化の代わり。
+                customPreferenceViewModel.commitPreferenceParamList();
+                //updateUI();
+            }
+            setOnClickListeners();
+        });
+        // ViewModel内の設定保存データの追跡。
+        customPreferenceViewModel.PreferenceParamList().observe(getViewLifecycleOwner(),preferenceParams -> {
+            updateUI();
+        });
+
     }
 
     private void updateUI() {
         Log.i("updateUI","updateUI");
-        customPreferenceListAdapter.submitList(new ArrayList<>(customPreferenceViewModel.CustomPreferenceList().getValue()));
+        if(customPreferenceViewModel.PreferenceParamList().getValue()==null)return;
+
+        List<CustomPreferenceData> dataList=new ArrayList<>(0);
+        // 新しくデータリストを作成し、それをアダプターとTextViewにセットする。
+        for (var d:customPreferenceViewModel.PreferenceParamList().getValue()) {
+            dataList.add(new CustomPreferenceData(d.uid(),d.per(),d.saveName()));
+        }
+        elementNumberViewText.setText(""+customPreferenceViewModel.listSize());
+        customPreferenceListAdapter.submitList(new ArrayList<>(Objects.requireNonNull(dataList)));
     }
 
     public void setOnClickListeners(){
@@ -143,7 +169,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         saveButton.setOnClickListener(b->{
             b.setEnabled(false);
             saveDataStore();
-            saveDataListViewAdapter.submitList(new ArrayList<>(customPreferenceViewModel.SaveNameList()));
+            saveDataListViewAdapter.submitList(new ArrayList<>(customPreferenceViewModel.getSaveNameList()));
             // 1秒後にボタン再使用可能に
             Handler handler=new Handler();
             handler.postDelayed(() ->{
@@ -226,14 +252,9 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         //customPreferenceViewModel.addPreferenceData(newData);
 
         customPreferenceViewModel.addDefaultPreferenceData();
-        // テキスト更新
-        int listSize= customPreferenceViewModel.listSize();
-        //elementNumberViewText.setText("viewmodel:"+listSize+"adapter"+customPreferenceListAdapter.getItemCount());
-        //customPreferenceListAdapter.notifyItemInserted(listSize-1);
         // 表示数が10未満の時、リサイクルビューのサイズ変更を固定にする。
-        customPreferenceListView.setHasFixedSize(listSize >= 10);
+        customPreferenceListView.setHasFixedSize(customPreferenceViewModel.listSize() >= 10);
 
-        elementNumberViewText.setText(listSize+"");
         updateUI();
     }
 

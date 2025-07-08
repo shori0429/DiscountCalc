@@ -37,12 +37,19 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         return preferenceParamList;
     }
 
-    public LiveData<List<CustomPreferenceData>> CustomPreferenceList(){
-        return preferenceDataList;
+    // リポジトリのデータをviewModelにセット
+    public void commitPreferenceParamList(){
+        List<PreferenceParam> currentList=new ArrayList<>(0);
+        List<PreferenceParam> repoParamList=repoPreferenceParamList.getValue();
+
+        for(int i=0;i<repoParamList.size();i++){
+            currentList.add(new PreferenceParam(i+1,repoParamList.get(i).saveName(),repoParamList.get(i).per()));
+        }
+        preferenceParamList.postValue(currentList);
     }
 
-    public List<String> SaveNameList(){
-        return SaveNameColumnsList();
+    public LiveData<List<PreferenceParam>> RepoPreferenceParamList(){
+        return repoPreferenceParamList;
     }
 
     public PreferenceParam getCustomPreferenceParam(int index){

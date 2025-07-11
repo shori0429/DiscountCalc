@@ -23,14 +23,15 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
     //private final MutableLiveData<List<CustomPreferenceData>> preferenceDataList;
     private final MutableLiveData<List<PreferenceParam>> preferenceParamList;
     // リポジトリのLiveData追跡用のフィールド
-    private final LiveData<List<PreferenceParam>> repoPreferenceParamList;
+//    private final LiveData<List<PreferenceParam>> repoPreferenceParamList;
 
 
     public CustomPreferenceListViewModel(Application application){
         super(application);
         dataRepository=new PreferenceParamRepository(application);
         preferenceParamList=new MutableLiveData<>();
-        repoPreferenceParamList= dataRepository.PreferenceParamList();
+        dataRepository.PreferenceParamList().observeForever(preferenceParamList::setValue);
+//        repoPreferenceParamList= dataRepository.PreferenceParamList();
     }
 
     public LiveData<List<PreferenceParam>> PreferenceParamList(){
@@ -39,18 +40,16 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
 
     // リポジトリのデータをviewModelにセット
     public void commitPreferenceParamList(){
+        if(preferenceParamList.getValue()==null)return;
         List<PreferenceParam> currentList=new ArrayList<>(0);
-        List<PreferenceParam> repoParamList=repoPreferenceParamList.getValue();
+        //List<PreferenceParam> repoParamList=repoPreferenceParamList.getValue();
 
-        for(int i=0;i<repoParamList.size();i++){
-            currentList.add(new PreferenceParam(i+1,repoParamList.get(i).saveName(),repoParamList.get(i).per()));
+        for(int i=0;i<preferenceParamList.getValue().size();i++){
+            currentList.add(new PreferenceParam(i+1,preferenceParamList.getValue().get(i).saveName(),preferenceParamList.getValue().get(i).per()));
         }
         preferenceParamList.postValue(currentList);
     }
 
-    public LiveData<List<PreferenceParam>> RepoPreferenceParamList(){
-        return repoPreferenceParamList;
-    }
 
     public PreferenceParam getCustomPreferenceParam(int index){
         return Objects.requireNonNull(preferenceParamList.getValue()).get(index);
@@ -61,14 +60,14 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
     }
 
     public void addPreferenceData(int per,String saveName){
-        if(preferenceParamList.getValue()==null) preferenceParamList.setValue(repoPreferenceParamList.getValue());
+//        if(preferenceParamList.getValue()==null) preferenceParamList.setValue(repoPreferenceParamList.getValue());
         List<PreferenceParam> currentList=new ArrayList<>(Objects.requireNonNull(preferenceParamList.getValue()));
         currentList.add(new PreferenceParam(listSize()+1,saveName,per));
         preferenceParamList.setValue(currentList);
     }
 
     public void addDefaultPreferenceData(){
-        if(preferenceParamList.getValue()==null) preferenceParamList.setValue(repoPreferenceParamList.getValue());
+//        if(preferenceParamList.getValue()==null) preferenceParamList.setValue(repoPreferenceParamList.getValue());
         List<PreferenceParam> currentList=new ArrayList<>(Objects.requireNonNull(preferenceParamList.getValue()));
         currentList.add(new PreferenceParam(listSize()+1,"",0));
         preferenceParamList.setValue(currentList);
@@ -142,7 +141,7 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
 
     // リポジトリのデータから保存名のリストを重複を取り除いて抽出
     public List<String> getSaveNameList(){
-        return Objects.requireNonNull(repoPreferenceParamList.getValue()).stream()
+        return preferenceParamList.getValue().stream()
                 .map(PreferenceParam::saveName)
                 .distinct()
                 .collect(Collectors.toList());

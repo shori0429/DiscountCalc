@@ -109,7 +109,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
                 .get(SaveTitleViewOneLineParamViewModel.class);
 
         // ViewModel内のリポジトリLiveDataの購読。
-        customPreferenceViewModel.RepoPreferenceParamList().observe(getViewLifecycleOwner(),preferenceParams -> {
+        customPreferenceViewModel.PreferenceParamList().observe(getViewLifecycleOwner(),preferenceParams -> {
             if(customPreferenceViewModel.PreferenceParamList().getValue()==null){
                 // PreferenceListが存在していないときにDBの情報をセットさせる。
                 // 初期化の代わり。

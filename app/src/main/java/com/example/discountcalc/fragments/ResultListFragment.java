@@ -85,7 +85,7 @@ public class ResultListFragment extends Fragment {
                 .get(CustomPreferenceListViewModel.class);
 
         // ViewModelのリポジトリLiveDataを購読。
-        customPreferenceListViewModel.RepoPreferenceParamList().observe(getViewLifecycleOwner(),preferenceParams->{
+        customPreferenceListViewModel.PreferenceParamList().observe(getViewLifecycleOwner(),preferenceParams->{
             // 保存データ取得
             loadSettingData();
 
@@ -148,12 +148,12 @@ public class ResultListFragment extends Fragment {
         switch (discountType) {
             case None, Preset -> createDiscountPreferenceData();
             case Custom -> {
-                if(customPreferenceListViewModel.RepoPreferenceParamList().getValue().size()==0){
+                if(customPreferenceListViewModel.PreferenceParamList().getValue().size()==0){
                     createDiscountPreferenceData();
                     break;
                 }
-                for (int i = 0; i < customPreferenceListViewModel.RepoPreferenceParamList().getValue().size(); i++) {
-                    discountPerList.add(i, customPreferenceListViewModel.RepoPreferenceParamList().getValue().get(i).per());
+                for (int i = 0; i < customPreferenceListViewModel.PreferenceParamList().getValue().size(); i++) {
+                    discountPerList.add(i, customPreferenceListViewModel.PreferenceParamList().getValue().get(i).per());
                 }
             }
         }

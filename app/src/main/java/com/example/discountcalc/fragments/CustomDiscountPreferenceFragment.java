@@ -110,17 +110,16 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
         // ViewModel内のリポジトリLiveDataの購読。
         customPreferenceViewModel.PreferenceParamList().observe(getViewLifecycleOwner(),preferenceParams -> {
-            updateUI();
+            updateUI(preferenceParams);
             setOnClickListeners();
         });
     }
 
-    private void updateUI() {
+    private void updateUI(List<PreferenceParam> params) {
         Log.i("updateUI","updateUI");
 
         List<CustomPreferenceData> dataList=new ArrayList<>();
         // 新しくデータリストを作成し、それをアダプターとTextViewにセットする。
-        List<PreferenceParam> params=customPreferenceViewModel.PreferenceParamList().getValue();
         for (int i=0;i<params.size();i++){
             dataList.add(new CustomPreferenceData(i+1,params.get(i).per(),params.get(i).saveName()));
         }

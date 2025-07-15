@@ -136,7 +136,7 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
 
     //　引数の名前が既に保存されていないか確認
     public boolean existingCheckDAO(String name){
-        return getSaveNameList().stream().noneMatch(name::equals);
+        return getSaveNameList().stream().anyMatch(name::equals);
     }
 
     // リポジトリのデータから保存名のリストを重複を取り除いて抽出

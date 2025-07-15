@@ -220,7 +220,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
             return false;
         }
         Log.i("saveId","saveID : "+title);
-        if(customPreferenceViewModel.existingCheckDAO(title)){
+        if(!customPreferenceViewModel.existingCheckDAO(title)){
             if(customPreferenceViewModel.saveNewData(title)) {
                 Toast.makeText(getContext(), title + "の名前で保存しました。", Toast.LENGTH_SHORT).show();
             }else{

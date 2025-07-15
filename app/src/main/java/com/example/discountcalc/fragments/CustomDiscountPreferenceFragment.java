@@ -160,7 +160,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
         saveButton.setOnClickListener(b->{
             b.setEnabled(false);
-            saveDataStore();
+            saveCustomPreferenceDataToRepository();
             saveDataListViewAdapter.submitList(new ArrayList<>(customPreferenceViewModel.getSaveNameList()));
             // 1秒後にボタン再使用可能に
             Handler handler=new Handler();
@@ -208,8 +208,8 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         }
     }
 
-    // データストアに保存
-    private boolean saveDataStore(){
+    // 設定データをリポジトリに保存
+    private boolean saveCustomPreferenceDataToRepository(){
         // 現在の要素数の保存
         //dataStoreHelper.putIntegerValue(saveCountKey, customPreferenceViewModel.listSize());
 
@@ -220,13 +220,14 @@ public class CustomDiscountPreferenceFragment extends Fragment {
             return false;
         }
         Log.i("saveId","saveID : "+title);
-        if(!customPreferenceViewModel.existingCheckDAO(title)){
+        if(customPreferenceViewModel.existingCheckDAO(title)){
             if(customPreferenceViewModel.saveNewData(title)) {
                 Toast.makeText(getContext(), title + "の名前で保存しました。", Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(getContext(), "保存できませんでした。", Toast.LENGTH_SHORT).show();
             }
         }else{
+            Toast.makeText(getContext(), "その名前は既に使用されています。", Toast.LENGTH_SHORT).show();
             // TODO:上書き確認を表示するフラグメントを作成して、表示する処理を作成する。
             // はいで上書き、いいえでキャンセル
             Log.e("saveDataBase",title+" is ExistingSaveName. SaveCanceled.");

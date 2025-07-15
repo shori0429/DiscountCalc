@@ -141,7 +141,7 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
 
     // リポジトリのデータから保存名のリストを重複を取り除いて抽出
     public List<String> getSaveNameList(){
-        return preferenceParamList.getValue().stream()
+        return Objects.requireNonNull(dataRepository.PreferenceParamList().getValue()).stream()
                 .map(PreferenceParam::saveName)
                 .distinct()
                 .collect(Collectors.toList());

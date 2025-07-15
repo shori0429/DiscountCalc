@@ -2,15 +2,12 @@ package com.example.discountcalc.viewModels;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.discountcalc.DAO.PreferenceParamDAO;
-import com.example.discountcalc.dataBase.AppDataBase;
 import com.example.discountcalc.dataBase.PreferenceParamRepository;
 import com.example.discountcalc.params.CustomPreferenceData;
 import com.example.discountcalc.params.PreferenceParam;
@@ -18,92 +15,96 @@ import com.example.discountcalc.params.PreferenceParam;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class CustomPreferenceListViewModel extends AndroidViewModel {
 
     private PreferenceParamRepository dataRepository;
-    AppDataBase dataBase;
-    private final MutableLiveData<List<CustomPreferenceData>> preferenceDataList;
+    //private final MutableLiveData<List<CustomPreferenceData>> preferenceDataList;
+    private final MutableLiveData<List<PreferenceParam>> preferenceParamList;
+    // リポジトリのLiveData追跡用のフィールド
+//    private final LiveData<List<PreferenceParam>> repoPreferenceParamList;
 
-    private List<PreferenceParam> allSaveDataList;
 
     public CustomPreferenceListViewModel(Application application){
         super(application);
         dataRepository=new PreferenceParamRepository(application);
-        preferenceDataList =new MutableLiveData<>(new ArrayList<>(0));
-        allSaveDataList=new ArrayList<>(0);
-        getAllDAO();
+        preferenceParamList=new MutableLiveData<>();
+        dataRepository.PreferenceParamList().observeForever(preferenceParamList::setValue);
+//        repoPreferenceParamList= dataRepository.PreferenceParamList();
     }
 
-    public LiveData<List<CustomPreferenceData>> CustomPreferenceList(){
-        return preferenceDataList;
+    public LiveData<List<PreferenceParam>> PreferenceParamList(){
+        return preferenceParamList;
     }
 
-    public List<String> SaveNameList(){
-        return SaveNameColumnsList();
+    // リポジトリのデータをviewModelにセット
+    public void commitPreferenceParamList(){
+        if(preferenceParamList.getValue()==null)return;
+        List<PreferenceParam> currentList=new ArrayList<>(0);
+        //List<PreferenceParam> repoParamList=repoPreferenceParamList.getValue();
+
+        for(int i=0;i<preferenceParamList.getValue().size();i++){
+            currentList.add(new PreferenceParam(i+1,preferenceParamList.getValue().get(i).saveName(),preferenceParamList.getValue().get(i).per()));
+        }
+        preferenceParamList.postValue(currentList);
     }
 
-    public CustomPreferenceData getCustomPreferenceData(int index){
-        return Objects.requireNonNull(preferenceDataList.getValue()).get(index);
+
+    public PreferenceParam getCustomPreferenceParam(int index){
+        return Objects.requireNonNull(preferenceParamList.getValue()).get(index);
     }
 
     public int listSize(){
-        return Objects.requireNonNull(preferenceDataList.getValue()).size();
+        return preferenceParamList.getValue().size();
     }
-
-    public void setPreferenceDataList(List<CustomPreferenceData> datas){
-        this.preferenceDataList.setValue(datas);
-    }
-
 
     public void addPreferenceData(int per,String saveName){
-        List<CustomPreferenceData> currentList=CustomPreferenceList().getValue();
-        CustomPreferenceData data=new CustomPreferenceData(listSize()+1,per,saveName);
-        currentList.add(data);
-        preferenceDataList.setValue(currentList);
-
+//        if(preferenceParamList.getValue()==null) preferenceParamList.setValue(repoPreferenceParamList.getValue());
+        List<PreferenceParam> currentList=new ArrayList<>(Objects.requireNonNull(preferenceParamList.getValue()));
+        currentList.add(new PreferenceParam(listSize()+1,saveName,per));
+        preferenceParamList.setValue(currentList);
     }
 
     public void addDefaultPreferenceData(){
-        List<CustomPreferenceData> currentList=CustomPreferenceList().getValue();
-        CustomPreferenceData data=new CustomPreferenceData(listSize()+1,0,"");
-        currentList.add(data);
-        preferenceDataList.setValue(currentList);
-
+//        if(preferenceParamList.getValue()==null) preferenceParamList.setValue(repoPreferenceParamList.getValue());
+        List<PreferenceParam> currentList=new ArrayList<>(Objects.requireNonNull(preferenceParamList.getValue()));
+        currentList.add(new PreferenceParam(listSize()+1,"",0));
+        preferenceParamList.setValue(currentList);
     }
 
-    public void updatePreferenceData(int index,CustomPreferenceData newData){
-        List<CustomPreferenceData> currentList=new ArrayList<>(Objects.requireNonNull(preferenceDataList.getValue()));
+    public void updatePreferenceData(int index,PreferenceParam newData){
+        List<PreferenceParam> currentList=new ArrayList<>(Objects.requireNonNull(preferenceParamList.getValue()));
         if(index>=0&&index<currentList.size()){
-            currentList.get(index).getDiscountNo().setValue(currentList.get(index).getDiscountNo().getValue());
-            currentList.get(index).getDiscountPer().setValue(currentList.get(index).getDiscountPer().getValue());
-            preferenceDataList.setValue(currentList);
+            currentList.get(index).uid();
+            currentList.get(index).per();
+            preferenceParamList.setValue(currentList);
         }
 
     }
 
     // 指定したインデックスのデータを更新
-    public void updatePreferenceDataAll(List<CustomPreferenceData> newData) {
+    public void updatePreferenceDataAll(List<PreferenceParam> newData) {
         if (newData != null) {
-            preferenceDataList.setValue(newData);
+            preferenceParamList.setValue(newData);
         }
     }
 
     public void removePreferenceData(int index){
-        if(0<index&&index<preferenceDataList.getValue().size()){
-            preferenceDataList.getValue().remove(index);
+        if(0<index&&index<preferenceParamList.getValue().size()){
+            preferenceParamList.getValue().remove(index);
         }
     }
 
     public void changeTextView(Context context, int index,int value){
-        Objects.requireNonNull(preferenceDataList.getValue()).get(index).setDiscountNo(value);
+        Objects.requireNonNull(preferenceParamList.getValue()).get(index).uid();
     }
 
     public boolean saveNewData(@NonNull String saveName){
-        if(preferenceDataList.getValue()!=null) {
+        if(preferenceParamList.getValue()!=null) {
             List<PreferenceParam> params=new ArrayList<>();
-            for (var data : preferenceDataList.getValue()) {
-                params.add(PreferenceParam.createPreferenceParam(saveName, data.DiscountPer()));
+            for (var data : preferenceParamList.getValue()) {
+                params.add(PreferenceParam.createPreferenceParam(saveName, data.uid()));
             }
             dataRepository.insert(params);
             return true;
@@ -112,10 +113,10 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
     }
 
     public boolean SaveUpdateData(@NonNull String saveName){
-        if(preferenceDataList.getValue()!=null){
+        if(preferenceParamList.getValue()!=null){
             List<PreferenceParam> params=new ArrayList<>();
-            for (var data : preferenceDataList.getValue()) {
-                params.add(PreferenceParam.createPreferenceParam(saveName, data.DiscountPer()));
+            for (var data : preferenceParamList.getValue()) {
+                params.add(PreferenceParam.createPreferenceParam(saveName, data.per()));
             }
             dataRepository.update(params);
             return true;
@@ -124,48 +125,26 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
     }
 
     public boolean updateDAO() {
-        if(preferenceDataList.getValue()!=null) {
+        if(preferenceParamList.getValue()!=null) {
             // データベース取得
-            PreferenceParamDAO preferenceParamDAO = dataBase.preferenceParamDAO();
             //TODO　保存処理を書く
 
-
-            Log.i("database", dataBase.preferenceParamDAO().getAll().stream().toString());
         return true;
         }
         return false;
     }
 
+    //　引数の名前が既に保存されていないか確認
     public boolean existingCheckDAO(String name){
-        List<PreferenceParam> params;
-        params= dataRepository.getSave(name);
-        for(PreferenceParam param:params){
-            if(param.saveName().equals(name))return true;
-        }
-        return false;
+        return getSaveNameList().stream().noneMatch(name::equals);
     }
 
-    public void getAllDAO(){
-        List<PreferenceParam> params;
-        params= dataRepository.getAll();
-        if(params!=null) {
-            Log.i("repository","connectSuccess");
-            Log.i("getAllDAO",params.size()+"");
-            allSaveDataList=params;
-            params.forEach(t->{
-                Log.i("repository",t.toString());
-            });
-        }else{
-            Log.i("repository","notConnect");
-        }
-    }
-
-    public void deleteAllDAO(){
-        dataRepository.deleteAll();
-    }
-
-    private List<String> SaveNameColumnsList(){
-        return dataRepository.getSaveNameColumnsList();
+    // リポジトリのデータから保存名のリストを重複を取り除いて抽出
+    public List<String> getSaveNameList(){
+        return preferenceParamList.getValue().stream()
+                .map(PreferenceParam::saveName)
+                .distinct()
+                .collect(Collectors.toList());
     }
 
 }

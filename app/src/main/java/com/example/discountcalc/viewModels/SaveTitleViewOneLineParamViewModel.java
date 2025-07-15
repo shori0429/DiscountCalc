@@ -20,7 +20,6 @@ public class SaveTitleViewOneLineParamViewModel extends AndroidViewModel {
     }
 
     public void setLoadSaveTitleColumn(String loadSaveTitleColumn) {
-        repository.getSave(loadSaveTitleColumn);
         this.loadSaveTitleColumn.setValue(loadSaveTitleColumn);
     }
 }

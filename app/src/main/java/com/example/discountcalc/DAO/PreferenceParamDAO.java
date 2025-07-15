@@ -1,5 +1,6 @@
 package com.example.discountcalc.DAO;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -39,13 +40,13 @@ public interface PreferenceParamDAO {
     int deleteAll();
 
     @Query("SELECT * FROM custom_preference_table")
-    List<PreferenceParam> getAll();
+    LiveData<List<PreferenceParam>> getAll();
 
     @Query("SELECT uid,save_name,per FROM custom_preference_table WHERE save_name LIKE :saveName")
-    List<PreferenceParam> getSave(String saveName);
+    LiveData<List<PreferenceParam>> getSave(String saveName);
 
     @Query("SELECT DISTINCT save_name from custom_preference_table")
-    List<String> getSaveNameColumnsList();
+    LiveData<List<String>> getSaveNameColumnsList();
 
     @RawQuery
     List<SQLiteTableInfo> getTableInfoList(SupportSQLiteQuery query);

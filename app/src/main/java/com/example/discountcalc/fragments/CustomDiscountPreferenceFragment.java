@@ -76,7 +76,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
             List<PreferenceParam> dataList=loadCustomPreferenceList(useSaveDataNameLiveData.getValue());
             if(dataList.size()==0) {
                 // ロード先が存在しなければ1個の空要素だけを作成。
-                dataList.add(PreferenceParam.createPreferenceParam("", 0));
+                dataList.add(PreferenceParam.createDefaultParam());
             }
             updateUI(dataList);
         });

@@ -20,20 +20,33 @@ import java.util.stream.Collectors;
 public class CustomPreferenceListViewModel extends AndroidViewModel {
 
     private PreferenceParamRepository dataRepository;
-    //private final MutableLiveData<List<CustomPreferenceData>> preferenceDataList;
     private final MutableLiveData<List<PreferenceParam>> preferenceParamList;
+
+    private final MutableLiveData<List<PreferenceParam>> allPreferenceParamList;
     // リポジトリのLiveData追跡用のフィールド
-//    private final LiveData<List<PreferenceParam>> repoPreferenceParamList;
 
 
     public CustomPreferenceListViewModel(Application application){
         super(application);
         dataRepository=new PreferenceParamRepository(application);
         preferenceParamList=new MutableLiveData<>();
-        dataRepository.PreferenceParamList().observeForever(preferenceParamList::setValue);
-//        repoPreferenceParamList= dataRepository.PreferenceParamList();
+        allPreferenceParamList=new MutableLiveData<>();
+        dataRepository.PreferenceParamList().observeForever(allPreferenceParamList::setValue);
+//      repoPreferenceParamList= dataRepository.PreferenceParamList();
     }
 
+    // 全データから使用データする保存名を抽出してlivedataにセット
+    public void setPreferenceParamList(String name){
+        List<PreferenceParam> allData=allPreferenceParamList.getValue();
+        List<PreferenceParam> dataList=new ArrayList<>();
+        if(allData!=null) {
+            dataList = allData.stream().filter(param -> param.saveName().equals(name))
+                    .collect(Collectors.toList());
+        }
+        // 一致データが存在していなかったら初期値を1個セット。
+        if(dataList.size()==0)dataList.add(PreferenceParam.createDefaultParam());
+        preferenceParamList.setValue(dataList);
+    }
     public LiveData<List<PreferenceParam>> PreferenceParamList(){
         return preferenceParamList;
     }

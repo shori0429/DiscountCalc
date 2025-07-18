@@ -121,6 +121,16 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         saveTitleViewOneLineParamViewModel=new ViewModelProvider(this,new SaveTitleViewOneLineParamViewModelFactory(requireActivity().getApplication()))
                 .get(SaveTitleViewOneLineParamViewModel.class);
 
+        // 全データ格納用のlivedataを購読
+        customPreferenceViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(),allParams->{
+            if(allParams.size()>0){
+                customPreferenceViewModel.setPreferenceParamList(useSaveDataNameLiveData.getValue());
+            }
+            // 購読解除することで、最初の一回だけ呼び出されるようにしている。(実装が正しいかは正直不明)
+            // Observer変数を用意し、observe、removeObserver内でそれを使うことで、特定のobserverだけを解除するように変更したい。
+            customPreferenceViewModel.AllPreferenceParamList().removeObservers(getViewLifecycleOwner());
+        });
+
         // ViewModel内のリポジトリLiveDataの購読。
         customPreferenceViewModel.PreferenceParamList().observe(getViewLifecycleOwner(),preferenceParams -> {
             updateUI(preferenceParams);
@@ -214,8 +224,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         List<PreferenceParam> dataList = new ArrayList<>();
         // 引数と一致する保存名のデータをセット
         if (customPreferenceViewModel.existingCheckDAO(name)) {
-            // TODO リポジトリ内のデータを参照するようにしないとおかしいとは思うが一旦そのまま
-            List<PreferenceParam> params = customPreferenceViewModel.PreferenceParamList().getValue();
+            List<PreferenceParam> params = customPreferenceViewModel.AllPreferenceParamList().getValue();
             for(int i=0;i<params.size();i++){
                 if(Objects.equals(params.get(i).saveName(), name)){
                     dataList.add(new PreferenceParam(dataList.size()+1, params.get(i).saveName(),params.get(i).per()));

@@ -32,7 +32,6 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         preferenceParamList=new MutableLiveData<>();
         allPreferenceParamList=new MutableLiveData<>();
         dataRepository.PreferenceParamList().observeForever(allPreferenceParamList::setValue);
-//      repoPreferenceParamList= dataRepository.PreferenceParamList();
     }
 
     // 全データから使用データする保存名を抽出してlivedataにセット
@@ -50,6 +49,8 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
     public LiveData<List<PreferenceParam>> PreferenceParamList(){
         return preferenceParamList;
     }
+
+    public LiveData<List<PreferenceParam>> AllPreferenceParamList(){return allPreferenceParamList;}
 
     // リポジトリのデータをviewModelにセット
     public void commitPreferenceParamList(){

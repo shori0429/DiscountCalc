@@ -148,7 +148,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         }
         customPreferenceListAdapter.submitList(new ArrayList<>(Objects.requireNonNull(dataList)));
         customPreferenceListView.setHasFixedSize(customPreferenceListAdapter.getItemCount() >= 10);
-        elementNumberViewText.setText("" + customPreferenceListAdapter.getItemCount());
+        elementNumberViewText.setText("" + dataList.size());
         saveDataListViewAdapter.submitList(new ArrayList<>(customPreferenceViewModel.getSaveNameList()));
     }
 

@@ -65,6 +65,10 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
     Button saveButton;
 
+    Button clearButton;
+
+    Button allClearButton;
+
     TextView saveTitle;
     int textSize=R.dimen.normal_size;
 
@@ -78,7 +82,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
                 // ロード先が存在しなければ1個の空要素だけを作成。
                 dataList.add(PreferenceParam.createDefaultParam());
             }
-            updateUI(dataList);
+            customPreferenceViewModel.updatePreferenceData(dataList);
         });
         bindingElements();
         viewModelInitialize();
@@ -113,6 +117,8 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         elementAddButton=customDiscountPreferenceFragmentBinding.AddElementButton;
         changeTextSize=customDiscountPreferenceFragmentBinding.ChangeTextSizeButton;
         saveButton=customDiscountPreferenceFragmentBinding.SaveButton;
+        clearButton=customDiscountPreferenceFragmentBinding.clearElementButton;
+        allClearButton=customDiscountPreferenceFragmentBinding.allClearElementButton;
         saveTitle=customDiscountPreferenceFragmentBinding.saveTitle;
     }
     private void viewModelInitialize() {
@@ -191,6 +197,27 @@ public class CustomDiscountPreferenceFragment extends Fragment {
                 b.setEnabled(true);
             },1000);
             Log.i("button","available");
+        });
+
+        // 一番下の要素を削除
+        clearButton.setOnClickListener(b->{
+            b.setEnabled(false);
+            customPreferenceViewModel.removePreferenceLastData();
+            Handler handler=new Handler();
+            handler.postDelayed(()->{
+                b.setEnabled(true);
+            },100);
+
+        });
+
+        allClearButton.setOnClickListener(b->{
+            b.setEnabled(false);
+            customPreferenceViewModel.allRemovePreferenceData();
+            saveTitle.setText("");
+            Handler handler=new Handler();
+            handler.postDelayed(()->{
+                b.setEnabled(true);
+            },100);
         });
 
     }
@@ -286,11 +313,6 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         // 表示数が10未満の時、リサイクルビューのサイズ変更を固定にする。
         customPreferenceListView.setHasFixedSize(customPreferenceViewModel.listSize() >= 10);
 
-    }
-
-    private boolean removePreferenceDataElement(int removeElementNumber){
-        customPreferenceViewModel.removePreferenceData(removeElementNumber);
-        return true;
     }
 
 

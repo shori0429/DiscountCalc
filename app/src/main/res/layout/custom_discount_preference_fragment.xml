@@ -19,7 +19,7 @@
                 android:id="@+id/VolumeSummary"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="設定数"
+                android:text="@string/elementCount"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -28,15 +28,22 @@
                 android:layout_width="30dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="10"
+                android:text=""
                 android:textSize="24sp"
                 android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/AddElementButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="add" />
+                android:text="@string/addElementButtonText" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -45,26 +52,45 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/SaveButton"
+                    android:id="@+id/allClearElementButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:text="save" />
-            </LinearLayout>
+                    android:text="@string/allClearElementButtonText" />
 
+                <Button
+                    android:id="@+id/clearElementButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/clearElementButtonText" />
+            </LinearLayout>
 
         </LinearLayout>
 
-        <EditText
-            android:id="@+id/saveTitle"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8sp"
-            android:layout_marginRight="8sp"
-            android:ems="10"
-            android:gravity="end"
-            android:hint="保存する名前"
-            android:inputType="text" />
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/saveTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8sp"
+                android:layout_marginRight="8sp"
+                android:layout_weight="0.5"
+                android:ems="10"
+                android:gravity="end"
+                android:hint="@string/saveName"
+                android:inputType="text" />
+
+            <Button
+                android:id="@+id/SaveButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="@string/saveButtonText" />
+
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/PreferenceList"
@@ -75,7 +101,7 @@
             android:id="@+id/saveDataListTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="保存されたデータ"
+            android:text="@string/saveDataListTitle"
             android:textSize="20sp"
             android:textStyle="bold" />
 

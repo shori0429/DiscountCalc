@@ -30,4 +30,11 @@
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="title_tool_bar">タイトル</string>
     <string name="toolBarTitle">割引計算ツール</string>
+    <string name="elementCount">設定数</string>
+    <string name="addElementButtonText">追加</string>
+    <string name="allClearElementButtonText">全削除</string>
+    <string name="clearElementButtonText">削除</string>
+    <string name="saveDataListTitle">保存されたデータ</string>
+    <string name="saveButtonText">保存</string>
+    <string name="saveName">保存する名前</string>
 </resources>

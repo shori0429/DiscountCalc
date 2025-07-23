@@ -83,6 +83,16 @@ public class ResultListFragment extends Fragment {
         discountCalcViewModel = new ViewModelProvider(requireActivity()).get(DiscountCalcViewModel.class);
         customPreferenceListViewModel =new ViewModelProvider(this,new CustomPreferenceListViewModelFactory(requireActivity().getApplication()))
                 .get(CustomPreferenceListViewModel.class);
+        // 設定データ取得
+        getPreferences();
+
+        customPreferenceListViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(),allParams->{
+            if(allParams.size()>0){
+                customPreferenceListViewModel.setPreferenceParamList(discountType.name());
+            }
+            // このフラグメントの購読を解除することでフラグメント生成後1度だけ呼ばれるように(できているはず)
+            customPreferenceListViewModel.AllPreferenceParamList().removeObservers(getViewLifecycleOwner());
+        });
 
         // ViewModelのリポジトリLiveDataを購読。
         customPreferenceListViewModel.PreferenceParamList().observe(getViewLifecycleOwner(),preferenceParams->{
@@ -139,8 +149,6 @@ public class ResultListFragment extends Fragment {
     }
 
     private void loadSettingData() {
-        // 設定データ取得
-        getPreferences();
 
         // 割引率のリスト初期化
         discountPerList=new ArrayList<>();

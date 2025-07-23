@@ -14,6 +14,10 @@ public record PreferenceParam (@PrimaryKey(autoGenerate = true) int uid,
         return new PreferenceParam(0,saveName,per);
     }
 
+    public static PreferenceParam createDefaultParam(){
+        return new PreferenceParam(0,"",0);
+    }
+
     @NonNull
     @Override
     public String toString() {

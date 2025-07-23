@@ -6,6 +6,8 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +21,9 @@ public class SaveDataListViewAdapter
         extends ListAdapter<String, SaveDataListViewAdapter.SaveDataListViewHolder>{
 
     private SavedataListviewOnelineBinding binding;
+
+    // 何番目の読込ボタンが押されたかを記録するフィールド
+    private MutableLiveData<String> loadButtonPushPosition;
 
     public static class SaveDataListViewHolder extends RecyclerView.ViewHolder{
 
@@ -37,7 +42,10 @@ public class SaveDataListViewAdapter
         }
     }
 
-    public SaveDataListViewAdapter(){super(DIFF_CALLBACK);}
+    public SaveDataListViewAdapter(){
+        super(DIFF_CALLBACK);
+        loadButtonPushPosition =new MutableLiveData<>();
+    }
     @NonNull
     @Override
     public SaveDataListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -68,11 +76,18 @@ public class SaveDataListViewAdapter
         }
 
         holder.bind(data);
+        holder.binding.buttonLoad.setOnClickListener(v->{
+            loadButtonPushPosition.setValue(data);
+        });
     }
 
     @Override
     public void submitList(@Nullable List<String> list) {
         super.submitList(list);
+    }
+
+    public LiveData<String> PushPosition(){
+        return loadButtonPushPosition;
     }
 
     private static final DiffUtil.ItemCallback<String> DIFF_CALLBACK=

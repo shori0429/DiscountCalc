@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -53,6 +54,9 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
     private AppDataBase dataBase;
 
+    // adapterが持つ、押された読込ボタンの名前情報を購読するフィールド
+    private MutableLiveData<String> useSaveDataNameLiveData;
+
     // ビュー関係
     View view;
     TextView elementNumberViewText;
@@ -67,6 +71,15 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        useSaveDataNameLiveData=new MutableLiveData<>();
+        useSaveDataNameLiveData.observe(getViewLifecycleOwner(),v->{
+            List<PreferenceParam> dataList=loadCustomPreferenceList(useSaveDataNameLiveData.getValue());
+            if(dataList.size()==0) {
+                // ロード先が存在しなければ1個の空要素だけを作成。
+                dataList.add(PreferenceParam.createDefaultParam());
+            }
+            updateUI(dataList);
+        });
         bindingElements();
         viewModelInitialize();
         recyclerViewInitialize();
@@ -108,25 +121,34 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         saveTitleViewOneLineParamViewModel=new ViewModelProvider(this,new SaveTitleViewOneLineParamViewModelFactory(requireActivity().getApplication()))
                 .get(SaveTitleViewOneLineParamViewModel.class);
 
+        // 全データ格納用のlivedataを購読
+        customPreferenceViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(),allParams->{
+            if(allParams.size()>0){
+                customPreferenceViewModel.setPreferenceParamList(useSaveDataNameLiveData.getValue());
+            }
+            // 購読解除することで、最初の一回だけ呼び出されるようにしている。(実装が正しいかは正直不明)
+            // Observer変数を用意し、observe、removeObserver内でそれを使うことで、特定のobserverだけを解除するように変更したい。
+            customPreferenceViewModel.AllPreferenceParamList().removeObservers(getViewLifecycleOwner());
+        });
+
         // ViewModel内のリポジトリLiveDataの購読。
         customPreferenceViewModel.PreferenceParamList().observe(getViewLifecycleOwner(),preferenceParams -> {
-            updateUI();
+            updateUI(preferenceParams);
             setOnClickListeners();
         });
     }
 
-    private void updateUI() {
+    private void updateUI(List<PreferenceParam> params) {
         Log.i("updateUI","updateUI");
 
         List<CustomPreferenceData> dataList=new ArrayList<>();
         // 新しくデータリストを作成し、それをアダプターとTextViewにセットする。
-        List<PreferenceParam> params=customPreferenceViewModel.PreferenceParamList().getValue();
         for (int i=0;i<params.size();i++){
             dataList.add(new CustomPreferenceData(i+1,params.get(i).per(),params.get(i).saveName()));
         }
         customPreferenceListAdapter.submitList(new ArrayList<>(Objects.requireNonNull(dataList)));
-        elementNumberViewText.setText(""+customPreferenceListAdapter.getItemCount());
-
+        customPreferenceListView.setHasFixedSize(customPreferenceListAdapter.getItemCount() >= 10);
+        elementNumberViewText.setText("" + customPreferenceListAdapter.getItemCount());
         saveDataListViewAdapter.submitList(new ArrayList<>(customPreferenceViewModel.getSaveNameList()));
     }
 
@@ -188,10 +210,28 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         LinearLayoutManager llm2=new LinearLayoutManager(view.getContext());
         saveDataListView.setLayoutManager(llm2);
         saveDataListView.setAdapter(saveDataListViewAdapter);
+        saveDataListViewAdapter.PushPosition().observe(getViewLifecycleOwner(),v->{
+            // できれば保存前のデータが削除されることを確認するダイアログを出したい。
+            if(customPreferenceViewModel.existingCheckDAO(v)){
+                useSaveDataNameLiveData.setValue(v);
+                saveTitle.setText(v);
+            }
+        });
     }
 
-    // データストアからカスタムの割引率設定に関するデータを取得
-    private void loadCustomPreferenceList(){
+    // 指定された名前の保存されているカスタムの割引率設定に関するデータを取得
+    private List<PreferenceParam> loadCustomPreferenceList(String name) {
+        List<PreferenceParam> dataList = new ArrayList<>();
+        // 引数と一致する保存名のデータをセット
+        if (customPreferenceViewModel.existingCheckDAO(name)) {
+            List<PreferenceParam> params = customPreferenceViewModel.AllPreferenceParamList().getValue();
+            for(int i=0;i<params.size();i++){
+                if(Objects.equals(params.get(i).saveName(), name)){
+                    dataList.add(new PreferenceParam(dataList.size()+1, params.get(i).saveName(),params.get(i).per()));
+                }
+            }
+        }
+        return dataList;
     }
 
     private void InitializeCustomPreferenceDataSetArrayList(int max) {
@@ -220,7 +260,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
             return false;
         }
         Log.i("saveId","saveID : "+title);
-        if(customPreferenceViewModel.existingCheckDAO(title)){
+        if(!customPreferenceViewModel.existingCheckDAO(title)){
             if(customPreferenceViewModel.saveNewData(title)) {
                 Toast.makeText(getContext(), title + "の名前で保存しました。", Toast.LENGTH_SHORT).show();
             }else{

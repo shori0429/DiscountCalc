@@ -87,31 +87,28 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         preferenceParamList.setValue(currentList);
     }
 
-    public void updatePreferenceData(int index,PreferenceParam newData){
-        List<PreferenceParam> currentList=new ArrayList<>(Objects.requireNonNull(preferenceParamList.getValue()));
-        if(index>=0&&index<currentList.size()){
-            currentList.get(index).uid();
-            currentList.get(index).per();
-            preferenceParamList.setValue(currentList);
-        }
-
-    }
-
-    // 指定したインデックスのデータを更新
-    public void updatePreferenceDataAll(List<PreferenceParam> newData) {
-        if (newData != null) {
+    // 保存名から読み込みを行った際に使用する。暫定処理
+    public void updatePreferenceData(List<PreferenceParam> newData){
+        if(newData.size()>1){
             preferenceParamList.setValue(newData);
         }
+
     }
 
-    public void removePreferenceData(int index){
-        if(0<index&&index<preferenceParamList.getValue().size()){
-            preferenceParamList.getValue().remove(index);
+    // リストの最後の要素を削除
+    public void removePreferenceLastData(){
+        if(preferenceParamList.getValue().size()>1) {
+            List<PreferenceParam> dataList=preferenceParamList.getValue();
+            dataList.remove(dataList.size()-1);
+            preferenceParamList.setValue(dataList);
         }
     }
 
-    public void changeTextView(Context context, int index,int value){
-        Objects.requireNonNull(preferenceParamList.getValue()).get(index).uid();
+    // リストの全要素削除
+    public void allRemovePreferenceData(){
+            ArrayList<PreferenceParam> dataList=new ArrayList<>();
+            dataList.add(PreferenceParam.createDefaultParam());
+            preferenceParamList.postValue(dataList);
     }
 
     public boolean saveNewData(@NonNull String saveName){

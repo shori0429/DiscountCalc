@@ -20,6 +20,11 @@
             app:isPreferenceVisible="false"
             />
 
+        <ListPreference
+            app:key="@string/using_custom_preference"
+            app:title="使用するカスタム割引率設定データ"
+            />
+
 
         <SeekBarPreference
             app:title="表示数"

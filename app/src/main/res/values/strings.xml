@@ -37,4 +37,5 @@
     <string name="saveDataListTitle">保存されたデータ</string>
     <string name="saveButtonText">保存</string>
     <string name="saveName">保存する名前</string>
+    <string name="using_custom_preference">using_custom_preference</string>
 </resources>

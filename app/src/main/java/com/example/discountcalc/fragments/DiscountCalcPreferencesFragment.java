@@ -3,6 +3,7 @@ package com.example.discountcalc.fragments;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
@@ -13,6 +14,12 @@ import androidx.preference.PreferenceManager;
 
 import com.example.discountcalc.params.DiscountType;
 import com.example.discountcalc.R;
+import com.example.discountcalc.params.PreferenceParam;
+import com.example.discountcalc.viewModels.CustomPreferenceListViewModel;
+import com.example.discountcalc.viewModels.CustomPreferenceListViewModelFactory;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class DiscountCalcPreferencesFragment extends PreferenceFragmentCompat {
     // 全体の設定データ
@@ -22,13 +29,37 @@ public class DiscountCalcPreferencesFragment extends PreferenceFragmentCompat {
     // カスタム割引率設定移行のPreference
     Preference customDiscountPreference;
 
+    CustomPreferenceListViewModel customPreferenceListViewModel;
+
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.discount_preferences_toppage, rootKey);
         getPreferences();
+        viewModelInitialize();
         // 「使用する設定データ」の初期パラメータに応じて、カスタム割引率を設定するページに移行する項目を表示・非表示させる
         customPreferenceSetting(DiscountType.valueOf(usingCustomPreference.getValue()),customDiscountPreference);
         setOnChangeListener();
+    }
+
+    private void viewModelInitialize() {
+        customPreferenceListViewModel=new ViewModelProvider(this,new CustomPreferenceListViewModelFactory(requireActivity().getApplication()))
+                .get(CustomPreferenceListViewModel.class);
+
+        customPreferenceListViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(),allParams->{
+            if(allParams.size()>0){
+                customPreferenceListViewModel.AllPreferenceParamList().removeObservers(getViewLifecycleOwner());
+            }
+        });
+
+        customPreferenceListViewModel.PreferenceParamList().observe(getViewLifecycleOwner(),preferenceParam->{
+            //
+            List<String> loadSaveList=preferenceParam.stream()
+                    .map(PreferenceParam::saveName)
+                    .collect(Collectors.toList());
+            CharSequence entries[]=new CharSequence[loadSaveList.size()];
+
+
+        });
     }
 
     // 設定データ取得

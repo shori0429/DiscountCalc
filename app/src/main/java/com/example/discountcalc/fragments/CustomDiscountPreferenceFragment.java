@@ -1,5 +1,6 @@
 package com.example.discountcalc.fragments;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,6 +40,8 @@ import java.util.Objects;
 public class CustomDiscountPreferenceFragment extends Fragment {
 
     CustomDiscountPreferenceFragmentBinding customDiscountPreferenceFragmentBinding;
+
+    SharedPreferences sharedPreferences;
 
     // 設定データ表示に使用するデータ
     RecyclerView customPreferenceListView;
@@ -82,6 +86,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
                 // ロード先が存在しなければ1個の空要素だけを作成。
                 dataList.add(PreferenceParam.createDefaultParam());
             }
+            saveTitle.setText(v);
             customPreferenceViewModel.updatePreferenceData(dataList);
         });
         bindingElements();
@@ -95,6 +100,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
                              Bundle savedInstanceState) {
         customDiscountPreferenceFragmentBinding =CustomDiscountPreferenceFragmentBinding.inflate(inflater,container,false);
         view= customDiscountPreferenceFragmentBinding.getRoot();
+        sharedPreferences= PreferenceManager.getDefaultSharedPreferences(view.getContext());
 
         return view;
     }
@@ -132,6 +138,10 @@ public class CustomDiscountPreferenceFragment extends Fragment {
             if(allParams.size()>0){
                 customPreferenceViewModel.setPreferenceParamList(useSaveDataNameLiveData.getValue());
             }
+
+            useSaveDataNameLiveData.setValue(sharedPreferences.getString(getString(R.string.using_custom_preference),null));
+
+
             // 購読解除することで、最初の一回だけ呼び出されるようにしている。(実装が正しいかは正直不明)
             // Observer変数を用意し、observe、removeObserver内でそれを使うことで、特定のobserverだけを解除するように変更したい。
             customPreferenceViewModel.AllPreferenceParamList().removeObservers(getViewLifecycleOwner());

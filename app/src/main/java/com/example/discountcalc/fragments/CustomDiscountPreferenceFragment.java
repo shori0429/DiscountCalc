@@ -77,7 +77,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         useSaveDataNameLiveData=new MutableLiveData<>();
         useSaveDataNameLiveData.observe(getViewLifecycleOwner(),v->{
-            List<PreferenceParam> dataList=loadCustomPreferenceList(useSaveDataNameLiveData.getValue());
+            List<PreferenceParam> dataList=loadCustomPreferenceList(v);
             if(dataList.size()==0) {
                 // ロード先が存在しなければ1個の空要素だけを作成。
                 dataList.add(PreferenceParam.createDefaultParam());

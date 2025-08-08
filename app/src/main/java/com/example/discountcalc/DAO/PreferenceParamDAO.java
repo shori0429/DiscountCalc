@@ -10,6 +10,7 @@ import androidx.room.Update;
 import androidx.room.Upsert;
 import androidx.sqlite.db.SupportSQLiteQuery;
 
+import com.example.discountcalc.dataBase.DataBaseStrings;
 import com.example.discountcalc.params.PreferenceParam;
 import com.example.discountcalc.params.SQLiteTableInfo;
 
@@ -34,18 +35,18 @@ public interface PreferenceParamDAO {
 
     @Delete int delete(PreferenceParam param);
 
-    @Query("DELETE FROM custom_preference_table where save_name=:saveName")
+    @Query("DELETE FROM "+ DataBaseStrings.TableName +" where save_name=:saveName")
     int deleteForSaveName(String saveName);
-    @Query("DELETE FROM custom_preference_table")
+    @Query("DELETE FROM "+DataBaseStrings.TableName)
     int deleteAll();
 
-    @Query("SELECT * FROM custom_preference_table")
+    @Query("SELECT * FROM "+DataBaseStrings.TableName)
     LiveData<List<PreferenceParam>> getAll();
 
-    @Query("SELECT uid,save_name,per FROM custom_preference_table WHERE save_name LIKE :saveName")
+    @Query("SELECT uid,save_name,per FROM "+DataBaseStrings.TableName+" WHERE save_name LIKE :saveName")
     LiveData<List<PreferenceParam>> getSave(String saveName);
 
-    @Query("SELECT DISTINCT save_name from custom_preference_table")
+    @Query("SELECT DISTINCT save_name FROM "+DataBaseStrings.TableName)
     LiveData<List<String>> getSaveNameColumnsList();
 
     @RawQuery

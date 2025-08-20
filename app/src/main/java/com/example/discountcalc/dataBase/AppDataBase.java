@@ -24,7 +24,7 @@ public abstract class AppDataBase extends RoomDatabase {
         if(instance==null){
             synchronized (AppDataBase.class){
                 if(instance==null){
-                    instance= Room.databaseBuilder(context.getApplicationContext(), AppDataBase.class,"custom_preference_table").build();
+                    instance= Room.databaseBuilder(context.getApplicationContext(), AppDataBase.class,DataBaseStrings.DataBaseName).build();
                 }
             }
         }

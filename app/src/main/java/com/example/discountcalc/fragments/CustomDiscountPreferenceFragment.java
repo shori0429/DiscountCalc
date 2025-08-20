@@ -137,10 +137,13 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         customPreferenceViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(),allParams->{
             if(allParams.size()>0){
                 customPreferenceViewModel.setPreferenceParamList(useSaveDataNameLiveData.getValue());
+                useSaveDataNameLiveData.setValue(sharedPreferences.getString(getString(R.string.using_custom_preference),null));
+
             }
 
-            useSaveDataNameLiveData.setValue(sharedPreferences.getString(getString(R.string.using_custom_preference),null));
-
+            if(allParams.size()==0){
+                customPreferenceViewModel.setPreferenceParamList("");
+            }
 
             // 購読解除することで、最初の一回だけ呼び出されるようにしている。(実装が正しいかは正直不明)
             // Observer変数を用意し、observe、removeObserver内でそれを使うことで、特定のobserverだけを解除するように変更したい。
@@ -258,6 +261,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
     // 指定された名前の保存されているカスタムの割引率設定に関するデータを取得
     private List<PreferenceParam> loadCustomPreferenceList(String name) {
+        if(name==null)return new ArrayList<>();
         List<PreferenceParam> dataList = new ArrayList<>();
         // 引数と一致する保存名のデータをセット
         if (customPreferenceViewModel.existingCheckDAO(name)) {

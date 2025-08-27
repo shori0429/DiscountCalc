@@ -35,7 +35,7 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
     }
 
     // 全データから使用データする保存名を抽出してlivedataにセット
-    public void setPreferenceParamList(String name){
+    public void usePreferenceParamList(String name){
         List<PreferenceParam> allData=allPreferenceParamList.getValue();
         List<PreferenceParam> dataList=new ArrayList<>();
         if(allData!=null) {

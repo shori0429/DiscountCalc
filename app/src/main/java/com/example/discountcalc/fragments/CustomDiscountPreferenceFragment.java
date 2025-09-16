@@ -136,13 +136,13 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         // 全データ格納用のlivedataを購読
         customPreferenceViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(),allParams->{
             if(allParams.size()>0){
-                customPreferenceViewModel.setPreferenceParamList(useSaveDataNameLiveData.getValue());
+                customPreferenceViewModel.usePreferenceParamList(useSaveDataNameLiveData.getValue());
                 useSaveDataNameLiveData.setValue(sharedPreferences.getString(getString(R.string.using_custom_preference),null));
 
             }
 
             if(allParams.size()==0){
-                customPreferenceViewModel.setPreferenceParamList("");
+                customPreferenceViewModel.usePreferenceParamList("");
             }
 
             // 購読解除することで、最初の一回だけ呼び出されるようにしている。(実装が正しいかは正直不明)

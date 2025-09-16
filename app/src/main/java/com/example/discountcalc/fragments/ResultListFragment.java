@@ -88,7 +88,7 @@ public class ResultListFragment extends Fragment {
 
         customPreferenceListViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(),allParams->{
             if(allParams.size()>0){
-                customPreferenceListViewModel.setPreferenceParamList(discountType.name());
+                customPreferenceListViewModel.usePreferenceParamList(discountType.name());
             }
             // このフラグメントの購読を解除することでフラグメント生成後1度だけ呼ばれるように(できているはず)
             customPreferenceListViewModel.AllPreferenceParamList().removeObservers(getViewLifecycleOwner());

@@ -20,13 +20,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.discountcalc.BR;
 import com.example.discountcalc.databinding.CustomPreferenceOneLineBinding;
-import com.example.discountcalc.params.CustomPreferenceData;
+import com.example.discountcalc.fragments.CustomTextWatcher;
+import com.example.discountcalc.params.PreferenceParam;
 import com.example.discountcalc.viewModels.CustomPreferenceListViewModel;
 
 import java.util.List;
 
 public class CustomPreferenceListAdapter
-        extends ListAdapter<CustomPreferenceData, CustomPreferenceListAdapter.CustomPreferenceListViewHolder> {
+        extends ListAdapter<PreferenceParam, CustomPreferenceListAdapter.CustomPreferenceListViewHolder> {
 
     private int mainTextSize;
 
@@ -96,7 +97,7 @@ public class CustomPreferenceListAdapter
 
     @Override
     public void onBindViewHolder(@NonNull CustomPreferenceListViewHolder holder, int position) {
-        CustomPreferenceData data=getItem(position);
+        PreferenceParam data=getItem(position);
         // 各Viewに関連付け+購読
         holder.bind(data);
 
@@ -110,7 +111,7 @@ public class CustomPreferenceListAdapter
 
     @Override
     public void onBindViewHolder(@NonNull CustomPreferenceListViewHolder holder, int position, @NonNull List<Object> payloads) {
-        CustomPreferenceData data = getItem(position);
+        PreferenceParam data = getItem(position);
         if(payloads.isEmpty()){
             holder.bind(data);
         }else{
@@ -137,40 +138,39 @@ public class CustomPreferenceListAdapter
     }
 
     @Override
-    public void submitList(@Nullable List<CustomPreferenceData> list) {
+    public void submitList(@Nullable List<PreferenceParam> list) {
         super.submitList(list);
     }
 
 
-
-    private static final DiffUtil.ItemCallback<CustomPreferenceData> DIFF_CALLBACK=
-            new DiffUtil.ItemCallback<CustomPreferenceData>() {
+    private static final DiffUtil.ItemCallback<PreferenceParam> DIFF_CALLBACK=
+            new DiffUtil.ItemCallback<PreferenceParam>() {
 
                 @Override
-                public boolean areItemsTheSame(@NonNull CustomPreferenceData oldItem, @NonNull CustomPreferenceData newItem) {
-                    boolean bool= oldItem.DiscountNo()== newItem.DiscountNo();
-                    Log.i("DiffUtil","areItemTheSame:"+oldItem.DiscountNo()+":"+newItem.DiscountNo()+"->"+bool);
+                public boolean areItemsTheSame(@NonNull PreferenceParam oldItem, @NonNull PreferenceParam newItem) {
+                    boolean bool= oldItem.uid()== newItem.uid();
+                    Log.i("DiffUtil","areItemTheSame:"+oldItem.uid()+":"+newItem.uid()+"->"+bool);
                     return bool;
 
                 }
 
                 @Override
-                public boolean areContentsTheSame(@NonNull CustomPreferenceData oldItem, @NonNull CustomPreferenceData newItem) {
+                public boolean areContentsTheSame(@NonNull PreferenceParam oldItem, @NonNull PreferenceParam newItem) {
                     boolean bool = oldItem.equals(newItem);
-                    Log.i("DiffUtil","areContentsTheSame:"+oldItem.DiscountNo()+"["+oldItem.DiscountPer()+"]\n"+
-                            newItem.DiscountNo()+"["+newItem.DiscountPer()+"]");
+                    Log.i("DiffUtil","areContentsTheSame:"+oldItem.uid()+"["+oldItem.per()+"]\n"+
+                            newItem.uid()+"["+newItem.per()+"]");
                     return bool;
                 }
 
                 @Nullable
                 @Override
-                public Object getChangePayload(@NonNull CustomPreferenceData oldItem, @NonNull CustomPreferenceData newItem) {
+                public Object getChangePayload(@NonNull PreferenceParam oldItem, @NonNull PreferenceParam newItem) {
                     Bundle diff=new Bundle();
-                    if(newItem.DiscountNo()!=oldItem.DiscountNo()){
-                        diff.putInt("no",newItem.DiscountNo());
+                    if(newItem.uid()!=oldItem.uid()){
+                        diff.putInt("uid",newItem.uid());
                     }
-                    if(newItem.DiscountPer()!=oldItem.DiscountPer()){
-                        diff.putInt("per",newItem.DiscountPer());
+                    if(newItem.per()!=oldItem.per()){
+                        diff.putInt("per",newItem.per());
                     }
                     if(diff.size()==0){
                         return null;

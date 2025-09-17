@@ -53,15 +53,16 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
 
     public LiveData<List<PreferenceParam>> AllPreferenceParamList(){return allPreferenceParamList;}
 
-    // リポジトリのデータをviewModelにセット
-    public void commitPreferenceParamList(){
-        if(preferenceParamList.getValue()==null)return;
+    // 全リストから使用する保存名のデータリストを現在のリストにセット
+    public void commitPreferenceParamList(String saveName){
+        if(preferenceParamList.getValue()==null||saveName==null)return;
         List<PreferenceParam> currentList=new ArrayList<>(0);
         //List<PreferenceParam> repoParamList=repoPreferenceParamList.getValue();
 
-        for(int i=0;i<preferenceParamList.getValue().size();i++){
-            currentList.add(new PreferenceParam(i+1,getCustomPreferenceParam(i).per(),getCustomPreferenceParam(i).saveName()));
-        }
+        // 保存名でフィルター
+        allPreferenceParamList.getValue().stream().filter(v->v.saveName().equals(saveName))
+                .forEach(v->currentList.add(new PreferenceParam(currentList.size()+1,v.per(),saveName)));
+
         preferenceParamList.postValue(currentList);
     }
 

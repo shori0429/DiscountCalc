@@ -116,7 +116,7 @@ public class CustomPreferenceListAdapter
         }else{
             for (Object payload:payloads){
                 if("Per".equals(payload)){
-                    holder.getViewDataBinding().setVariable(BR.preferenceData, data);
+                    holder.getViewDataBinding().setVariable(BR.preferenceParam, data);
                     holder.getViewDataBinding().executePendingBindings();
                 }
             }

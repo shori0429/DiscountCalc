@@ -91,10 +91,15 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         preferenceParamList.setValue(currentList);
     }
 
-    // 保存名から読み込みを行った際に使用する。暫定処理
-    public void updatePreferenceData(List<PreferenceParam> newData){
-        if(newData.size()>1){
-            preferenceParamList.setValue(newData);
+    // 現在リストのposition番目にある要素をnewValueの値にアップデート
+    public void updatePreferenceData(int position, PreferenceParam newValue){
+        if(newValue==null)return;
+        try{
+            List<PreferenceParam> currentList=Objects.requireNonNull(preferenceParamList.getValue());
+            currentList.set(position,newValue);
+            preferenceParamList.setValue(currentList);
+        }catch (NullPointerException e) {
+            throw new RuntimeException(e);
         }
 
     }

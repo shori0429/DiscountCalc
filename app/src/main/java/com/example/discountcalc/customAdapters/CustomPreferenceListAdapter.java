@@ -33,7 +33,9 @@ public class CustomPreferenceListAdapter
 
     CustomPreferenceOneLineBinding binding;
 
-    public static class CustomPreferenceListViewHolder extends RecyclerView.ViewHolder implements LifecycleOwner {
+    CustomPreferenceListViewModel customPreferenceListViewModel;
+
+    public static class CustomPreferenceListViewHolder extends RecyclerView.ViewHolder implements LifecycleOwner,CustomTextWatcher {
         private final LifecycleRegistry lifecycle=new LifecycleRegistry(this);
         private final CustomPreferenceOneLineBinding binding;
 
@@ -51,8 +53,23 @@ public class CustomPreferenceListAdapter
         }
 
 
-        void bind(CustomPreferenceData preferenceData){
-            binding.setPreferenceData(preferenceData);
+        void bind(int position,PreferenceParam preferenceParam,CustomPreferenceListViewModel viewModel){
+            binding.setPosition(position);
+            binding.setPreferenceParam(preferenceParam);
+            binding.setViewModel(viewModel);
+            binding.customPreferenceOneLineNum.setOnFocusChangeListener((v,hasFocus)->{
+                if(!hasFocus){
+                    int newPer= Integer.parseInt(binding.customPreferenceOneLineNum.getText().toString());
+                    int beforePer=viewModel.getCustomPreferenceParam(position).per();
+                    // 値が変わってなければここで終了
+                    if(newPer==beforePer)return;
+
+                    PreferenceParam newPreferenceData=new PreferenceParam(viewModel.getCustomPreferenceParam(position).uid(),
+                            newPer,
+                            viewModel.getCustomPreferenceParam(position).saveName());
+                    viewModel.updatePreferenceData(position,newPreferenceData);
+                }
+            });
             binding.executePendingBindings();
         }
 
@@ -81,10 +98,10 @@ public class CustomPreferenceListAdapter
 
 
     }
-
-
-    public CustomPreferenceListAdapter(){
+    
+    public CustomPreferenceListAdapter(CustomPreferenceListViewModel viewModel){
         super(DIFF_CALLBACK);
+        customPreferenceListViewModel=viewModel;
     }
 
     @NonNull
@@ -99,7 +116,7 @@ public class CustomPreferenceListAdapter
     public void onBindViewHolder(@NonNull CustomPreferenceListViewHolder holder, int position) {
         PreferenceParam data=getItem(position);
         // 各Viewに関連付け+購読
-        holder.bind(data);
+        holder.bind(position,data,customPreferenceListViewModel);
 
         // テキストサイズ変更
         holder.changeTextSize(mainTextSize);
@@ -113,7 +130,7 @@ public class CustomPreferenceListAdapter
     public void onBindViewHolder(@NonNull CustomPreferenceListViewHolder holder, int position, @NonNull List<Object> payloads) {
         PreferenceParam data = getItem(position);
         if(payloads.isEmpty()){
-            holder.bind(data);
+            holder.bind(position,data,customPreferenceListViewModel);
         }else{
             for (Object payload:payloads){
                 if("Per".equals(payload)){

@@ -239,7 +239,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     // リサイクルビューの初期化関数
     private void recyclerViewInitialize() {
         customPreferenceListView = customDiscountPreferenceFragmentBinding.PreferenceList;
-        customPreferenceListAdapter=new CustomPreferenceListAdapter();
+        customPreferenceListAdapter=new CustomPreferenceListAdapter(customPreferenceViewModel);
 
         LinearLayoutManager llm=new LinearLayoutManager(view.getContext());
         customPreferenceListView.setLayoutManager(llm);

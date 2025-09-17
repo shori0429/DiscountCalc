@@ -71,21 +71,23 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         return Objects.requireNonNull(preferenceParamList.getValue()).get(index);
     }
 
-    public int listSize(){
-        return preferenceParamList.getValue().size();
+    public int preferenceParamListSize(){
+        return Objects.requireNonNull(preferenceParamList.getValue()).size();
     }
 
     public void addPreferenceData(int per,String saveName){
 //        if(preferenceParamList.getValue()==null) preferenceParamList.setValue(repoPreferenceParamList.getValue());
         List<PreferenceParam> currentList=new ArrayList<>(Objects.requireNonNull(preferenceParamList.getValue()));
-        currentList.add(new PreferenceParam(listSize()+1,per,saveName));
+        // リストサイズに+1でリスト番号を意図的にずらしている
+        currentList.add(new PreferenceParam(preferenceParamListSize()+1,per,saveName));
         preferenceParamList.setValue(currentList);
     }
 
     public void addDefaultPreferenceData(){
 //        if(preferenceParamList.getValue()==null) preferenceParamList.setValue(repoPreferenceParamList.getValue());
         List<PreferenceParam> currentList=new ArrayList<>(Objects.requireNonNull(preferenceParamList.getValue()));
-        currentList.add(new PreferenceParam(listSize()+1,0,""));
+        // リストサイズに+1でリスト番号を意図的にずらしている
+        currentList.add(new PreferenceParam(currentList.size()+1,0,""));
         preferenceParamList.setValue(currentList);
     }
 

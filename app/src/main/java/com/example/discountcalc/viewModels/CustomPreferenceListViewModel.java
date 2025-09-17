@@ -20,8 +20,11 @@ import java.util.stream.Collectors;
 public class CustomPreferenceListViewModel extends AndroidViewModel {
 
     private PreferenceParamRepository dataRepository;
+
+    // 現状保持している1リスト。変動有
     private final MutableLiveData<List<PreferenceParam>> preferenceParamList;
 
+    // リポジトリから取得した「全リスト」を保持。リポジトリアクセス時以外変動無
     private final MutableLiveData<List<PreferenceParam>> allPreferenceParamList;
     // リポジトリのLiveData追跡用のフィールド
 

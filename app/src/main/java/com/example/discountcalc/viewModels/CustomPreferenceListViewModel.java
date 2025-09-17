@@ -1,7 +1,6 @@
 package com.example.discountcalc.viewModels;
 
 import android.app.Application;
-import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -9,7 +8,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.discountcalc.dataBase.PreferenceParamRepository;
-import com.example.discountcalc.params.CustomPreferenceData;
 import com.example.discountcalc.params.PreferenceParam;
 
 import java.util.ArrayList;

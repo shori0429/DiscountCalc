@@ -20,19 +20,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.discountcalc.BR;
 import com.example.discountcalc.databinding.CustomPreferenceOneLineBinding;
-import com.example.discountcalc.params.CustomPreferenceData;
+import com.example.discountcalc.fragments.CustomTextWatcher;
+import com.example.discountcalc.params.PreferenceParam;
 import com.example.discountcalc.viewModels.CustomPreferenceListViewModel;
 
 import java.util.List;
 
 public class CustomPreferenceListAdapter
-        extends ListAdapter<CustomPreferenceData, CustomPreferenceListAdapter.CustomPreferenceListViewHolder> {
+        extends ListAdapter<PreferenceParam, CustomPreferenceListAdapter.CustomPreferenceListViewHolder> {
 
     private int mainTextSize;
 
     CustomPreferenceOneLineBinding binding;
 
-    public static class CustomPreferenceListViewHolder extends RecyclerView.ViewHolder implements LifecycleOwner {
+    CustomPreferenceListViewModel customPreferenceListViewModel;
+
+    public static class CustomPreferenceListViewHolder extends RecyclerView.ViewHolder implements LifecycleOwner,CustomTextWatcher {
         private final LifecycleRegistry lifecycle=new LifecycleRegistry(this);
         private final CustomPreferenceOneLineBinding binding;
 
@@ -50,8 +53,23 @@ public class CustomPreferenceListAdapter
         }
 
 
-        void bind(CustomPreferenceData preferenceData){
-            binding.setPreferenceData(preferenceData);
+        void bind(int position,PreferenceParam preferenceParam,CustomPreferenceListViewModel viewModel){
+            binding.setPosition(position);
+            binding.setPreferenceParam(preferenceParam);
+            binding.setViewModel(viewModel);
+            binding.customPreferenceOneLineNum.setOnFocusChangeListener((v,hasFocus)->{
+                if(!hasFocus){
+                    int newPer= Integer.parseInt(binding.customPreferenceOneLineNum.getText().toString());
+                    int beforePer=viewModel.getCustomPreferenceParam(position).per();
+                    // 値が変わってなければここで終了
+                    if(newPer==beforePer)return;
+
+                    PreferenceParam newPreferenceData=new PreferenceParam(viewModel.getCustomPreferenceParam(position).uid(),
+                            newPer,
+                            viewModel.getCustomPreferenceParam(position).saveName());
+                    viewModel.updatePreferenceData(position,newPreferenceData);
+                }
+            });
             binding.executePendingBindings();
         }
 
@@ -80,10 +98,10 @@ public class CustomPreferenceListAdapter
 
 
     }
-
-
-    public CustomPreferenceListAdapter(){
+    
+    public CustomPreferenceListAdapter(CustomPreferenceListViewModel viewModel){
         super(DIFF_CALLBACK);
+        customPreferenceListViewModel=viewModel;
     }
 
     @NonNull
@@ -96,9 +114,9 @@ public class CustomPreferenceListAdapter
 
     @Override
     public void onBindViewHolder(@NonNull CustomPreferenceListViewHolder holder, int position) {
-        CustomPreferenceData data=getItem(position);
+        PreferenceParam data=getItem(position);
         // 各Viewに関連付け+購読
-        holder.bind(data);
+        holder.bind(position,data,customPreferenceListViewModel);
 
         // テキストサイズ変更
         holder.changeTextSize(mainTextSize);
@@ -110,13 +128,13 @@ public class CustomPreferenceListAdapter
 
     @Override
     public void onBindViewHolder(@NonNull CustomPreferenceListViewHolder holder, int position, @NonNull List<Object> payloads) {
-        CustomPreferenceData data = getItem(position);
+        PreferenceParam data = getItem(position);
         if(payloads.isEmpty()){
-            holder.bind(data);
+            holder.bind(position,data,customPreferenceListViewModel);
         }else{
             for (Object payload:payloads){
                 if("Per".equals(payload)){
-                    holder.getViewDataBinding().setVariable(BR.preferenceData, data);
+                    holder.getViewDataBinding().setVariable(BR.preferenceParam, data);
                     holder.getViewDataBinding().executePendingBindings();
                 }
             }
@@ -137,40 +155,39 @@ public class CustomPreferenceListAdapter
     }
 
     @Override
-    public void submitList(@Nullable List<CustomPreferenceData> list) {
+    public void submitList(@Nullable List<PreferenceParam> list) {
         super.submitList(list);
     }
 
 
-
-    private static final DiffUtil.ItemCallback<CustomPreferenceData> DIFF_CALLBACK=
-            new DiffUtil.ItemCallback<CustomPreferenceData>() {
+    private static final DiffUtil.ItemCallback<PreferenceParam> DIFF_CALLBACK=
+            new DiffUtil.ItemCallback<PreferenceParam>() {
 
                 @Override
-                public boolean areItemsTheSame(@NonNull CustomPreferenceData oldItem, @NonNull CustomPreferenceData newItem) {
-                    boolean bool= oldItem.DiscountNo()== newItem.DiscountNo();
-                    Log.i("DiffUtil","areItemTheSame:"+oldItem.DiscountNo()+":"+newItem.DiscountNo()+"->"+bool);
+                public boolean areItemsTheSame(@NonNull PreferenceParam oldItem, @NonNull PreferenceParam newItem) {
+                    boolean bool= oldItem.uid()== newItem.uid();
+                    Log.i("DiffUtil","areItemTheSame:"+oldItem.uid()+":"+newItem.uid()+"->"+bool);
                     return bool;
 
                 }
 
                 @Override
-                public boolean areContentsTheSame(@NonNull CustomPreferenceData oldItem, @NonNull CustomPreferenceData newItem) {
+                public boolean areContentsTheSame(@NonNull PreferenceParam oldItem, @NonNull PreferenceParam newItem) {
                     boolean bool = oldItem.equals(newItem);
-                    Log.i("DiffUtil","areContentsTheSame:"+oldItem.DiscountNo()+"["+oldItem.DiscountPer()+"]\n"+
-                            newItem.DiscountNo()+"["+newItem.DiscountPer()+"]");
+                    Log.i("DiffUtil","areContentsTheSame:"+oldItem.uid()+"["+oldItem.per()+"]\n"+
+                            newItem.uid()+"["+newItem.per()+"]");
                     return bool;
                 }
 
                 @Nullable
                 @Override
-                public Object getChangePayload(@NonNull CustomPreferenceData oldItem, @NonNull CustomPreferenceData newItem) {
+                public Object getChangePayload(@NonNull PreferenceParam oldItem, @NonNull PreferenceParam newItem) {
                     Bundle diff=new Bundle();
-                    if(newItem.DiscountNo()!=oldItem.DiscountNo()){
-                        diff.putInt("no",newItem.DiscountNo());
+                    if(newItem.uid()!=oldItem.uid()){
+                        diff.putInt("uid",newItem.uid());
                     }
-                    if(newItem.DiscountPer()!=oldItem.DiscountPer()){
-                        diff.putInt("per",newItem.DiscountPer());
+                    if(newItem.per()!=oldItem.per()){
+                        diff.putInt("per",newItem.per());
                     }
                     if(diff.size()==0){
                         return null;

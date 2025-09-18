@@ -326,8 +326,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
         customPreferenceViewModel.addDefaultPreferenceData();
         // 表示数が10未満の時、リサイクルビューのサイズ変更を固定にする。
-        customPreferenceListView.setHasFixedSize(customPreferenceViewModel.listSize() >= 10);
-
+        customPreferenceListView.setHasFixedSize(customPreferenceViewModel.preferenceParamListSize() >= 10);
     }
 
 

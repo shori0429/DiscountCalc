@@ -241,7 +241,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
 
         saveDataListView=customDiscountPreferenceFragmentBinding.saveDataList;
-        saveDataListViewAdapter=new SaveDataListViewAdapter();
+        saveDataListViewAdapter=new SaveDataListViewAdapter(customPreferenceViewModel);
         LinearLayoutManager llm2=new LinearLayoutManager(view.getContext());
         saveDataListView.setLayoutManager(llm2);
         saveDataListView.setAdapter(saveDataListViewAdapter);

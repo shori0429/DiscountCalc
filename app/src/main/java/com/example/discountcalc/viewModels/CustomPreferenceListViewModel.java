@@ -33,6 +33,7 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         preferenceParamList=new MutableLiveData<>();
         allPreferenceParamList=new MutableLiveData<>();
         dataRepository.PreferenceParamList().observeForever(allPreferenceParamList::setValue);
+        // TODO AllPreferenceListが更新された時の処理を書く
     }
 
     // 全データから使用データする保存名を抽出してlivedataにセット
@@ -130,6 +131,12 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
             return true;
         }
         return false;
+    }
+
+    public int deleteSaveData(String name){
+        if(name==null)return -1;
+        dataRepository.deleteForSaveName(name);
+        return 0;
     }
 
     public boolean SaveUpdateData(@NonNull String saveName){

@@ -93,10 +93,7 @@ public class TitleFragment extends Fragment implements CustomTextWatcher {
 
 
     private void setClickListeners(View view) {
-        view.setOnClickListener(v->{
-            // キーボードを隠す
-            view.setOnClickListener(c-> inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS));
-        });
+
         // androidキーボードのenter押下イベント
         // (エミュ:何故か少し長押ししてから離さないと認識しない)
         // (実機:未検証)

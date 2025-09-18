@@ -1,11 +1,10 @@
 package com.example.discountcalc.activity;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.datastore.preferences.core.Preferences;
-import androidx.datastore.preferences.rxjava3.RxPreferenceDataStoreBuilder;
-import androidx.datastore.rxjava3.RxDataStore;
 
 import com.example.discountcalc.databinding.ActivityMainBinding;
 
@@ -22,9 +21,17 @@ public class MainActivity extends AppCompatActivity{
         setContentView(binding.getRoot());
     }
 
+
     @Override
     protected void onStart() {
         super.onStart();
+
+        // 空白箇所タップでフォーカスを外す(子フラグメントのeditText用)
+        binding.getRoot().setOnClickListener(v->{
+            InputMethodManager imm=(InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            v.clearFocus();
+        });
     }
 
 }

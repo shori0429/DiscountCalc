@@ -26,7 +26,6 @@ import com.example.discountcalc.customAdapters.SaveDataListViewAdapter;
 import com.example.discountcalc.dataBase.AppDataBase;
 import com.example.discountcalc.databinding.CustomDiscountPreferenceFragmentBinding;
 import com.example.discountcalc.R;
-import com.example.discountcalc.params.CustomPreferenceData;
 import com.example.discountcalc.params.PreferenceParam;
 import com.example.discountcalc.viewModels.SaveTitleViewOneLineParamViewModel;
 import com.example.discountcalc.viewModels.CustomPreferenceListViewModel;
@@ -80,14 +79,15 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         useSaveDataNameLiveData=new MutableLiveData<>();
-        useSaveDataNameLiveData.observe(getViewLifecycleOwner(),v->{
-            List<PreferenceParam> dataList=loadCustomPreferenceList(v);
+        useSaveDataNameLiveData.observe(getViewLifecycleOwner(),useName->{
+            List<PreferenceParam> dataList=loadCustomPreferenceList(useName);
             if(dataList.size()==0) {
                 // ロード先が存在しなければ1個の空要素だけを作成。
-                dataList.add(PreferenceParam.createDefaultParam());
+                dataList.add(new PreferenceParam(dataList.size()+1,0,""));
             }
-            saveTitle.setText(v);
-            customPreferenceViewModel.updatePreferenceData(dataList);
+            saveTitle.setText(useName);
+            // 現在リストの更新
+            customPreferenceViewModel.commitPreferenceParamList(useName);
         });
         bindingElements();
         viewModelInitialize();
@@ -136,11 +136,14 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         // 全データ格納用のlivedataを購読
         customPreferenceViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(),allParams->{
             if(allParams.size()>0){
-                customPreferenceViewModel.setPreferenceParamList(useSaveDataNameLiveData.getValue());
+                customPreferenceViewModel.usePreferenceParamList(useSaveDataNameLiveData.getValue());
+                useSaveDataNameLiveData.setValue(sharedPreferences.getString(getString(R.string.using_custom_preference),null));
+
             }
 
-            useSaveDataNameLiveData.setValue(sharedPreferences.getString(getString(R.string.using_custom_preference),null));
-
+            if(allParams.size()==0){
+                customPreferenceViewModel.usePreferenceParamList("");
+            }
 
             // 購読解除することで、最初の一回だけ呼び出されるようにしている。(実装が正しいかは正直不明)
             // Observer変数を用意し、observe、removeObserver内でそれを使うことで、特定のobserverだけを解除するように変更したい。
@@ -157,14 +160,9 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     private void updateUI(List<PreferenceParam> params) {
         Log.i("updateUI","updateUI");
 
-        List<CustomPreferenceData> dataList=new ArrayList<>();
-        // 新しくデータリストを作成し、それをアダプターとTextViewにセットする。
-        for (int i=0;i<params.size();i++){
-            dataList.add(new CustomPreferenceData(i+1,params.get(i).per(),params.get(i).saveName()));
-        }
-        customPreferenceListAdapter.submitList(new ArrayList<>(Objects.requireNonNull(dataList)));
+        customPreferenceListAdapter.submitList(new ArrayList<>(params));
         customPreferenceListView.setHasFixedSize(customPreferenceListAdapter.getItemCount() >= 10);
-        elementNumberViewText.setText("" + dataList.size());
+        elementNumberViewText.setText("" + params.size());
         saveDataListViewAdapter.submitList(new ArrayList<>(customPreferenceViewModel.getSaveNameList()));
     }
 
@@ -235,7 +233,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     // リサイクルビューの初期化関数
     private void recyclerViewInitialize() {
         customPreferenceListView = customDiscountPreferenceFragmentBinding.PreferenceList;
-        customPreferenceListAdapter=new CustomPreferenceListAdapter();
+        customPreferenceListAdapter=new CustomPreferenceListAdapter(customPreferenceViewModel);
 
         LinearLayoutManager llm=new LinearLayoutManager(view.getContext());
         customPreferenceListView.setLayoutManager(llm);
@@ -258,13 +256,16 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
     // 指定された名前の保存されているカスタムの割引率設定に関するデータを取得
     private List<PreferenceParam> loadCustomPreferenceList(String name) {
+        if(name==null)return new ArrayList<>();
         List<PreferenceParam> dataList = new ArrayList<>();
+
+        //TODO viewModelのメソッド使用に変更する
         // 引数と一致する保存名のデータをセット
         if (customPreferenceViewModel.existingCheckDAO(name)) {
             List<PreferenceParam> params = customPreferenceViewModel.AllPreferenceParamList().getValue();
             for(int i=0;i<params.size();i++){
                 if(Objects.equals(params.get(i).saveName(), name)){
-                    dataList.add(new PreferenceParam(dataList.size()+1, params.get(i).saveName(),params.get(i).per()));
+                    dataList.add(new PreferenceParam(dataList.size()+1,params.get(i).per(), params.get(i).saveName()));
                 }
             }
         }
@@ -321,8 +322,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
         customPreferenceViewModel.addDefaultPreferenceData();
         // 表示数が10未満の時、リサイクルビューのサイズ変更を固定にする。
-        customPreferenceListView.setHasFixedSize(customPreferenceViewModel.listSize() >= 10);
-
+        customPreferenceListView.setHasFixedSize(customPreferenceViewModel.preferenceParamListSize() >= 10);
     }
 
 

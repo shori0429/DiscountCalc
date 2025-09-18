@@ -26,7 +26,6 @@ import com.example.discountcalc.customAdapters.SaveDataListViewAdapter;
 import com.example.discountcalc.dataBase.AppDataBase;
 import com.example.discountcalc.databinding.CustomDiscountPreferenceFragmentBinding;
 import com.example.discountcalc.R;
-import com.example.discountcalc.params.CustomPreferenceData;
 import com.example.discountcalc.params.PreferenceParam;
 import com.example.discountcalc.viewModels.SaveTitleViewOneLineParamViewModel;
 import com.example.discountcalc.viewModels.CustomPreferenceListViewModel;
@@ -161,14 +160,9 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     private void updateUI(List<PreferenceParam> params) {
         Log.i("updateUI","updateUI");
 
-        List<CustomPreferenceData> dataList=new ArrayList<>();
-        // 新しくデータリストを作成し、それをアダプターとTextViewにセットする。
-        for (int i=0;i<params.size();i++){
-            dataList.add(new CustomPreferenceData(i+1,params.get(i).per(),params.get(i).saveName()));
-        }
-        customPreferenceListAdapter.submitList(new ArrayList<>(Objects.requireNonNull(dataList)));
+        customPreferenceListAdapter.submitList(new ArrayList<>(params));
         customPreferenceListView.setHasFixedSize(customPreferenceListAdapter.getItemCount() >= 10);
-        elementNumberViewText.setText("" + dataList.size());
+        elementNumberViewText.setText("" + params.size());
         saveDataListViewAdapter.submitList(new ArrayList<>(customPreferenceViewModel.getSaveNameList()));
     }
 
@@ -264,12 +258,14 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     private List<PreferenceParam> loadCustomPreferenceList(String name) {
         if(name==null)return new ArrayList<>();
         List<PreferenceParam> dataList = new ArrayList<>();
+
+        //TODO viewModelのメソッド使用に変更する
         // 引数と一致する保存名のデータをセット
         if (customPreferenceViewModel.existingCheckDAO(name)) {
             List<PreferenceParam> params = customPreferenceViewModel.AllPreferenceParamList().getValue();
             for(int i=0;i<params.size();i++){
                 if(Objects.equals(params.get(i).saveName(), name)){
-                    dataList.add(new PreferenceParam(dataList.size()+1, params.get(i).saveName(),params.get(i).per()));
+                    dataList.add(new PreferenceParam(dataList.size()+1,params.get(i).per(), params.get(i).saveName()));
                 }
             }
         }

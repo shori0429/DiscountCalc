@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -133,27 +134,32 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         saveTitleViewOneLineParamViewModel=new ViewModelProvider(this,new SaveTitleViewOneLineParamViewModelFactory(requireActivity().getApplication()))
                 .get(SaveTitleViewOneLineParamViewModel.class);
 
-        // 全データ格納用のlivedataを購読
-        customPreferenceViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(),allParams->{
-            if(allParams.size()>0){
-                customPreferenceViewModel.usePreferenceParamList(useSaveDataNameLiveData.getValue());
-                useSaveDataNameLiveData.setValue(sharedPreferences.getString(getString(R.string.using_custom_preference),null));
-
+        // 全リストの初回変更通知時に一度だけ処理をする。
+        // observe内で購読を解除するためにObserverをnewしている。(ラムダだとthisがFragmentになる)
+        customPreferenceViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(), new Observer<>() {
+            @Override
+            public void onChanged(List<PreferenceParam> allParams) {
+                if (allParams.size() > 0) {
+                    customPreferenceViewModel.usePreferenceParamList(useSaveDataNameLiveData.getValue());
+                    useSaveDataNameLiveData.setValue(sharedPreferences.getString(getString(R.string.using_custom_preference), null));
+                }
+                if (allParams.size() == 0) {
+                    customPreferenceViewModel.usePreferenceParamList("");
+                }
+                // 購読を解除。
+                customPreferenceViewModel.AllPreferenceParamList().removeObserver(this);
             }
-
-            if(allParams.size()==0){
-                customPreferenceViewModel.usePreferenceParamList("");
-            }
-
-            // 購読解除することで、最初の一回だけ呼び出されるようにしている。(実装が正しいかは正直不明)
-            // Observer変数を用意し、observe、removeObserver内でそれを使うことで、特定のobserverだけを解除するように変更したい。
-            customPreferenceViewModel.AllPreferenceParamList().removeObservers(getViewLifecycleOwner());
         });
 
-        // ViewModel内のリポジトリLiveDataの購読。
+        // ViewModel内の現在リストの更新を購読。
         customPreferenceViewModel.PreferenceParamList().observe(getViewLifecycleOwner(),preferenceParams -> {
             updateUI(preferenceParams);
             setOnClickListeners();
+        });
+
+        // ViewModel内の全リストの更新を購読
+        customPreferenceViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(),allParams->{
+            updateUI(customPreferenceViewModel.PreferenceParamList().getValue());
         });
     }
 

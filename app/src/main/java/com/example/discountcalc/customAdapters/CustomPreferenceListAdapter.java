@@ -132,8 +132,11 @@ public class CustomPreferenceListAdapter
         if(payloads.isEmpty()){
             holder.bind(position,data,customPreferenceListViewModel);
         }else{
-            for (Object payload:payloads){
-                if("Per".equals(payload)){
+            // DiffUtilで算出した差分を適用させる。
+            for (Object obj:payloads){
+                Bundle payload=(Bundle) obj;
+                if(payload.containsKey("per")){
+                    data=new PreferenceParam(data.uid(), payload.getInt("per"),"");
                     holder.getViewDataBinding().setVariable(BR.preferenceParam, data);
                     holder.getViewDataBinding().executePendingBindings();
                 }
@@ -166,7 +169,6 @@ public class CustomPreferenceListAdapter
                 @Override
                 public boolean areItemsTheSame(@NonNull PreferenceParam oldItem, @NonNull PreferenceParam newItem) {
                     boolean bool= oldItem.uid()== newItem.uid();
-                    Log.i("DiffUtil","areItemTheSame:"+oldItem.uid()+":"+newItem.uid()+"->"+bool);
                     return bool;
 
                 }
@@ -174,8 +176,6 @@ public class CustomPreferenceListAdapter
                 @Override
                 public boolean areContentsTheSame(@NonNull PreferenceParam oldItem, @NonNull PreferenceParam newItem) {
                     boolean bool = oldItem.equals(newItem);
-                    Log.i("DiffUtil","areContentsTheSame:"+oldItem.uid()+"["+oldItem.per()+"]\n"+
-                            newItem.uid()+"["+newItem.per()+"]");
                     return bool;
                 }
 
@@ -188,6 +188,9 @@ public class CustomPreferenceListAdapter
                     }
                     if(newItem.per()!=oldItem.per()){
                         diff.putInt("per",newItem.per());
+                    }
+                    if(!newItem.saveName().equals(oldItem.saveName())){
+                        diff.putString("saveName", newItem.saveName());
                     }
                     if(diff.size()==0){
                         return null;

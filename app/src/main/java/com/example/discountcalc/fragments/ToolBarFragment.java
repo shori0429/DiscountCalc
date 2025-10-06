@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.discountcalc.R;
@@ -21,6 +22,10 @@ public class ToolBarFragment extends Fragment implements ToolBarCustomViewDelega
 
     boolean isHideLeftButton=false;
     boolean isHideRightButton=false;
+
+    NavHostFragment navHostFragment;
+    NavController navController;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +37,9 @@ public class ToolBarFragment extends Fragment implements ToolBarCustomViewDelega
         binding=FragmentOriginalToolbarBinding.inflate(inflater,container,false);
 
         setCustomToolBar(inflater);
+        navHostFragment=(NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.host_fragment);
 
+        assert navHostFragment != null:"null navHostFragment. TitleFragment.java line:89";
         return binding.getRoot();
     }
 
@@ -92,16 +99,22 @@ public class ToolBarFragment extends Fragment implements ToolBarCustomViewDelega
     @Override
     public void onClickedRightButton() {
         Log.i("ToolBarOnClicked","onClickedRightButton");
-        setNavGraphDestination();
+
     }
 
     // navigationGraphのDestination遷移を実装
     private void setNavGraphDestination(){
-        NavHostFragment navHostFragment=(NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.host_fragment);
-        assert navHostFragment != null:"null navHostFragment. TitleFragment.java line:89";
         NavController navHostController=navHostFragment.getNavController();
         NavDirections navDirections=TitleFragmentDirections.actionTitleFragmentToSettingsFragment();
         navHostController.navigate(navDirections);
+    }
+
+    private void setNavGraphMovement(NavDirections nextFragment){
+        NavController navHostController=navHostFragment.getNavController();
+        if(nextFragment!=null) {
+            navHostController.navigate(nextFragment);
+        }
+
     }
 
 }

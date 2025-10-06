@@ -54,11 +54,11 @@ public class TitleFragment extends Fragment implements CustomTextWatcher {
         calcTitleBinding.priceTextField.addTextChangedListener(this);
 
         // ツールバーFragment設定
-        ToolBarFragment toolBarFragment=new ToolBarFragment();
-        getChildFragmentManager().beginTransaction()
-                .replace(R.id.title_ToolBarView, toolBarFragment)
-                .setReorderingAllowed(true)
-                .commit();
+//        ToolBarFragment toolBarFragment=new ToolBarFragment();
+//        getChildFragmentManager().beginTransaction()
+//                .replace(R.id.title_ToolBarView, toolBarFragment)
+//                .setReorderingAllowed(true)
+//                .commit();
 
         // 結果表示Fragment設定
         ResultListFragment resultListFragment=new ResultListFragment();

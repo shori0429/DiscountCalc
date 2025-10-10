@@ -9,13 +9,11 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.discountcalc.R;
 import com.example.discountcalc.databinding.ActivityMainBinding;
-import com.example.discountcalc.fragments.CustomToolBar;
 import com.example.discountcalc.fragments.ToolBarFragment;
 
 public class MainActivity extends AppCompatActivity{
     private ActivityMainBinding binding;
 
-    private CustomToolBar customToolBar;
     ToolBarFragment toolBarFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +31,10 @@ public class MainActivity extends AppCompatActivity{
     protected void onStart() {
         super.onStart();
 
+        // ツールバーフラグメントを配置
         FragmentManager fragmentManager=getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .add(R.id.Main_ToolBarView,toolBarFragment)
+                .replace(R.id.Main_ToolBarView,toolBarFragment)
                 .commit();
 
         // 空白箇所タップでフォーカスを外す(子フラグメントのeditText用)

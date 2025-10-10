@@ -10,7 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.discountcalc.R;
@@ -36,9 +35,9 @@ public class ToolBarFragment extends Fragment implements ToolBarCustomViewDelega
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding=FragmentOriginalToolbarBinding.inflate(inflater,container,false);
 
-        setCustomToolBar(inflater);
         navHostFragment=(NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.host_fragment);
-
+        navController=navHostFragment.getNavController();
+        setCustomToolBar(inflater);
         assert navHostFragment != null:"null navHostFragment. TitleFragment.java line:89";
         return binding.getRoot();
     }
@@ -51,9 +50,13 @@ public class ToolBarFragment extends Fragment implements ToolBarCustomViewDelega
 //        customToolBar.configure(title,false,false);
         binding.ActionTitle.setText(title);
 
-        setLeftButton(isHideLeftButton);
+        // navGraphのフラグメントが切り替わった時のイベントリスナーを追加
+        navController.addOnDestinationChangedListener((((navController1, navDestination, bundle) -> {
+            setLeftButton(isHideLeftButton);
 
-        setRightButton(isHideRightButton);
+            setRightButton(isHideRightButton);
+        })));
+
 
 //        // カスタムツールバーを挿入するコンテナを指定
 //        LinearLayoutCompat layoutCompat=binding.layoutCustomToolbar;
@@ -94,19 +97,51 @@ public class ToolBarFragment extends Fragment implements ToolBarCustomViewDelega
     @Override
     public void onClickedLeftButton() {
         Log.i("ToolBarOnClicked","onClickedLeftButton");
+        if (navController.getCurrentDestination() != null) {
+            int id =  navController.getCurrentDestination().getId();
+            CharSequence label=navController.getCurrentDestination().getLabel();
+
+            // タイトル画面時の処理
+            if (id == R.id.nav_titleFragment) {
+                Log.i("toolBarFragment", "current fragment:" + label);
+            }
+            // 設定トップ画面時の処理
+            if (id == R.id.nav_settingsFragment
+                    || id ==R.id.nav_customDiscountPreferenceFragment) {
+                Log.i("toolBarFragment", "current fragment:" + label);
+                navController.popBackStack();
+            }
+//            // カスタム割引率設定画面の処理
+//            if (id == R.id.nav_customDiscountPreferenceFragment) {
+//                Log.i("toolBarFragment", "current fragment:" + label);
+//            }
+        }
     }
 
     @Override
     public void onClickedRightButton() {
         Log.i("ToolBarOnClicked","onClickedRightButton");
+        if (navController.getCurrentDestination() != null) {
+            int id =  navController.getCurrentDestination().getId();
+            CharSequence label=navController.getCurrentDestination().getLabel();
 
-    }
-
-    // navigationGraphのDestination遷移を実装
-    private void setNavGraphDestination(){
-        NavController navHostController=navHostFragment.getNavController();
-        NavDirections navDirections=TitleFragmentDirections.actionTitleFragmentToSettingsFragment();
-        navHostController.navigate(navDirections);
+            // タイトル画面時の処理
+            if (id == R.id.nav_titleFragment) {
+                navController.navigate(R.id.nav_settingsFragment);
+                Log.i("toolBarFragment", "next:" + R.id.nav_settingsFragment);
+            }
+            // 設定トップ画面時の処理
+            if (id == R.id.nav_settingsFragment
+                    || id == R.id.nav_customDiscountPreferenceFragment) {
+                navController.navigate(R.id.nav_titleFragment);
+                Log.i("toolBarFragment", "Go To Home");
+            }
+//            // カスタム割引率設定画面の処理
+//            if (id == R.id.nav_customDiscountPreferenceFragment) {
+//                Log.i("toolBarFragment", "current fragment:" + label);
+//
+//            }
+        }
     }
 
     private void setNavGraphMovement(NavDirections nextFragment){

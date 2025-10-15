@@ -9,15 +9,11 @@
 
     <ImageButton
         android:id="@+id/Action_LeftButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.5"
-        android:background="@color/dark_green"
-        android:scaleType="center"
-        android:scaleX="2"
-        android:scaleY="2"
+        android:layout_weight="1"
+        android:scaleType="fitXY"
         android:src="@drawable/action_back_image"
-        tools:ignore="SpeakableTextPresentCheck"
         />
 
     <TextView
@@ -35,14 +31,10 @@
 
     <ImageButton
         android:id="@+id/Action_RightButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.5"
-        android:background="@color/dark_green"
-        android:scaleType="center"
-        android:scaleX="2"
-        android:scaleY="2"
-        android:src="@drawable/setting_image"
-        />
+        android:layout_weight="1"
+        android:scaleType="fitXY"
+        android:src="@drawable/setting_image" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

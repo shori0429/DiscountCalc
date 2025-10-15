@@ -37,17 +37,13 @@ public class ToolBarFragment extends Fragment implements ToolBarCustomViewDelega
 
         navHostFragment=(NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.host_fragment);
         navController=navHostFragment.getNavController();
-        setCustomToolBar(inflater);
         assert navHostFragment != null:"null navHostFragment. TitleFragment.java line:89";
         return binding.getRoot();
     }
 
-    private void setCustomToolBar(LayoutInflater inflater){
-//        CustomToolBar customToolBar=new CustomToolBar(inflater.getContext());
-//        customToolBar.delegate=this;
+    private void setCustomToolBar(){
 
         String title=getString(R.string.toolBarTitle);
-//        customToolBar.configure(title,false,false);
         binding.ActionTitle.setText(title);
 
         // navGraphのフラグメントが切り替わった時のイベントリスナーを追加
@@ -58,13 +54,6 @@ public class ToolBarFragment extends Fragment implements ToolBarCustomViewDelega
         })));
 
 
-//        // カスタムツールバーを挿入するコンテナを指定
-//        LinearLayoutCompat layoutCompat=binding.layoutCustomToolbar;
-//
-//        // ツールバーの表示をコンテナに合わせる
-//        customToolBar.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT));
-//
-//        layoutCompat.addView(customToolBar);
     }
 
     public void setLeftButton(boolean isVisible){

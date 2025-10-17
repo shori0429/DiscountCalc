@@ -97,8 +97,7 @@ public class ToolBarFragment extends Fragment implements ToolBarCustomViewDelega
     @Override
     public void onClickedLeftButton() {
         Log.i("ToolBarOnClicked","onClickedLeftButton");
-        if (navController.getCurrentDestination() != null) {
-            int id =  navController.getCurrentDestination().getId();
+        int id = Objects.requireNonNull(navController.getCurrentDestination()).getId();
             CharSequence label=navController.getCurrentDestination().getLabel();
 
             // タイトル画面時の処理
@@ -115,7 +114,6 @@ public class ToolBarFragment extends Fragment implements ToolBarCustomViewDelega
 //            if (id == R.id.nav_customDiscountPreferenceFragment) {
 //                Log.i("toolBarFragment", "current fragment:" + label);
 //            }
-        }
     }
 
     @Override
@@ -131,16 +129,14 @@ public class ToolBarFragment extends Fragment implements ToolBarCustomViewDelega
                 Log.i("toolBarFragment", "next:" + R.id.nav_settingsFragment);
             }
             // 設定トップ画面時の処理
-            if (id == R.id.nav_settingsFragment
-                    || id == R.id.nav_customDiscountPreferenceFragment) {
+            if (id == R.id.nav_settingsFragment) {
+
+            }
+            // カスタム割引率設定画面の処理
+            if (id == R.id.nav_customDiscountPreferenceFragment) {
                 navController.navigate(R.id.nav_titleFragment);
                 Log.i("toolBarFragment", "Go To Home");
             }
-//            // カスタム割引率設定画面の処理
-//            if (id == R.id.nav_customDiscountPreferenceFragment) {
-//                Log.i("toolBarFragment", "current fragment:" + label);
-//
-//            }
         }
     }
 

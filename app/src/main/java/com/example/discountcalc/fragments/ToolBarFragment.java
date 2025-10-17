@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
@@ -15,12 +16,11 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.discountcalc.R;
 import com.example.discountcalc.databinding.FragmentOriginalToolbarBinding;
 
+import java.util.Objects;
+
 public class ToolBarFragment extends Fragment implements ToolBarCustomViewDelegate {
 
     private FragmentOriginalToolbarBinding binding;
-
-    boolean isHideLeftButton=false;
-    boolean isHideRightButton=false;
 
     NavHostFragment navHostFragment;
     NavController navController;
@@ -37,20 +37,31 @@ public class ToolBarFragment extends Fragment implements ToolBarCustomViewDelega
 
         navHostFragment=(NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.host_fragment);
         navController=navHostFragment.getNavController();
+        setCustomToolBar();
         assert navHostFragment != null:"null navHostFragment. TitleFragment.java line:89";
         return binding.getRoot();
     }
 
     private void setCustomToolBar(){
 
-        String title=getString(R.string.toolBarTitle);
-        binding.ActionTitle.setText(title);
-
-        // navGraphのフラグメントが切り替わった時のイベントリスナーを追加
-        navController.addOnDestinationChangedListener((((navController1, navDestination, bundle) -> {
-            setLeftButton(isHideLeftButton);
-
-            setRightButton(isHideRightButton);
+        // navGraphのフラグメントが切り替わった時のイベントリスナーを更新
+        navController.addOnDestinationChangedListener((((nController, nDestination, bundle) -> {
+            int id = Objects.requireNonNull(nController.getCurrentDestination()).getId();
+            if (id == R.id.nav_titleFragment) {
+                binding.ActionTitle.setText(R.string.toolBar_title);
+                binding.ActionRightButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.setting_image,null));
+                setLeftButton(false);
+                setRightButton(true);
+            } else if (id == R.id.nav_settingsFragment) {
+                binding.ActionTitle.setText(R.string.toolBar_setting);
+                setLeftButton(true);
+                setRightButton(false);
+            } else if (id == R.id.nav_customDiscountPreferenceFragment) {
+                binding.ActionTitle.setText(R.string.toolBar_customPreferenceSetting);
+                binding.ActionRightButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.home_image,null));
+                setLeftButton(true);
+                setRightButton(true);
+            }
         })));
 
 
@@ -60,13 +71,13 @@ public class ToolBarFragment extends Fragment implements ToolBarCustomViewDelega
         // 左ボタン
         // ボタンの表示/非表示設定
         if(isVisible) {
-            binding.ActionLeftButton.setVisibility(View.INVISIBLE);
-        }else{
             binding.ActionLeftButton.setVisibility(View.VISIBLE);
+            binding.ActionLeftButton.setOnClickListener(b->{
+                onClickedLeftButton();
+            });
+        }else{
+            binding.ActionLeftButton.setVisibility(View.INVISIBLE);
         }
-        binding.ActionLeftButton.setOnClickListener(b->{
-            onClickedLeftButton();
-        });
         //onClickedLeftButton();
     }
 
@@ -74,13 +85,13 @@ public class ToolBarFragment extends Fragment implements ToolBarCustomViewDelega
         // 右ボタン
         // ボタン表示/非表示設定
         if(isVisible) {
-            binding.ActionRightButton.setVisibility(View.INVISIBLE);
-        }else{
             binding.ActionRightButton.setVisibility(View.VISIBLE);
+            binding.ActionRightButton.setOnClickListener(b->{
+                onClickedRightButton();
+            });
+        }else{
+            binding.ActionRightButton.setVisibility(View.INVISIBLE);
         }
-        binding.ActionRightButton.setOnClickListener(b->{
-            onClickedRightButton();
-        });
     }
 
     @Override

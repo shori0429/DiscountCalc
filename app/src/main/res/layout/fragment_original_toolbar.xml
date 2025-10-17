@@ -4,7 +4,7 @@
     android:id="@+id/layout_custom_toolbar"
     android:layout_width="match_parent"
     android:layout_height="80dp"
-    android:background="@color/dark_green_alpha50"
+    android:background="@color/dark_green_alpha75"
     android:orientation="horizontal">
 
     <ImageButton

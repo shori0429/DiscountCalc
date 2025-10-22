@@ -9,23 +9,24 @@
 
     <ImageButton
         android:id="@+id/Action_LeftButton"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:scaleType="fitXY"
+        android:scaleType="fitCenter"
         android:paddingStart="8dp"
         android:paddingTop="8dp"
         android:paddingEnd="8dp"
         android:paddingBottom="8dp"
         android:src="@drawable/action_back_image"
         android:background="@color/trans"
+        android:adjustViewBounds="true"
         />
 
     <TextView
         android:id="@+id/Action_Title"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.5"
+        android:layout_weight="3"
         android:gravity="center"
         android:paddingStart="4dp"
         android:paddingTop="4dp"
@@ -43,10 +44,10 @@
 
     <ImageButton
         android:id="@+id/Action_RightButton"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:scaleType="fitXY"
+        android:scaleType="fitCenter"
         android:paddingStart="8dp"
         android:paddingTop="8dp"
         android:paddingEnd="8dp"

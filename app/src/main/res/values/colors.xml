@@ -3,5 +3,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="green">#00FF00</color>
+    <color name="trans">#00000000</color>
     <color name="dark_green">#006400</color>
+    <color name="dark_green_alpha50">#80006400</color>
+    <color name="dark_green_alpha75">#BF006400</color>
 </resources>

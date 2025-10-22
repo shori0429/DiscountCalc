@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
@@ -15,12 +16,11 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.discountcalc.R;
 import com.example.discountcalc.databinding.FragmentOriginalToolbarBinding;
 
+import java.util.Objects;
+
 public class ToolBarFragment extends Fragment implements ToolBarCustomViewDelegate {
 
     private FragmentOriginalToolbarBinding binding;
-
-    boolean isHideLeftButton=false;
-    boolean isHideRightButton=false;
 
     NavHostFragment navHostFragment;
     NavController navController;
@@ -37,47 +37,47 @@ public class ToolBarFragment extends Fragment implements ToolBarCustomViewDelega
 
         navHostFragment=(NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(R.id.host_fragment);
         navController=navHostFragment.getNavController();
-        setCustomToolBar(inflater);
+        setCustomToolBar();
         assert navHostFragment != null:"null navHostFragment. TitleFragment.java line:89";
         return binding.getRoot();
     }
 
-    private void setCustomToolBar(LayoutInflater inflater){
-//        CustomToolBar customToolBar=new CustomToolBar(inflater.getContext());
-//        customToolBar.delegate=this;
+    private void setCustomToolBar(){
 
-        String title=getString(R.string.toolBarTitle);
-//        customToolBar.configure(title,false,false);
-        binding.ActionTitle.setText(title);
-
-        // navGraphのフラグメントが切り替わった時のイベントリスナーを追加
-        navController.addOnDestinationChangedListener((((navController1, navDestination, bundle) -> {
-            setLeftButton(isHideLeftButton);
-
-            setRightButton(isHideRightButton);
+        // navGraphのフラグメントが切り替わった時のイベントリスナーを更新
+        navController.addOnDestinationChangedListener((((nController, nDestination, bundle) -> {
+            int id = Objects.requireNonNull(nController.getCurrentDestination()).getId();
+            if (id == R.id.nav_titleFragment) {
+                binding.ActionTitle.setText(R.string.toolBar_title);
+                binding.ActionRightButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.setting_image,null));
+                setLeftButton(false);
+                setRightButton(true);
+            } else if (id == R.id.nav_settingsFragment) {
+                binding.ActionTitle.setText(R.string.toolBar_setting);
+                setLeftButton(true);
+                setRightButton(false);
+            } else if (id == R.id.nav_customDiscountPreferenceFragment) {
+                binding.ActionTitle.setText(R.string.toolBar_customPreferenceSetting);
+                binding.ActionRightButton.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.home_image,null));
+                setLeftButton(true);
+                setRightButton(true);
+            }
         })));
 
 
-//        // カスタムツールバーを挿入するコンテナを指定
-//        LinearLayoutCompat layoutCompat=binding.layoutCustomToolbar;
-//
-//        // ツールバーの表示をコンテナに合わせる
-//        customToolBar.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT));
-//
-//        layoutCompat.addView(customToolBar);
     }
 
     public void setLeftButton(boolean isVisible){
         // 左ボタン
         // ボタンの表示/非表示設定
         if(isVisible) {
-            binding.ActionLeftButton.setVisibility(View.INVISIBLE);
-        }else{
             binding.ActionLeftButton.setVisibility(View.VISIBLE);
+            binding.ActionLeftButton.setOnClickListener(b->{
+                onClickedLeftButton();
+            });
+        }else{
+            binding.ActionLeftButton.setVisibility(View.INVISIBLE);
         }
-        binding.ActionLeftButton.setOnClickListener(b->{
-            onClickedLeftButton();
-        });
         //onClickedLeftButton();
     }
 
@@ -85,20 +85,19 @@ public class ToolBarFragment extends Fragment implements ToolBarCustomViewDelega
         // 右ボタン
         // ボタン表示/非表示設定
         if(isVisible) {
-            binding.ActionRightButton.setVisibility(View.INVISIBLE);
-        }else{
             binding.ActionRightButton.setVisibility(View.VISIBLE);
+            binding.ActionRightButton.setOnClickListener(b->{
+                onClickedRightButton();
+            });
+        }else{
+            binding.ActionRightButton.setVisibility(View.INVISIBLE);
         }
-        binding.ActionRightButton.setOnClickListener(b->{
-            onClickedRightButton();
-        });
     }
 
     @Override
     public void onClickedLeftButton() {
         Log.i("ToolBarOnClicked","onClickedLeftButton");
-        if (navController.getCurrentDestination() != null) {
-            int id =  navController.getCurrentDestination().getId();
+        int id = Objects.requireNonNull(navController.getCurrentDestination()).getId();
             CharSequence label=navController.getCurrentDestination().getLabel();
 
             // タイトル画面時の処理
@@ -115,7 +114,6 @@ public class ToolBarFragment extends Fragment implements ToolBarCustomViewDelega
 //            if (id == R.id.nav_customDiscountPreferenceFragment) {
 //                Log.i("toolBarFragment", "current fragment:" + label);
 //            }
-        }
     }
 
     @Override
@@ -131,16 +129,14 @@ public class ToolBarFragment extends Fragment implements ToolBarCustomViewDelega
                 Log.i("toolBarFragment", "next:" + R.id.nav_settingsFragment);
             }
             // 設定トップ画面時の処理
-            if (id == R.id.nav_settingsFragment
-                    || id == R.id.nav_customDiscountPreferenceFragment) {
+            if (id == R.id.nav_settingsFragment) {
+
+            }
+            // カスタム割引率設定画面の処理
+            if (id == R.id.nav_customDiscountPreferenceFragment) {
                 navController.navigate(R.id.nav_titleFragment);
                 Log.i("toolBarFragment", "Go To Home");
             }
-//            // カスタム割引率設定画面の処理
-//            if (id == R.id.nav_customDiscountPreferenceFragment) {
-//                Log.i("toolBarFragment", "current fragment:" + label);
-//
-//            }
         }
     }
 

@@ -23,14 +23,12 @@ import com.example.discountcalc.customAdapters.ResultLayoutAdapter;
 import com.example.discountcalc.params.DiscountType;
 import com.example.discountcalc.params.DiscountData;
 import com.example.discountcalc.R;
-import com.example.discountcalc.params.PreferenceParam;
 import com.example.discountcalc.viewModels.CustomPreferenceListViewModel;
 import com.example.discountcalc.viewModels.CustomPreferenceListViewModelFactory;
 import com.example.discountcalc.viewModels.DiscountCalcViewModel;
 import com.example.discountcalc.databinding.ResultPriceListBinding;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 @SuppressWarnings("FieldCanBeLocal")
@@ -88,67 +86,40 @@ public class ResultListFragment extends Fragment {
         // 設定データ取得
         getPreferences();
 
-        //customPreferenceListViewModel.AllPreferenceParamList().observeに使用。
-        Observer<List<PreferenceParam>> allPreferencesObserver= new Observer<>() {
-            @Override
-            public void onChanged(List<PreferenceParam> allParams) {
-                if (allParams.size() > 0) {
-                    customPreferenceListViewModel.usePreferenceParamList(discountType.name());
-                }
-                // 使用する設定タイプがなかった場合はPresetが使用されるように
-                if (discountType == DiscountType.None) {
-                    createDiscountPreferenceData();
-                }
-                // Observer内で購読を解除することでフラグメント生成後1度だけ呼ばれるように
-                customPreferenceListViewModel.AllPreferenceParamList().removeObserver(this);
-
-
-                // 保存データ取得
-                loadSettingData();
-
-
-                // 計算
-                calcDiscounts();
-
-                paddingFlags = new boolean[4];
-                paddingFlags[2] = true;
-
-                recyclerView = resultPriceListBinding.resultPriceList;
-                resultLayoutAdapter = new ResultLayoutAdapter(resultDataList, ConvertDisplayUnitsHelper.dpToPx(30, requireContext()), paddingFlags);
-                // 縦方向のLayoutManagerを作成
-                LinearLayoutManager llm = new LinearLayoutManager(resultPriceListBinding.getRoot().getContext());
-                recyclerView.setHasFixedSize(true);
-                recyclerView.setLayoutManager(llm);
-                recyclerView.setAdapter(resultLayoutAdapter);
-
-                LivedataInit();
+        customPreferenceListViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(),allParams->{
+            if(allParams.size()>0){
+                customPreferenceListViewModel.usePreferenceParamList(discountType.name());
             }
-        };
-        
-        customPreferenceListViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(), allPreferencesObserver);
+            // このフラグメントの購読を解除することでフラグメント生成後1度だけ呼ばれるように(できているはず)
+            customPreferenceListViewModel.AllPreferenceParamList().removeObservers(getViewLifecycleOwner());
+        });
 
-//        // 保存データ取得
-//        loadSettingData();
-//
-//        if (discountType == DiscountType.None) {
-//            createDiscountPreferenceData();
-//        }
-//
-//        // 計算
-//        calcDiscounts();
-//
-//        paddingFlags = new boolean[4];
-//        paddingFlags[2] = true;
-//
-//        recyclerView = resultPriceListBinding.resultPriceList;
-//        resultLayoutAdapter = new ResultLayoutAdapter(resultDataList, ConvertDisplayUnitsHelper.dpToPx(30, requireContext()), paddingFlags);
-//        // 縦方向のLayoutManagerを作成
-//        LinearLayoutManager llm = new LinearLayoutManager(resultPriceListBinding.getRoot().getContext());
-//        recyclerView.setHasFixedSize(true);
-//        recyclerView.setLayoutManager(llm);
-//        recyclerView.setAdapter(resultLayoutAdapter);
-//
-//        LivedataInit();
+        // ViewModelのリポジトリLiveDataを購読。
+        customPreferenceListViewModel.PreferenceParamList().observe(getViewLifecycleOwner(),preferenceParams->{
+            // 保存データ取得
+            loadSettingData();
+
+            if (discountType == DiscountType.None) {
+                createDiscountPreferenceData();
+            }
+
+            // 計算
+            calcDiscounts();
+
+            paddingFlags = new boolean[4];
+            paddingFlags[2] = true;
+
+            recyclerView = resultPriceListBinding.resultPriceList;
+            resultLayoutAdapter = new ResultLayoutAdapter(resultDataList, ConvertDisplayUnitsHelper.dpToPx(30, requireContext()), paddingFlags);
+            // 縦方向のLayoutManagerを作成
+            LinearLayoutManager llm = new LinearLayoutManager(resultPriceListBinding.getRoot().getContext());
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(llm);
+            recyclerView.setAdapter(resultLayoutAdapter);
+
+
+            LivedataInit();
+        });
     }
 
     //入力価格データ購読設定
@@ -189,8 +160,6 @@ public class ResultListFragment extends Fragment {
                     createDiscountPreferenceData();
                     break;
                 }
-                String useList=preferences.getString(getString(R.string.using_custom_preference),"");
-                customPreferenceListViewModel.usePreferenceParamList(useList);
                 for (int i = 0; i < customPreferenceListViewModel.PreferenceParamList().getValue().size(); i++) {
                     discountPerList.add(i, customPreferenceListViewModel.PreferenceParamList().getValue().get(i).per());
                 }

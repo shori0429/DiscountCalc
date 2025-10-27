@@ -156,11 +156,11 @@ public class ResultListFragment extends Fragment {
         switch (discountType) {
             case None, Preset -> createDiscountPreferenceData();
             case Custom -> {
-                if(customPreferenceListViewModel.PreferenceParamList().getValue().size()==0){
+                if(customPreferenceListViewModel.preferenceParamListSize()==0){
                     createDiscountPreferenceData();
                     break;
                 }
-                for (int i = 0; i < customPreferenceListViewModel.PreferenceParamList().getValue().size(); i++) {
+                for (int i = 0; i < customPreferenceListViewModel.preferenceParamListSize(); i++) {
                     discountPerList.add(i, customPreferenceListViewModel.PreferenceParamList().getValue().get(i).per());
                 }
             }

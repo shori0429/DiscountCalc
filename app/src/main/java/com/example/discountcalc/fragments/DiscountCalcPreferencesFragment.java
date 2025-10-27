@@ -126,6 +126,13 @@ public class DiscountCalcPreferencesFragment extends PreferenceFragmentCompat {
             return true;
         }
         return false;
+    private void setViewMax(String useName) {
+        // 読み込んだ保存データの要素数をセット
+        customPreferenceListViewModel.usePreferenceParamList(useName);
+        int viewMax = customPreferenceListViewModel.preferenceParamListSize();
+        viewCountSeekBar.setMax(viewMax);
+        // 前のシークバーの位置が、更新後のシークバーの最大値を超えている場合に値を更新し、戻った時のエラー回避
+        if(viewCountSeekBar.getValue()>viewMax)viewCountSeekBar.setValue(viewMax);
     }
 
     private void setNavGraphDestination(){

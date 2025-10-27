@@ -117,15 +117,20 @@ public class DiscountCalcPreferencesFragment extends PreferenceFragmentCompat {
     }
 
 
-    private boolean customPreferenceSetting(DiscountType type,Preference preference){
-        if(type==DiscountType.Custom) {
-            preference.setVisible(true);
-            return true;
-        }else if(type==DiscountType.Preset){
-            preference.setVisible(false);
-            return true;
+    private void customPreferenceSetting(DiscountType type, Preference preference){
+        switch (type){
+            case Preset ->{
+                preference.setVisible(false);
+                viewCountSeekBar.setMax(getResources().getIntArray(R.array.preset_discount_values).length);
+            }
+            case Custom -> {
+                preference.setVisible(true);
+                setViewMax(usingSaveCustomPreference.getValue());
+            }
+            default -> {}
         }
-        return false;
+    }
+
     private void setViewMax(String useName) {
         // 読み込んだ保存データの要素数をセット
         customPreferenceListViewModel.usePreferenceParamList(useName);

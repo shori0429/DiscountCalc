@@ -114,6 +114,13 @@ public class DiscountCalcPreferencesFragment extends PreferenceFragmentCompat {
             setNavGraphDestination();
             return true;
         });
+
+        // 表示数シークバーの変更リスナー
+        usingSaveCustomPreference.setOnPreferenceChangeListener((preference,useName) -> {
+            setViewMax(useName.toString());
+            return true;
+        });
+
     }
 
 

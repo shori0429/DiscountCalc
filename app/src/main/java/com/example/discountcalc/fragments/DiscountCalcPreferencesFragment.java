@@ -14,6 +14,7 @@ import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
+import androidx.preference.SeekBarPreference;
 
 import com.example.discountcalc.params.DiscountType;
 import com.example.discountcalc.R;
@@ -36,6 +37,8 @@ public class DiscountCalcPreferencesFragment extends PreferenceFragmentCompat {
     Preference customDiscountPreference;
 
     CustomPreferenceListViewModel customPreferenceListViewModel;
+
+    SeekBarPreference viewCountSeekBar;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -89,6 +92,7 @@ public class DiscountCalcPreferencesFragment extends PreferenceFragmentCompat {
         usingCustomPreference = findPreference(getString(R.string.using_setting));
         usingSaveCustomPreference=findPreference(getString(R.string.using_custom_preference));
         customDiscountPreference=findPreference(getString(R.string.custom_discount_preference));
+        viewCountSeekBar=findPreference(getString(R.string.view_count));
         // どれか一つでも取得できなければfalseが返される
         return sharedPreferences != null && usingCustomPreference != null && customDiscountPreference != null;
     }

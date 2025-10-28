@@ -65,7 +65,6 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     View view;
     TextView elementNumberViewText;
     Button elementAddButton;
-    Button changeTextSize;
 
     Button saveButton;
 
@@ -122,7 +121,6 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     private void bindingElements() {
         elementNumberViewText=customDiscountPreferenceFragmentBinding.PreferenceVolume;
         elementAddButton=customDiscountPreferenceFragmentBinding.AddElementButton;
-        changeTextSize=customDiscountPreferenceFragmentBinding.ChangeTextSizeButton;
         saveButton=customDiscountPreferenceFragmentBinding.SaveButton;
         clearButton=customDiscountPreferenceFragmentBinding.clearElementButton;
         allClearButton=customDiscountPreferenceFragmentBinding.allClearElementButton;
@@ -175,29 +173,6 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     public void setOnClickListeners(){
         elementAddButton.setOnClickListener(b->{
             addPreferenceDataElement();
-        });
-        changeTextSize.setOnClickListener(b->{
-            // TODO:文字サイズ変更は仮実装なのでちゃんとまとめたり整理する
-            if(textSize==0){
-                textSize=(int)elementNumberViewText.getTextSize();
-            }
-            int small=(int)getResources().getDimension(R.dimen.small_size);
-            int normal=(int)getResources().getDimension(R.dimen.normal_size);
-            int large=(int)getResources().getDimension(R.dimen.large_size);
-            if(textSize==small){
-                elementNumberViewText.setTextSize(normal);
-                customPreferenceListAdapter.setTextSizes(normal);
-                textSize=normal;
-
-            }else if(textSize==normal){
-                elementNumberViewText.setTextSize(large);
-                customPreferenceListAdapter.setTextSizes(large);
-                textSize=large;
-            }else if(textSize==large){
-                elementNumberViewText.setTextSize(small);
-                customPreferenceListAdapter.setTextSizes(small);
-                textSize=small;
-            }
         });
 
         saveButton.setOnClickListener(b->{

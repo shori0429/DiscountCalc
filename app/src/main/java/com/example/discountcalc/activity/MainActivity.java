@@ -2,8 +2,10 @@ package com.example.discountcalc.activity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
@@ -43,6 +45,17 @@ public class MainActivity extends AppCompatActivity{
             imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             v.clearFocus();
         });
+
+        // 戻るボタンのカスタム
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // 戻るボタンは機能せず、logが表示されるだけになる。
+                Log.i(this.toString(),"backPressed.");
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this,callback);
+
     }
 
 }

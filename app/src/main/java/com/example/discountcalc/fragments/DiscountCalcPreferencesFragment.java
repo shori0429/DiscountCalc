@@ -14,6 +14,7 @@ import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
+import androidx.preference.SeekBarPreference;
 
 import com.example.discountcalc.params.DiscountType;
 import com.example.discountcalc.R;
@@ -37,18 +38,21 @@ public class DiscountCalcPreferencesFragment extends PreferenceFragmentCompat {
 
     CustomPreferenceListViewModel customPreferenceListViewModel;
 
+    SeekBarPreference viewCountSeekBar;
+
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.discount_preferences_toppage, rootKey);
         getPreferences();
-        // 「使用する設定データ」の初期パラメータに応じて、カスタム割引率を設定するページに移行する項目を表示・非表示させる
-        customPreferenceSetting(DiscountType.valueOf(usingCustomPreference.getValue()),customDiscountPreference);
+
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModelInitialize();
+        // 「使用する設定データ」の初期パラメータに応じて、カスタム割引率を設定するページに移行する項目を表示・非表示させる
+        customPreferenceSetting(DiscountType.valueOf(usingCustomPreference.getValue()),customDiscountPreference);
         setOnChangeListener();
     }
 
@@ -88,6 +92,7 @@ public class DiscountCalcPreferencesFragment extends PreferenceFragmentCompat {
         usingCustomPreference = findPreference(getString(R.string.using_setting));
         usingSaveCustomPreference=findPreference(getString(R.string.using_custom_preference));
         customDiscountPreference=findPreference(getString(R.string.custom_discount_preference));
+        viewCountSeekBar=findPreference(getString(R.string.view_count));
         // どれか一つでも取得できなければfalseが返される
         return sharedPreferences != null && usingCustomPreference != null && customDiscountPreference != null;
     }
@@ -109,18 +114,37 @@ public class DiscountCalcPreferencesFragment extends PreferenceFragmentCompat {
             setNavGraphDestination();
             return true;
         });
+
+        // 表示数シークバーの変更リスナー
+        usingSaveCustomPreference.setOnPreferenceChangeListener((preference,useName) -> {
+            setViewMax(useName.toString());
+            return true;
+        });
+
     }
 
 
-    private boolean customPreferenceSetting(DiscountType type,Preference preference){
-        if(type==DiscountType.Custom) {
-            preference.setVisible(true);
-            return true;
-        }else if(type==DiscountType.Preset){
-            preference.setVisible(false);
-            return true;
+    private void customPreferenceSetting(DiscountType type, Preference preference){
+        switch (type){
+            case Preset ->{
+                preference.setVisible(false);
+                viewCountSeekBar.setMax(getResources().getIntArray(R.array.preset_discount_values).length);
+            }
+            case Custom -> {
+                preference.setVisible(true);
+                setViewMax(usingSaveCustomPreference.getValue());
+            }
+            default -> {}
         }
-        return false;
+    }
+
+    private void setViewMax(String useName) {
+        // 読み込んだ保存データの要素数をセット
+        customPreferenceListViewModel.usePreferenceParamList(useName);
+        int viewMax = customPreferenceListViewModel.preferenceParamListSize();
+        viewCountSeekBar.setMax(viewMax);
+        // 前のシークバーの位置が、更新後のシークバーの最大値を超えている場合に値を更新し、戻った時のエラー回避
+        if(viewCountSeekBar.getValue()>viewMax)viewCountSeekBar.setValue(viewMax);
     }
 
     private void setNavGraphDestination(){

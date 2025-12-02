@@ -1,6 +1,7 @@
 package com.example.discountcalc.viewModels;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -38,16 +39,27 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
 
     // 全データから使用データする保存名を抽出してlivedataにセット
     public void usePreferenceParamList(String name){
-        List<PreferenceParam> allData=allPreferenceParamList.getValue();
-        List<PreferenceParam> dataList=new ArrayList<>();
-        if(allData!=null) {
+        preferenceParamList.setValue(getUsePreferenceParamList(allPreferenceParamList.getValue(),name));
+//        List<PreferenceParam> dataList=new ArrayList<>();
+//        if(allData!=null) {
+//            dataList = allData.stream().filter(param -> param.saveName().equals(name))
+//                    .collect(Collectors.toList());
+//        }
+//        // 一致データが存在していなかったら初期値を1個セット。
+//        if(dataList.size()==0)dataList.add(PreferenceParam.createDefaultParam());
+//        preferenceParamList.setValue(dataList);
+    }
+    private List<PreferenceParam> getUsePreferenceParamList(List<PreferenceParam> allData,String name) {
+        List<PreferenceParam> dataList = new ArrayList<>();
+        if (allData != null) {
             dataList = allData.stream().filter(param -> param.saveName().equals(name))
                     .collect(Collectors.toList());
         }
         // 一致データが存在していなかったら初期値を1個セット。
-        if(dataList.size()==0)dataList.add(PreferenceParam.createDefaultParam());
-        preferenceParamList.setValue(dataList);
+        if (dataList.size() == 0) dataList.add(PreferenceParam.createDefaultParam());
+        return dataList;
     }
+
     public LiveData<List<PreferenceParam>> PreferenceParamList(){
         return preferenceParamList;
     }
@@ -62,7 +74,7 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
 
         // 保存名でフィルター
         allPreferenceParamList.getValue().stream().filter(v->v.saveName().equals(saveName))
-                .forEach(v->currentList.add(new PreferenceParam(currentList.size()+1,v.per(),saveName)));
+                .forEach(v->currentList.add(new PreferenceParam(normalizedId(currentList.size()),v.per(),saveName)));
 
         preferenceParamList.postValue(currentList);
     }
@@ -79,16 +91,15 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
     public void addPreferenceData(int per,String saveName){
 //        if(preferenceParamList.getValue()==null) preferenceParamList.setValue(repoPreferenceParamList.getValue());
         List<PreferenceParam> currentList=new ArrayList<>(Objects.requireNonNull(preferenceParamList.getValue()));
-        // リストサイズに+1でリスト番号を意図的にずらしている
-        currentList.add(new PreferenceParam(preferenceParamListSize()+1,per,saveName));
+        currentList.add(new PreferenceParam(normalizedId(preferenceParamListSize()),per,saveName));
         preferenceParamList.setValue(currentList);
     }
 
     public void addDefaultPreferenceData(){
 //        if(preferenceParamList.getValue()==null) preferenceParamList.setValue(repoPreferenceParamList.getValue());
         List<PreferenceParam> currentList=new ArrayList<>(Objects.requireNonNull(preferenceParamList.getValue()));
-        // リストサイズに+1でリスト番号を意図的にずらしている
-        currentList.add(new PreferenceParam(currentList.size()+1,0,""));
+
+        currentList.add(new PreferenceParam(normalizedId(currentList.size()),0,""));
         preferenceParamList.setValue(currentList);
     }
 
@@ -139,13 +150,19 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         return 0;
     }
 
-    public boolean SaveUpdateData(@NonNull String saveName){
+    public boolean saveUpsertData(@NonNull String saveName){
         if(preferenceParamList.getValue()!=null){
             List<PreferenceParam> params=new ArrayList<>();
-            for (var data : preferenceParamList.getValue()) {
-                params.add(PreferenceParam.createPreferenceParam(data.per(),saveName));
+            for (int i = 0; i < preferenceParamListSize(); i++) {
+                params.add(new PreferenceParam(normalizedId(i),preferenceParamList.getValue().get(i).per(),saveName));
             }
-            dataRepository.update(params);
+            //dataRepository.update(params);
+            List<PreferenceParam> repoParams=getUsePreferenceParamList(allPreferenceParamList.getValue(),saveName);
+            Log.i("repo:"+saveName,repoParams.stream().collect(Collectors.toList()).toString());
+            for (var repoParam: repoParams) {
+
+            }
+            //dataRepository.upsert(params);
             return true;
         }
         return false;
@@ -172,6 +189,12 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
                 .map(PreferenceParam::saveName)
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    // idに0を使用したくない為、意図的に1ずらすメソッド。
+    // 使用頻度が高かったので作成。
+    private int normalizedId(int id){
+        return  id+1;
     }
 
 }

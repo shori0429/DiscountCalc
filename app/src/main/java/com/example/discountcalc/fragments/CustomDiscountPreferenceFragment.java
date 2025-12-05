@@ -1,5 +1,6 @@
 package com.example.discountcalc.fragments;
 
+import android.app.AlertDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -311,10 +312,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
                 Toast.makeText(getContext(), "保存できませんでした。", Toast.LENGTH_SHORT).show();
             }
         }else{
-            Toast.makeText(getContext(), "その名前は既に使用されています。", Toast.LENGTH_SHORT).show();
-            // TODO:上書き確認を表示するフラグメントを作成して、表示する処理を作成する。
-            // はいで上書き、いいえでキャンセル
-            Log.e("saveDataBase",title+" is ExistingSaveName. SaveCanceled.");
+            duplicationCheckDialog(title);
         }
 
        return true;
@@ -331,5 +329,20 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         customPreferenceListView.setHasFixedSize(customPreferenceViewModel.preferenceParamListSize() >= 10);
     }
 
+
+    private void duplicationCheckDialog(String title) {
+        AlertDialog.Builder builder=new AlertDialog.Builder(customDiscountPreferenceFragmentBinding.getRoot().getContext());
+        builder.setTitle("重複確認");
+        builder.setMessage("既にその名前の設定は既に存在しています。\n上書きしますか？");
+
+        // はいで上書き、いいえでキャンセル
+        builder.setPositiveButton("はい", (dialogInterface, i) -> {
+            //customPreferenceViewModel.saveUpsertData(title);
+        });
+        builder.setNegativeButton("いいえ",(dialogInterface, i) -> {
+
+        });
+        builder.create().show();
+    }
 
 }

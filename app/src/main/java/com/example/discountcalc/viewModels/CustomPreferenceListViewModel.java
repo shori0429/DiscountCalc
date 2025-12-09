@@ -142,7 +142,7 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         return 0;
     }
 
-    public boolean SaveUpdateData(@NonNull String saveName){
+    public boolean saveUpsertData(@NonNull String saveName){
         if(preferenceParamList.getValue()!=null){
             List<PreferenceParam> params=new ArrayList<>();
             for (int i = 0; i < preferenceParamListSize(); i++) {

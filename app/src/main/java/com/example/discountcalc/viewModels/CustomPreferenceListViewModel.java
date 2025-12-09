@@ -74,13 +74,13 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
 
         // 保存名でフィルター
         allPreferenceParamList.getValue().stream().filter(v->v.saveName().equals(saveName))
-                .forEach(v->currentList.add(new PreferenceParam(currentList.size()+1,v.per(),saveName)));
+                .forEach(v->currentList.add(new PreferenceParam(Math.incrementExact(currentList.size()),v.per(),saveName)));
 
         preferenceParamList.postValue(currentList);
     }
 
 
-    public PreferenceParam getCustomPreferenceParam(int index){
+    public PreferenceParam getPreferenceParamData(int index){
         return Objects.requireNonNull(preferenceParamList.getValue()).get(index);
     }
 
@@ -91,16 +91,14 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
     public void addPreferenceData(int per,String saveName){
 //        if(preferenceParamList.getValue()==null) preferenceParamList.setValue(repoPreferenceParamList.getValue());
         List<PreferenceParam> currentList=new ArrayList<>(Objects.requireNonNull(preferenceParamList.getValue()));
-        // リストサイズに+1でリスト番号を意図的にずらしている
-        currentList.add(new PreferenceParam(preferenceParamListSize()+1,per,saveName));
+        currentList.add(new PreferenceParam(Math.incrementExact(currentList.size()),per,saveName));
         preferenceParamList.setValue(currentList);
     }
 
     public void addDefaultPreferenceData(){
 //        if(preferenceParamList.getValue()==null) preferenceParamList.setValue(repoPreferenceParamList.getValue());
         List<PreferenceParam> currentList=new ArrayList<>(Objects.requireNonNull(preferenceParamList.getValue()));
-        // リストサイズに+1でリスト番号を意図的にずらしている
-        currentList.add(new PreferenceParam(currentList.size()+1,0,""));
+        currentList.add(new PreferenceParam(Math.incrementExact(currentList.size()),0,""));
         preferenceParamList.setValue(currentList);
     }
 
@@ -154,8 +152,8 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
     public boolean SaveUpdateData(@NonNull String saveName){
         if(preferenceParamList.getValue()!=null){
             List<PreferenceParam> params=new ArrayList<>();
-            for (var data : preferenceParamList.getValue()) {
-                params.add(PreferenceParam.createPreferenceParam(data.per(),saveName));
+            for (int i = 0; i < preferenceParamListSize(); i++) {
+                params.add(new PreferenceParam(Math.incrementExact(params.size()), getPreferenceParamData(i).per(),saveName));
             }
             dataRepository.update(params);
             return true;

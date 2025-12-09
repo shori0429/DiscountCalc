@@ -13,7 +13,6 @@ import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
-import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -60,13 +59,13 @@ public class CustomPreferenceListAdapter
             binding.customPreferenceOneLineNum.setOnFocusChangeListener((v,hasFocus)->{
                 if(!hasFocus){
                     int newPer= Integer.parseInt(binding.customPreferenceOneLineNum.getText().toString());
-                    int beforePer=viewModel.getCustomPreferenceParam(position).per();
+                    int beforePer=viewModel.getPreferenceParamData(position).per();
                     // 値が変わってなければここで終了
                     if(newPer==beforePer)return;
 
-                    PreferenceParam newPreferenceData=new PreferenceParam(viewModel.getCustomPreferenceParam(position).uid(),
+                    PreferenceParam newPreferenceData=new PreferenceParam(viewModel.getPreferenceParamData(position).uid(),
                             newPer,
-                            viewModel.getCustomPreferenceParam(position).saveName());
+                            viewModel.getPreferenceParamData(position).saveName());
                     viewModel.updatePreferenceData(position,newPreferenceData);
                 }
             });

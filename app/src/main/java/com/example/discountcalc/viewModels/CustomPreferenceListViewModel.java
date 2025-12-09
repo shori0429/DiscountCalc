@@ -1,6 +1,7 @@
 package com.example.discountcalc.viewModels;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -38,14 +39,6 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
 
     public void usePreferenceParamList(String name){
         preferenceParamList.setValue(getUsePreferenceParamList(allPreferenceParamList.getValue(),name));
-//        List<PreferenceParam> dataList=new ArrayList<>();
-//        if(allData!=null) {
-//            dataList = allData.stream().filter(param -> param.saveName().equals(name))
-//                    .collect(Collectors.toList());
-//        }
-//        // 一致データが存在していなかったら初期値を1個セット。
-//        if(dataList.size()==0)dataList.add(PreferenceParam.createDefaultParam());
-//        preferenceParamList.setValue(dataList);
     }
 
     // 全データから使用する保存名データを抽出してlivedataにセット

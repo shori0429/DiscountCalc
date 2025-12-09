@@ -1,6 +1,7 @@
 package com.example.discountcalc.fragments;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -331,7 +332,8 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
 
     private void duplicationCheckDialog(String title) {
-        AlertDialog.Builder builder=new AlertDialog.Builder(customDiscountPreferenceFragmentBinding.getRoot().getContext());
+        Context context=customDiscountPreferenceFragmentBinding.getRoot().getContext();
+        AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setTitle("重複確認");
         builder.setMessage("既にその名前の設定は既に存在しています。\n上書きしますか？");
 
@@ -340,7 +342,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
             //customPreferenceViewModel.saveUpsertData(title);
         });
         builder.setNegativeButton("いいえ",(dialogInterface, i) -> {
-
+            Toast.makeText(context,"保存をキャンセルしました。",Toast.LENGTH_SHORT).show();
         });
         builder.create().show();
     }

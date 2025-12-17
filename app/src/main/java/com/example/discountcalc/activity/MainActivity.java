@@ -2,10 +2,16 @@ package com.example.discountcalc.activity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuProvider;
 
 import com.example.discountcalc.R;
 import com.example.discountcalc.databinding.ActivityMainBinding;
@@ -49,5 +55,25 @@ public class MainActivity extends AppCompatActivity{
             v.clearFocus();
         });
     }
+    private void addToolBarOption(){
+        addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.menu_main,menu);
+            }
 
+            @Override
+            public boolean onMenuItemSelected(MenuItem menuItem) {
+                if(menuItem.getItemId()==R.id.menu_action_settings){
+                    openMenu();
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void openMenu() {
+        Toast.makeText(this, "めにゅー", Toast.LENGTH_SHORT).show();
+    }
 }

@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.inputmethod.InputMethodManager;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.discountcalc.R;
 import com.example.discountcalc.databinding.ActivityMainBinding;
@@ -22,6 +22,9 @@ public class MainActivity extends AppCompatActivity{
         binding = ActivityMainBinding.inflate(getLayoutInflater());
 
         setContentView(binding.getRoot());
+        Toolbar toolbar=binding.mainToolbar;
+        setSupportActionBar(toolbar);
+        addToolBarOption();
 
         toolBarFragment=new ToolBarFragment();
     }
@@ -31,11 +34,13 @@ public class MainActivity extends AppCompatActivity{
     protected void onStart() {
         super.onStart();
 
-        // ツールバーフラグメントを配置
-        FragmentManager fragmentManager=getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.Main_ToolBarView,toolBarFragment)
-                .commit();
+//        // ツールバーフラグメントを配置
+//        FragmentManager fragmentManager=getSupportFragmentManager();
+//        fragmentManager.beginTransaction()
+//                .replace(R.id.Main_ToolBarView,toolBarFragment)
+//                .commit();
+
+
 
         // 空白箇所タップでフォーカスを外す(子フラグメントのeditText用)
         binding.getRoot().setOnClickListener(v->{

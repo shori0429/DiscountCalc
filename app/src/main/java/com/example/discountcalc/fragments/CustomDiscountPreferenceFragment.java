@@ -86,7 +86,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
             List<PreferenceParam> dataList=loadCustomPreferenceList(useName);
             if(dataList.size()==0) {
                 // ロード先が存在しなければ1個の空要素だけを作成。
-                dataList.add(new PreferenceParam(dataList.size()+1,0,""));
+                dataList.add(new PreferenceParam(0,dataList.size()+1,0,""));
             }
             saveTitle.setText(useName);
             // 現在リストの更新
@@ -273,7 +273,8 @@ public class CustomDiscountPreferenceFragment extends Fragment {
             List<PreferenceParam> params = customPreferenceViewModel.AllPreferenceParamList().getValue();
             for(int i=0;i<params.size();i++){
                 if(Objects.equals(params.get(i).saveName(), name)){
-                    dataList.add(new PreferenceParam(dataList.size()+1,params.get(i).per(), params.get(i).saveName()));
+                    // orderIndexの順に並び替える
+                    dataList.add(new PreferenceParam(params.get(i).uid(), params.get(i).orderIndex(),params.get(i).per(), params.get(i).saveName()));
                 }
             }
         }

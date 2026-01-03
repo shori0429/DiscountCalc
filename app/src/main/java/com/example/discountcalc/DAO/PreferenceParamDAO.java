@@ -43,7 +43,7 @@ public interface PreferenceParamDAO {
     @Query("SELECT * FROM "+DataBaseStrings.TableName)
     LiveData<List<PreferenceParam>> getAll();
 
-    @Query("SELECT uid,save_name,per FROM "+DataBaseStrings.TableName+" WHERE save_name LIKE :saveName")
+    @Query("SELECT uid,order_index,per,save_name FROM "+DataBaseStrings.TableName+" WHERE save_name LIKE :saveName")
     LiveData<List<PreferenceParam>> getSave(String saveName);
 
     @Query("SELECT DISTINCT save_name FROM "+DataBaseStrings.TableName)

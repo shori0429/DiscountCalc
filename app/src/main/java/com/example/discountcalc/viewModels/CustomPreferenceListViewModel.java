@@ -67,8 +67,8 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         preferenceParamList.postValue(currentList);
     }
 
-
-    public PreferenceParam getCustomPreferenceParam(int index){
+    // 使用中のリストから1つデータを取得
+    public PreferenceParam getPreferenceParamData(int index){
         return Objects.requireNonNull(preferenceParamList.getValue()).get(index);
     }
 

@@ -130,7 +130,7 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
             for (var data : preferenceParamList.getValue()) {
                 params.add(new PreferenceParam(data.uid(),data.orderIndex(),data.per(),saveName));
             }
-            dataRepository.insert(params);
+            dataRepository.upsert(params);
             return true;
         }
         return false;

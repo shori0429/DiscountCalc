@@ -1,5 +1,6 @@
 package com.example.discountcalc.fragments;
 
+import android.app.AlertDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -65,7 +66,6 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     View view;
     TextView elementNumberViewText;
     Button elementAddButton;
-    Button changeTextSize;
 
     Button saveButton;
 
@@ -84,7 +84,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
             List<PreferenceParam> dataList=loadCustomPreferenceList(useName);
             if(dataList.size()==0) {
                 // ロード先が存在しなければ1個の空要素だけを作成。
-                dataList.add(new PreferenceParam(dataList.size()+1,0,""));
+                dataList.add(new PreferenceParam(0,Math.incrementExact(dataList.size()),0,""));
             }
             saveTitle.setText(useName);
             // 現在リストの更新
@@ -122,7 +122,6 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     private void bindingElements() {
         elementNumberViewText=customDiscountPreferenceFragmentBinding.PreferenceVolume;
         elementAddButton=customDiscountPreferenceFragmentBinding.AddElementButton;
-        changeTextSize=customDiscountPreferenceFragmentBinding.ChangeTextSizeButton;
         saveButton=customDiscountPreferenceFragmentBinding.SaveButton;
         clearButton=customDiscountPreferenceFragmentBinding.clearElementButton;
         allClearButton=customDiscountPreferenceFragmentBinding.allClearElementButton;
@@ -175,29 +174,6 @@ public class CustomDiscountPreferenceFragment extends Fragment {
     public void setOnClickListeners(){
         elementAddButton.setOnClickListener(b->{
             addPreferenceDataElement();
-        });
-        changeTextSize.setOnClickListener(b->{
-            // TODO:文字サイズ変更は仮実装なのでちゃんとまとめたり整理する
-            if(textSize==0){
-                textSize=(int)elementNumberViewText.getTextSize();
-            }
-            int small=(int)getResources().getDimension(R.dimen.small_size);
-            int normal=(int)getResources().getDimension(R.dimen.normal_size);
-            int large=(int)getResources().getDimension(R.dimen.large_size);
-            if(textSize==small){
-                elementNumberViewText.setTextSize(normal);
-                customPreferenceListAdapter.setTextSizes(normal);
-                textSize=normal;
-
-            }else if(textSize==normal){
-                elementNumberViewText.setTextSize(large);
-                customPreferenceListAdapter.setTextSizes(large);
-                textSize=large;
-            }else if(textSize==large){
-                elementNumberViewText.setTextSize(small);
-                customPreferenceListAdapter.setTextSizes(small);
-                textSize=small;
-            }
         });
 
         saveButton.setOnClickListener(b->{
@@ -271,7 +247,8 @@ public class CustomDiscountPreferenceFragment extends Fragment {
             List<PreferenceParam> params = customPreferenceViewModel.AllPreferenceParamList().getValue();
             for(int i=0;i<params.size();i++){
                 if(Objects.equals(params.get(i).saveName(), name)){
-                    dataList.add(new PreferenceParam(dataList.size()+1,params.get(i).per(), params.get(i).saveName()));
+                    // orderIndexの順に並び替える
+                    dataList.add(new PreferenceParam(params.get(i).uid(), params.get(i).orderIndex(),params.get(i).per(), params.get(i).saveName()));
                 }
             }
         }
@@ -311,10 +288,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
                 Toast.makeText(getContext(), "保存できませんでした。", Toast.LENGTH_SHORT).show();
             }
         }else{
-            Toast.makeText(getContext(), "その名前は既に使用されています。", Toast.LENGTH_SHORT).show();
-            // TODO:上書き確認を表示するフラグメントを作成して、表示する処理を作成する。
-            // はいで上書き、いいえでキャンセル
-            Log.e("saveDataBase",title+" is ExistingSaveName. SaveCanceled.");
+            duplicationCheckDialog(title);
         }
 
        return true;
@@ -331,5 +305,20 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         customPreferenceListView.setHasFixedSize(customPreferenceViewModel.preferenceParamListSize() >= 10);
     }
 
+
+    private void duplicationCheckDialog(String title) {
+        AlertDialog.Builder builder=new AlertDialog.Builder(customDiscountPreferenceFragmentBinding.getRoot().getContext());
+        builder.setTitle("重複確認");
+        builder.setMessage("既にその名前の設定は既に存在しています。\n上書きしますか？");
+
+        // はいで上書き、いいえでキャンセル
+        builder.setPositiveButton("はい", (dialogInterface, i) -> {
+            //customPreferenceViewModel.saveUpsertData(title);
+        });
+        builder.setNegativeButton("いいえ",(dialogInterface, i) -> {
+
+        });
+        builder.create().show();
+    }
 
 }

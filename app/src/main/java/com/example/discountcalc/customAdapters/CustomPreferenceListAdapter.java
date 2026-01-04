@@ -13,7 +13,6 @@ import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
-import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -60,13 +59,14 @@ public class CustomPreferenceListAdapter
             binding.customPreferenceOneLineNum.setOnFocusChangeListener((v,hasFocus)->{
                 if(!hasFocus){
                     int newPer= Integer.parseInt(binding.customPreferenceOneLineNum.getText().toString());
-                    int beforePer=viewModel.getCustomPreferenceParam(position).per();
+                    int beforePer=viewModel.getPreferenceParamData(position).per();
                     // 値が変わってなければここで終了
                     if(newPer==beforePer)return;
 
-                    PreferenceParam newPreferenceData=new PreferenceParam(viewModel.getCustomPreferenceParam(position).uid(),
+                    PreferenceParam newPreferenceData=new PreferenceParam(viewModel.getPreferenceParamData(position).uid(),
+                            viewModel.getPreferenceParamData(position).orderIndex(),
                             newPer,
-                            viewModel.getCustomPreferenceParam(position).saveName());
+                            viewModel.getPreferenceParamData(position).saveName());
                     viewModel.updatePreferenceData(position,newPreferenceData);
                 }
             });
@@ -134,12 +134,20 @@ public class CustomPreferenceListAdapter
         }else{
             // DiffUtilで算出した差分を適用させる。
             for (Object obj:payloads){
-                Bundle payload=(Bundle) obj;
-                if(payload.containsKey("per")){
-                    data=new PreferenceParam(data.uid(), payload.getInt("per"),"");
-                    holder.getViewDataBinding().setVariable(BR.preferenceParam, data);
-                    holder.getViewDataBinding().executePendingBindings();
+                Bundle payload = (Bundle) obj;
+                int uid=0,per = 0, orderIndex = 0;
+                if(payload.containsKey("uid")){
+                    uid=payload.getInt("uid");
                 }
+                if (payload.containsKey("per")) {
+                    per = payload.getInt("per");
+                }
+                if (payload.containsKey("orderIndex")) {
+                    orderIndex = payload.getInt("orderIndex");
+                }
+                data = new PreferenceParam(uid, orderIndex, per, "");
+                holder.getViewDataBinding().setVariable(BR.preferenceParam, data);
+                holder.getViewDataBinding().executePendingBindings();
             }
         }
         // テキストサイズ変更
@@ -168,7 +176,7 @@ public class CustomPreferenceListAdapter
 
                 @Override
                 public boolean areItemsTheSame(@NonNull PreferenceParam oldItem, @NonNull PreferenceParam newItem) {
-                    boolean bool= oldItem.uid()== newItem.uid();
+                    boolean bool= oldItem.orderIndex()== newItem.orderIndex();
                     return bool;
 
                 }
@@ -185,6 +193,9 @@ public class CustomPreferenceListAdapter
                     Bundle diff=new Bundle();
                     if(newItem.uid()!=oldItem.uid()){
                         diff.putInt("uid",newItem.uid());
+                    }
+                    if(newItem.orderIndex()!=oldItem.orderIndex()){
+                        diff.putInt("orderIndex", newItem.orderIndex());
                     }
                     if(newItem.per()!=oldItem.per()){
                         diff.putInt("per",newItem.per());

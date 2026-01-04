@@ -65,6 +65,7 @@ public class CustomPreferenceListAdapter
                     if(newPer==beforePer)return;
 
                     PreferenceParam newPreferenceData=new PreferenceParam(viewModel.getPreferenceParamData(position).uid(),
+                            viewModel.getPreferenceParamData(position).orderIndex(),
                             newPer,
                             viewModel.getPreferenceParamData(position).saveName());
                     viewModel.updatePreferenceData(position,newPreferenceData);

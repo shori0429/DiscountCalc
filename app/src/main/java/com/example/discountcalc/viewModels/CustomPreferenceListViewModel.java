@@ -36,18 +36,22 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         // TODO AllPreferenceListが更新された時の処理を書く
     }
 
-    // 全データから使用データする保存名を抽出してlivedataにセット
     public void usePreferenceParamList(String name){
-        List<PreferenceParam> allData=allPreferenceParamList.getValue();
-        List<PreferenceParam> dataList=new ArrayList<>();
-        if(allData!=null) {
+        preferenceParamList.setValue(getUsePreferenceParamList(allPreferenceParamList.getValue(),name));
+    }
+
+    // 全データ情報から、使用する保存名データを抽出してlivedataにセット
+    private List<PreferenceParam> getUsePreferenceParamList(List<PreferenceParam> allData,String name) {
+        List<PreferenceParam> dataList = new ArrayList<>();
+        if (allData != null) {
             dataList = allData.stream().filter(param -> param.saveName().equals(name))
                     .collect(Collectors.toList());
         }
         // 一致データが存在していなかったら初期値を1個セット。
-        if(dataList.size()==0)dataList.add(PreferenceParam.createDefaultParam());
-        preferenceParamList.setValue(dataList);
+        if (dataList.size() == 0) dataList.add(PreferenceParam.createDefaultParam());
+        return dataList;
     }
+
     public LiveData<List<PreferenceParam>> PreferenceParamList(){
         return preferenceParamList;
     }

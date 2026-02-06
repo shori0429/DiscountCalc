@@ -91,7 +91,7 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
 //        if(preferenceParamList.getValue()==null) preferenceParamList.setValue(repoPreferenceParamList.getValue());
         List<PreferenceParam> currentList=new ArrayList<>(Objects.requireNonNull(preferenceParamList.getValue()));
         // リストサイズに+1でリスト番号を意図的にずらしている
-        currentList.add(new PreferenceParam(currentList.size()+1,0,""));
+        currentList.add(new PreferenceParam(0,currentList.size()+1,0,""));
         preferenceParamList.setValue(currentList);
     }
 

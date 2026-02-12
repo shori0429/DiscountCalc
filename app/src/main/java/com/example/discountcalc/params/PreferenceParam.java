@@ -17,18 +17,19 @@ public record PreferenceParam(@PrimaryKey(autoGenerate = true) int uid,
         return new PreferenceParam(0,orderIndex, per, saveName);
     }
 
-    public static PreferenceParam createDefaultParam() {
-        return new PreferenceParam(0, 0,0, "");
-    }
+//    public static PreferenceParam createDefaultParam() {
+//        return new PreferenceParam(0, 0,0, "");
+//    }
 
-    // orderIndex指定のデフォルト値作成
-    public static PreferenceParam createDefaultParam(int orderIndex){
-        return new PreferenceParam(0,orderIndex,0,"");
+    // デフォルト値追加
+    // 追加したいリストのサイズを引数に
+    public static PreferenceParam createDefaultParam(int size){
+        return new PreferenceParam(0,Math.incrementExact(size),0,"");
     }
 
     @NonNull
     @Override
     public String toString() {
-        return "uid:"+uid+", saveName:"+saveName+",per:"+per;
+        return "uid:"+uid+", orderIndex:"+orderIndex+", saveName:"+saveName+",per:"+per;
     }
 }

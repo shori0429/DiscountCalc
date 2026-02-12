@@ -48,7 +48,7 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
                     .collect(Collectors.toList());
         }
         // 一致データが存在していなかったら初期値を1個セット。
-        if (dataList.size() == 0) dataList.add(PreferenceParam.createDefaultParam());
+        if (dataList.size() == 0) dataList.add(PreferenceParam.createDefaultParam(dataList.size()));
         return dataList;
     }
 
@@ -120,7 +120,7 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
     // リストの全要素削除
     public void allRemovePreferenceData(){
             ArrayList<PreferenceParam> dataList=new ArrayList<>();
-            dataList.add(PreferenceParam.createDefaultParam());
+            dataList.add(PreferenceParam.createDefaultParam(dataList.size()));
             preferenceParamList.postValue(dataList);
     }
 

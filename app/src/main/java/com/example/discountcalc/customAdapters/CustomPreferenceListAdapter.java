@@ -191,17 +191,10 @@ public class CustomPreferenceListAdapter
                 @Override
                 public Object getChangePayload(@NonNull PreferenceParam oldItem, @NonNull PreferenceParam newItem) {
                     Bundle diff=new Bundle();
-                    if(newItem.uid()!=oldItem.uid()){
-                        diff.putInt("uid",newItem.uid());
-                    }
-                    if(newItem.orderIndex()!=oldItem.orderIndex()){
-                        diff.putInt("orderIndex", newItem.orderIndex());
-                    }
                     if(newItem.per()!=oldItem.per()){
+                        diff.putInt("uid",newItem.uid());
+                        diff.putInt("orderIndex", newItem.orderIndex());
                         diff.putInt("per",newItem.per());
-                    }
-                    if(!newItem.saveName().equals(oldItem.saveName())){
-                        diff.putString("saveName", newItem.saveName());
                     }
                     if(diff.size()==0){
                         return null;

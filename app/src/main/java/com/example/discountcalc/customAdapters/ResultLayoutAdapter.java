@@ -1,6 +1,6 @@
 package com.example.discountcalc.customAdapters;
 
-import android.util.Log;
+import android.graphics.Point;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +14,7 @@ import com.example.discountcalc.params.DiscountData;
 import com.example.discountcalc.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
 /**
@@ -23,6 +24,9 @@ public class ResultLayoutAdapter extends RecyclerView.Adapter<ResultLayoutAdapte
 
     private ArrayList<DiscountData> localData;
     private int[]  paddings;
+
+    // resultPriceListViewのid,layout_width,Layout_heightを格納
+    private HashMap<Integer,Point> adapterLayoutSize;
 
     /**
      * 1行分のViewの参照を保持するホルダークラス
@@ -71,6 +75,13 @@ public class ResultLayoutAdapter extends RecyclerView.Adapter<ResultLayoutAdapte
         }
     }
 
+    /// resultLabelのid,layout_width,Layout_heightを格納
+    public ResultLayoutAdapter(ArrayList<DiscountData>dataset, HashMap<Integer,Point>layoutSize){
+        localData=dataset;
+        adapterLayoutSize=layoutSize;
+
+    }
+
     // 新しい1行分のビューを作成(レイアウトマネージャーによって呼び出される)
     @NonNull
     @Override
@@ -93,9 +104,13 @@ public class ResultLayoutAdapter extends RecyclerView.Adapter<ResultLayoutAdapte
         holder.discountPriceTextview.setGravity(Gravity.END);
         holder.priceTextview.setGravity(Gravity.END);
 
-        // 価格表示の余白を変更
-        holder.priceTextview.setPadding(paddings[0],paddings[1],paddings[2],paddings[3]);
-        Log.i("info","Data:"+position);
+        // ヘッダーのサイズに合わせる
+        if(adapterLayoutSize !=null){
+            applySize(holder.discountTextview,adapterLayoutSize.get(R.id.discountLabel));
+            applySize(holder.discountPriceTextview,adapterLayoutSize.get(holder.discountPriceTextview.getId()));
+            applySize(holder.priceTextview,adapterLayoutSize.get(holder.priceTextview.getId()));
+        }
+
     }
     // データセットのサイズを返す (レイアウトマネージャによって呼び出される)
     @Override
@@ -108,6 +123,14 @@ public class ResultLayoutAdapter extends RecyclerView.Adapter<ResultLayoutAdapte
         localData=data;
         // localDataのサイズ分の変更をobserverに通知
         notifyItemRangeChanged(0,getItemCount());
+    }
+
+    private void applySize(TextView textView,Point size){
+        if(size == null)return;
+        ViewGroup.LayoutParams lp=textView.getLayoutParams();
+        lp.width = size.x;
+        lp.height=size.y;
+        textView.setLayoutParams(lp);
     }
 
 

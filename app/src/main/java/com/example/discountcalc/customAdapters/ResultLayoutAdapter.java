@@ -23,7 +23,6 @@ import java.util.Locale;
 public class ResultLayoutAdapter extends RecyclerView.Adapter<ResultLayoutAdapter.ResultViewHolder> {
 
     private ArrayList<DiscountData> localData;
-    private int[]  paddings;
 
     // resultPriceListViewのid,layout_width,Layout_heightを格納
     private HashMap<Integer,Point> adapterLayoutSize;
@@ -66,14 +65,6 @@ public class ResultLayoutAdapter extends RecyclerView.Adapter<ResultLayoutAdapte
         localData=dataset;
     }
 
-    public ResultLayoutAdapter(ArrayList<DiscountData> dataset,int paddingPx,boolean[] paddingFlags){
-        localData=dataset;
-        //int型で配列作成し、paddingFlagsがtrueなら設定した数値分の余白を空ける
-        paddings=new int[paddingFlags.length];
-        for (int i=0;i<paddings.length;i++){
-            paddings[i]=(paddingFlags[i]?1:0)*paddingPx;
-        }
-    }
 
     /// resultLabelのid,layout_width,Layout_heightを格納
     public ResultLayoutAdapter(ArrayList<DiscountData>dataset, HashMap<Integer,Point>layoutSize){

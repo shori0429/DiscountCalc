@@ -73,10 +73,14 @@ public class ResultListFragment extends Fragment {
 
         // Get the ViewModel.
         Log.i("ResultListFragment", "Called ViewModelProvider.get");
-        viewModelInitialize();
 
+    }
 
+    @Override
+    public void onStart() {
+        super.onStart();
 
+        view.post(this::viewModelInitialize);
     }
 
     private void viewModelInitialize() {

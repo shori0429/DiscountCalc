@@ -1,6 +1,7 @@
 package com.example.discountcalc.fragments;
 
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableRow;
 
 import com.example.discountcalc.calculationPack.ConvertDisplayUnitsHelper;
 import com.example.discountcalc.calculationPack.DiscountCalc;
@@ -29,6 +31,7 @@ import com.example.discountcalc.viewModels.DiscountCalcViewModel;
 import com.example.discountcalc.databinding.ResultPriceListBinding;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 @SuppressWarnings("FieldCanBeLocal")
@@ -42,6 +45,9 @@ public class ResultListFragment extends Fragment {
     // 価格
     private int price=0;
     private View view;
+
+    private TableRow resultOneCalcView;
+
 
     SharedPreferences preferences;
 
@@ -143,6 +149,9 @@ public class ResultListFragment extends Fragment {
         // Inflate the layout for this fragment
         resultPriceListBinding = ResultPriceListBinding.inflate(inflater, container, false);
         view = resultPriceListBinding.getRoot();
+        resultOneCalcView=resultPriceListBinding.resultLabel.resultLabelPackage;
+
+
         Log.i("resultFragment", getParentFragmentManager().toString());
 
         return view;
@@ -244,6 +253,24 @@ public class ResultListFragment extends Fragment {
         // 使用する割引率設定を更新しておく。
         String saveKey=getString(R.string.using_setting);
         preferences.edit().putString(saveKey,discountType.toString()).apply();
+    }
+
+    private HashMap<Integer, Point> getOneCalcViewLayoutWidthAndHeight() {
+        final HashMap<Integer, Point> layoutSize = new HashMap<>();
+        layoutSize.put(R.id.discountLabel, new Point(
+                resultOneCalcView.findViewById(R.id.discountLabel).getWidth(),
+                resultOneCalcView.findViewById(R.id.discountLabel).getHeight()
+        ));
+        layoutSize.put(R.id.discountPriceLabel, new Point(
+                resultOneCalcView.findViewById(R.id.discountPriceLabel).getWidth(),
+                resultOneCalcView.findViewById(R.id.discountPriceLabel).getHeight()
+        ));
+        layoutSize.put(R.id.priceLabel, new Point(
+                resultOneCalcView.findViewById(R.id.priceLabel).getWidth(),
+                resultOneCalcView.findViewById(R.id.priceLabel).getHeight()
+        ));
+
+        return layoutSize;
     }
 
 }

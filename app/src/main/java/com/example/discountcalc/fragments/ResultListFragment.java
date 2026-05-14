@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableRow;
 
-import com.example.discountcalc.calculationPack.ConvertDisplayUnitsHelper;
 import com.example.discountcalc.calculationPack.DiscountCalc;
 import com.example.discountcalc.customAdapters.ResultLayoutAdapter;
 import com.example.discountcalc.params.DiscountType;
@@ -120,7 +119,9 @@ public class ResultListFragment extends Fragment {
             paddingFlags[2] = true;
 
             recyclerView = resultPriceListBinding.resultPriceList;
-            resultLayoutAdapter = new ResultLayoutAdapter(resultDataList, ConvertDisplayUnitsHelper.dpToPx(30, requireContext()), paddingFlags);
+
+            resultLayoutAdapter = new ResultLayoutAdapter(resultDataList, getOneCalcViewLayoutWidthAndHeight());
+
             // 縦方向のLayoutManagerを作成
             LinearLayoutManager llm = new LinearLayoutManager(resultPriceListBinding.getRoot().getContext());
             recyclerView.setHasFixedSize(true);

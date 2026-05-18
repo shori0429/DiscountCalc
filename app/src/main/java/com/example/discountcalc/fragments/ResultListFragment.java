@@ -141,20 +141,12 @@ public class ResultListFragment extends Fragment {
         discountCalcViewModel = new ViewModelProvider(this).get(DiscountCalcViewModel.class);
         customPreferenceListViewModel = new ViewModelProvider(this, new CustomPreferenceListViewModelFactory(requireActivity().getApplication()))
                 .get(CustomPreferenceListViewModel.class);
-
-        customPreferenceListViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(),allParams->{
-            if(allParams.size()>0){
-                customPreferenceListViewModel.usePreferenceParamList(preferences.getString(getString(R.string.using_custom_preference),""));
-            }
-            // このフラグメントの購読を解除することでフラグメント生成後1度だけ呼ばれるように(できているはず)
-            customPreferenceListViewModel.AllPreferenceParamList().removeObservers(getViewLifecycleOwner());
-        });
-
         // ViewModelのリポジトリLiveDataを購読。
         customPreferenceListViewModel.PreferenceParamList().observe(getViewLifecycleOwner(),preferenceParams->{
             // 保存データ取得
             loadSettingData();
 
+    }
 
     // ユーザー入力した数値が変更された時の処理
     private void LivedataInit() {
@@ -192,6 +184,10 @@ public class ResultListFragment extends Fragment {
                 for (int i = 0; i < customPreferenceListViewModel.preferenceParamListSize(); i++) {
                     discountPerList.add(i, customPreferenceListViewModel.PreferenceParamList().getValue().get(i).per());
                 }
+                customPreferenceListViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(),params->{
+                    customPreferenceListViewModel.usePreferenceParamList(preferences.getString(getString(R.string.using_custom_preference),""));
+                });
+
                         discountPerList.add(customPreferenceListViewModel.getPreferenceParamData(i).per());
                     refreshCalc();
             }

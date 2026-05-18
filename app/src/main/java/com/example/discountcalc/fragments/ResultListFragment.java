@@ -127,11 +127,18 @@ public class ResultListFragment extends Fragment {
 
         resultLayoutAdapter = new ResultLayoutAdapter(resultDataList, getOneCalcViewLayoutWidthAndHeight());
 
-        // 縦方向のLayoutManagerを作成
-        LinearLayoutManager llm = new LinearLayoutManager(resultPriceListBinding.getRoot().getContext());
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(llm);
-        recyclerView.setAdapter(resultLayoutAdapter);
+                    // 縦方向のLayoutManagerを作成
+                    LinearLayoutManager llm = new LinearLayoutManager(resultPriceListBinding.getRoot().getContext());
+                    recyclerView.setHasFixedSize(true);
+                    recyclerView.setLayoutManager(llm);
+                    recyclerView.setAdapter(resultLayoutAdapter);
+
+                    if(!resultDataList.isEmpty()){
+                        resultLayoutAdapter.updateItem(resultDataList);
+                    }
+                }
+            }
+        });
     }
 
 
@@ -147,9 +154,6 @@ public class ResultListFragment extends Fragment {
     private void LivedataInit() {
         // LiveData設定
         final Observer<Integer> priceObserver = integer -> {
-            price = integer;
-            calcDiscounts();
-            resultLayoutAdapter.updateItem(resultDataList);
             // 入力した数値をbeforePriceに適用
             beforeDiscountPrice = integer;
             // 再計算

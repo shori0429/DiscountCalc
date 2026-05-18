@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.discountcalc.dataBase.PreferenceParamRepository;
@@ -23,7 +24,7 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
     private final MutableLiveData<List<PreferenceParam>> preferenceParamList;
 
     // リポジトリから取得した「全リスト」を保持。リポジトリアクセス時以外変動無
-    private final MutableLiveData<List<PreferenceParam>> allPreferenceParamList;
+    private final MediatorLiveData<List<PreferenceParam>> allPreferenceParamList=new MediatorLiveData<>();
     // リポジトリのLiveData追跡用のフィールド
 
 
@@ -31,8 +32,10 @@ public class CustomPreferenceListViewModel extends AndroidViewModel {
         super(application);
         dataRepository=new PreferenceParamRepository(application);
         preferenceParamList=new MutableLiveData<>();
-        allPreferenceParamList=new MutableLiveData<>();
-        dataRepository.PreferenceParamList().observeForever(allPreferenceParamList::setValue);
+        allPreferenceParamList.addSource(dataRepository.PreferenceParamList(), value ->{
+            allPreferenceParamList.setValue(value);
+        });
+
         // TODO AllPreferenceListが更新された時の処理を書く
     }
 

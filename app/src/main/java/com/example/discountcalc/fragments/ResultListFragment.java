@@ -99,14 +99,16 @@ public class ResultListFragment extends Fragment {
         super.onStart();
 
         view.post(this::viewModelInitialize);
+        getPreferences();
+        if (discountType == DiscountType.None) {
+            createDiscountPreferenceData();
+        }
     }
 
     private void viewModelInitialize() {
         discountCalcViewModel = new ViewModelProvider(requireActivity()).get(DiscountCalcViewModel.class);
         customPreferenceListViewModel =new ViewModelProvider(this,new CustomPreferenceListViewModelFactory(requireActivity().getApplication()))
                 .get(CustomPreferenceListViewModel.class);
-        // 設定データ取得
-        getPreferences();
 
         customPreferenceListViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(),allParams->{
             if(allParams.size()>0){

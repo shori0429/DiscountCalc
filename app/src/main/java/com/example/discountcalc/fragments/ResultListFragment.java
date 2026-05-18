@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TableRow;
 
 import com.example.discountcalc.calculationPack.DiscountCalc;
@@ -46,6 +47,7 @@ public class ResultListFragment extends Fragment {
     private View view;
 
     private TableRow resultOneCalcView;
+    private ProgressBar progressBarView;
 
 
     SharedPreferences preferences;
@@ -77,6 +79,7 @@ public class ResultListFragment extends Fragment {
         resultPriceListBinding = ResultPriceListBinding.inflate(inflater, container, false);
         view = resultPriceListBinding.getRoot();
         resultOneCalcView=resultPriceListBinding.resultLabel.resultLabelPackage;
+        progressBarView = resultPriceListBinding.resultListProgress;
 
 
         Log.i("resultFragment", getParentFragmentManager().toString());
@@ -90,6 +93,9 @@ public class ResultListFragment extends Fragment {
         // Get the ViewModel.
         Log.i("ResultListFragment", "Called ViewModelProvider.get");
 
+        // 読み込みUI表示
+        progressBarView.setVisibility(View.VISIBLE);
+        viewModelInitialize();
     }
 
     @Override
@@ -98,6 +104,9 @@ public class ResultListFragment extends Fragment {
 
         view.post(this::viewModelInitialize);
         getPreferences();
+        if (progressBarView != null) {
+            progressBarView.setVisibility(View.GONE);
+        }
     }
 
     private void recyclerInit() {

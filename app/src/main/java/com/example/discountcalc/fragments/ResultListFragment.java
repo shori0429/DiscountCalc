@@ -141,11 +141,6 @@ public class ResultListFragment extends Fragment {
         discountCalcViewModel = new ViewModelProvider(this).get(DiscountCalcViewModel.class);
         customPreferenceListViewModel = new ViewModelProvider(this, new CustomPreferenceListViewModelFactory(requireActivity().getApplication()))
                 .get(CustomPreferenceListViewModel.class);
-        // ViewModelのリポジトリLiveDataを購読。
-        customPreferenceListViewModel.PreferenceParamList().observe(getViewLifecycleOwner(),preferenceParams->{
-            // 保存データ取得
-            loadSettingData();
-
     }
 
     // ユーザー入力した数値が変更された時の処理
@@ -181,15 +176,18 @@ public class ResultListFragment extends Fragment {
                     createDiscountPreferenceData();
                     break;
                 }
-                for (int i = 0; i < customPreferenceListViewModel.preferenceParamListSize(); i++) {
-                    discountPerList.add(i, customPreferenceListViewModel.PreferenceParamList().getValue().get(i).per());
-                }
                 customPreferenceListViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(),params->{
                     customPreferenceListViewModel.usePreferenceParamList(preferences.getString(getString(R.string.using_custom_preference),""));
                 });
 
+                customPreferenceListViewModel.PreferenceParamList().observe(getViewLifecycleOwner(),param->{
+                    // 割引率リストをクリアしておく
+                    discountPerList.clear();
+                    for (int i = 0; i < customPreferenceListViewModel.preferenceParamListSize(); i++) {
                         discountPerList.add(customPreferenceListViewModel.getPreferenceParamData(i).per());
+                    }
                     refreshCalc();
+                });
             }
         }
     }

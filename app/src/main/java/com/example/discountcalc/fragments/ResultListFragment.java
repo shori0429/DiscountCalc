@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ProgressBar;
 import android.widget.TableRow;
 
@@ -46,7 +47,9 @@ public class ResultListFragment extends Fragment {
     private int price=0;
     private View view;
 
-    private TableRow resultOneCalcView;
+    // 結果リストのラベルView(割引率、割引額、小計)
+    private TableRow resultOneCalcLabelView;
+
     private ProgressBar progressBarView;
 
 
@@ -78,7 +81,8 @@ public class ResultListFragment extends Fragment {
         // Inflate the layout for this fragment
         resultPriceListBinding = ResultPriceListBinding.inflate(inflater, container, false);
         view = resultPriceListBinding.getRoot();
-        resultOneCalcView=resultPriceListBinding.resultLabel.resultLabelPackage;
+        recyclerView = resultPriceListBinding.resultPriceList;
+        resultOneCalcLabelView = resultPriceListBinding.resultLabel.resultLabelPackage;
         progressBarView = resultPriceListBinding.resultListProgress;
 
 
@@ -111,6 +115,14 @@ public class ResultListFragment extends Fragment {
 
     private void recyclerInit() {
         recyclerView = resultPriceListBinding.resultPriceList;
+        // 描画完了後の通知を受け取って、その地点のHashMapを作成
+        resultOneCalcLabelView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                View checkView=resultOneCalcLabelView.findViewById(R.id.discountLabel);
+                if(checkView != null && checkView.getWidth() >0){
+                    // 1度でいいので破棄
+                    resultOneCalcLabelView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
         resultLayoutAdapter = new ResultLayoutAdapter(resultDataList, getOneCalcViewLayoutWidthAndHeight());
 
@@ -258,16 +270,16 @@ public class ResultListFragment extends Fragment {
     private HashMap<Integer, Point> getOneCalcViewLayoutWidthAndHeight() {
         final HashMap<Integer, Point> layoutSize = new HashMap<>();
         layoutSize.put(R.id.discountLabel, new Point(
-                resultOneCalcView.findViewById(R.id.discountLabel).getWidth(),
-                resultOneCalcView.findViewById(R.id.discountLabel).getHeight()
+                resultOneCalcLabelView.findViewById(R.id.discountLabel).getWidth(),
+                resultOneCalcLabelView.findViewById(R.id.discountLabel).getHeight()
         ));
         layoutSize.put(R.id.discountPriceLabel, new Point(
-                resultOneCalcView.findViewById(R.id.discountPriceLabel).getWidth(),
-                resultOneCalcView.findViewById(R.id.discountPriceLabel).getHeight()
+                resultOneCalcLabelView.findViewById(R.id.discountPriceLabel).getWidth(),
+                resultOneCalcLabelView.findViewById(R.id.discountPriceLabel).getHeight()
         ));
         layoutSize.put(R.id.priceLabel, new Point(
-                resultOneCalcView.findViewById(R.id.priceLabel).getWidth(),
-                resultOneCalcView.findViewById(R.id.priceLabel).getHeight()
+                resultOneCalcLabelView.findViewById(R.id.priceLabel).getWidth(),
+                resultOneCalcLabelView.findViewById(R.id.priceLabel).getHeight()
         ));
 
         return layoutSize;

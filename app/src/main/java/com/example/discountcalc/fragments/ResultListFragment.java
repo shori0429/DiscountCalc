@@ -73,6 +73,19 @@ public class ResultListFragment extends Fragment {
     boolean[] paddingFlags;
 
     @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        resultPriceListBinding = ResultPriceListBinding.inflate(inflater, container, false);
+        view = resultPriceListBinding.getRoot();
+        resultOneCalcView=resultPriceListBinding.resultLabel.resultLabelPackage;
+
+
+        Log.i("resultFragment", getParentFragmentManager().toString());
+
+        return view;
+    }
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -144,19 +157,6 @@ public class ResultListFragment extends Fragment {
         discountCalcViewModel.getPrice().observe(getViewLifecycleOwner(), priceObserver);
     }
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        resultPriceListBinding = ResultPriceListBinding.inflate(inflater, container, false);
-        view = resultPriceListBinding.getRoot();
-        resultOneCalcView=resultPriceListBinding.resultLabel.resultLabelPackage;
-
-
-        Log.i("resultFragment", getParentFragmentManager().toString());
-
-        return view;
-    }
 
     private boolean saveDataStore() {
         return !PreferenceManager.getDefaultSharedPreferences(requireContext()).getBoolean("isSavePreferences", false);

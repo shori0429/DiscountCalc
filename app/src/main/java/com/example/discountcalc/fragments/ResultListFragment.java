@@ -105,6 +105,19 @@ public class ResultListFragment extends Fragment {
         }
     }
 
+    private void recyclerInit() {
+        recyclerView = resultPriceListBinding.resultPriceList;
+
+        resultLayoutAdapter = new ResultLayoutAdapter(resultDataList, getOneCalcViewLayoutWidthAndHeight());
+
+        // 縦方向のLayoutManagerを作成
+        LinearLayoutManager llm = new LinearLayoutManager(resultPriceListBinding.getRoot().getContext());
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(llm);
+        recyclerView.setAdapter(resultLayoutAdapter);
+    }
+
+
     private void viewModelInitialize() {
         discountCalcViewModel = new ViewModelProvider(requireActivity()).get(DiscountCalcViewModel.class);
         customPreferenceListViewModel =new ViewModelProvider(this,new CustomPreferenceListViewModelFactory(requireActivity().getApplication()))
@@ -133,18 +146,6 @@ public class ResultListFragment extends Fragment {
             paddingFlags = new boolean[4];
             paddingFlags[2] = true;
 
-            recyclerView = resultPriceListBinding.resultPriceList;
-
-            resultLayoutAdapter = new ResultLayoutAdapter(resultDataList, getOneCalcViewLayoutWidthAndHeight());
-
-            // 縦方向のLayoutManagerを作成
-            LinearLayoutManager llm = new LinearLayoutManager(resultPriceListBinding.getRoot().getContext());
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setLayoutManager(llm);
-            recyclerView.setAdapter(resultLayoutAdapter);
-
-
-            LivedataInit();
         });
     }
 

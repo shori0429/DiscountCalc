@@ -44,7 +44,7 @@ public class ResultListFragment extends Fragment {
     private int viewCount=0;
 
     // 価格
-    private int price=0;
+    private int beforeDiscountPrice =0;
     private View view;
 
     // 結果リストのラベルView(割引率、割引額、小計)
@@ -167,6 +167,8 @@ public class ResultListFragment extends Fragment {
             price = integer;
             calcDiscounts();
             resultLayoutAdapter.updateItem(resultDataList);
+            // 入力した数値をbeforePriceに適用
+            beforeDiscountPrice = integer;
         };
         discountCalcViewModel.getPrice().observe(getViewLifecycleOwner(), priceObserver);
     }
@@ -209,19 +211,25 @@ public class ResultListFragment extends Fragment {
     // 計算処理
     private void calcDiscounts() {
         resultDataList.clear();
+        // ローカル変数を使用することでviewCountを直接操作しなくても表示数調整できるように
+        int displayViewCount=viewCount;
         // 表示数が利用する割引率のリストよりも大きければ、利用する割引率のリストに合わせる。OutOfBoundsの防止
-        if(viewCount>discountPerList.size())viewCount=discountPerList.size();
-        for (int i = 0; i < viewCount; i++) {
+        if (displayViewCount > discountPerList.size()) displayViewCount = discountPerList.size();
+        for (int i = 0; i < displayViewCount; i++) {
             // 割引率取得
             int discountPer = discountPerList.get(i);
             // 割引額算出
-            int discountPrice = DiscountCalc.discountCalculationIntPercentage(price, discountPer);
+            int discountPrice = DiscountCalc.discountCalculationIntPercentage(beforeDiscountPrice, discountPer);
             // 割引後の価格算出
-            int afterPrice = price - discountPrice;
+            int afterPrice = beforeDiscountPrice - discountPrice;
 
             // 結果用のリストに追加
             DiscountData data = new DiscountData(discountPer, discountPrice, afterPrice, 0);
             resultDataList.add(i, data);
+        }
+        if (resultLayoutAdapter != null) {
+            // アダプタに最新の計算結果をupdate
+            resultLayoutAdapter.updateItem(resultDataList);
         }
     }
 

@@ -61,10 +61,10 @@ public class ResultListFragment extends Fragment {
     private ResultPriceListBinding resultPriceListBinding;
 
     // 結果表示用のリスト
-    ArrayList<DiscountData> resultDataList;
+    ArrayList<DiscountData> resultDataList = new ArrayList<>();
 
     // 使用する割引率のリスト
-    ArrayList<Integer> discountPerList;
+    ArrayList<Integer> discountPerList = new ArrayList<>();
 
     // 計算タイプ
     DiscountType discountType;
@@ -164,8 +164,6 @@ public class ResultListFragment extends Fragment {
 
     private void loadSettingData() {
 
-        // 割引率のリスト初期化
-        discountPerList=new ArrayList<>();
 
         switch (discountType) {
             case None, Preset -> createDiscountPreferenceData();
@@ -192,7 +190,6 @@ public class ResultListFragment extends Fragment {
         // SharedPreferencesに保存された設定キー取得しセット。存在しない場合はNone
         String settingType=preferences.getString(useKey,DiscountType.None.name());
         discountType = DiscountType.valueOf(settingType);
-        resultDataList =new ArrayList<>();
     }
 
     // 計算処理

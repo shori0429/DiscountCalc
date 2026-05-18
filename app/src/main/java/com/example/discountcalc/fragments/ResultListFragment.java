@@ -106,7 +106,8 @@ public class ResultListFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        view.post(this::viewModelInitialize);
+
+        // 設定データ取得
         getPreferences();
         if (progressBarView != null) {
             progressBarView.setVisibility(View.GONE);

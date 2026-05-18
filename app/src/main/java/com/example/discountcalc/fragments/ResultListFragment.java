@@ -115,7 +115,7 @@ public class ResultListFragment extends Fragment {
     }
 
     private void recyclerInit() {
-        recyclerView = resultPriceListBinding.resultPriceList;
+
         // 描画完了後の通知を受け取って、その地点のHashMapを作成
         resultOneCalcLabelView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override

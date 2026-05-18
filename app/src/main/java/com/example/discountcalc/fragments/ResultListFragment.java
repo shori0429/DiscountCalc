@@ -109,6 +109,13 @@ public class ResultListFragment extends Fragment {
 
         // 設定データ取得
         getPreferences();
+        // 保存データ取得
+        loadSettingData();
+
+        recyclerInit();
+
+        LivedataInit();
+
         if (progressBarView != null) {
             progressBarView.setVisibility(View.GONE);
         }

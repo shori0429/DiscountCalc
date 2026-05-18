@@ -268,6 +268,7 @@ public class ResultListFragment extends Fragment {
         // あらかじめ用意された割引率を取得
         int[] discountData = getResources().getIntArray(R.array.preset_discount_values);
 
+        discountPerList.clear();
         for (int i = 0; i < discountData.length; i++) {
             discountPerList.add(discountData[i]);
         }

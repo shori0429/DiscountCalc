@@ -98,9 +98,6 @@ public class ResultListFragment extends Fragment {
 
         view.post(this::viewModelInitialize);
         getPreferences();
-        if (discountType == DiscountType.None) {
-            createDiscountPreferenceData();
-        }
     }
 
     private void recyclerInit() {
@@ -134,9 +131,6 @@ public class ResultListFragment extends Fragment {
             // 保存データ取得
             loadSettingData();
 
-            if (discountType == DiscountType.None) {
-                createDiscountPreferenceData();
-            }
 
             // 計算
             calcDiscounts();

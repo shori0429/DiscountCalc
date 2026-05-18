@@ -136,8 +136,10 @@ public class ResultListFragment extends Fragment {
 
 
     private void viewModelInitialize() {
-        discountCalcViewModel = new ViewModelProvider(requireActivity()).get(DiscountCalcViewModel.class);
-        customPreferenceListViewModel =new ViewModelProvider(this,new CustomPreferenceListViewModelFactory(requireActivity().getApplication()))
+        // ActivityにこのFragmentが追加されているかチェック
+        if (this.getActivity() == null) return;
+        discountCalcViewModel = new ViewModelProvider(this).get(DiscountCalcViewModel.class);
+        customPreferenceListViewModel = new ViewModelProvider(this, new CustomPreferenceListViewModelFactory(requireActivity().getApplication()))
                 .get(CustomPreferenceListViewModel.class);
 
         customPreferenceListViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(),allParams->{
@@ -154,14 +156,7 @@ public class ResultListFragment extends Fragment {
             loadSettingData();
 
 
-            // 計算
-            calcDiscounts();
-
-
-        });
-    }
-
-    //入力価格データ購読設定
+    // ユーザー入力した数値が変更された時の処理
     private void LivedataInit() {
         // LiveData設定
         final Observer<Integer> priceObserver = integer -> {
@@ -190,13 +185,14 @@ public class ResultListFragment extends Fragment {
                 refreshCalc();
             }
             case Custom -> {
-                if(customPreferenceListViewModel.preferenceParamListSize()==0){
+                if (customPreferenceListViewModel.PreferenceParamList()==null) {
                     createDiscountPreferenceData();
                     break;
                 }
                 for (int i = 0; i < customPreferenceListViewModel.preferenceParamListSize(); i++) {
                     discountPerList.add(i, customPreferenceListViewModel.PreferenceParamList().getValue().get(i).per());
                 }
+                        discountPerList.add(customPreferenceListViewModel.getPreferenceParamData(i).per());
                     refreshCalc();
             }
         }
@@ -232,7 +228,7 @@ public class ResultListFragment extends Fragment {
 
             // 結果用のリストに追加
             DiscountData data = new DiscountData(discountPer, discountPrice, afterPrice, 0);
-            resultDataList.add(i, data);
+            resultDataList.add(data);
         }
         if (resultLayoutAdapter != null) {
             // アダプタに最新の計算結果をupdate
@@ -277,11 +273,9 @@ public class ResultListFragment extends Fragment {
     private void createDiscountPreferenceData() {
         // あらかじめ用意された割引率を取得
         int[] discountData = getResources().getIntArray(R.array.preset_discount_values);
-        if (discountPerList == null) {
-            discountPerList = new ArrayList<>();
-        }
+
         for (int i = 0; i < discountData.length; i++) {
-            discountPerList.add(i, discountData[i]);
+            discountPerList.add(discountData[i]);
         }
         // 使用する割引率設定をプリセットに指定して保存しておく。
         discountType=DiscountType.Preset;

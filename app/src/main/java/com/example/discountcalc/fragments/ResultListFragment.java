@@ -169,6 +169,8 @@ public class ResultListFragment extends Fragment {
             resultLayoutAdapter.updateItem(resultDataList);
             // 入力した数値をbeforePriceに適用
             beforeDiscountPrice = integer;
+            // 再計算
+            refreshCalc();
         };
         discountCalcViewModel.getPrice().observe(getViewLifecycleOwner(), priceObserver);
     }
@@ -182,7 +184,10 @@ public class ResultListFragment extends Fragment {
 
 
         switch (discountType) {
-            case None, Preset -> createDiscountPreferenceData();
+            case None, Preset -> {
+                createDiscountPreferenceData();
+                refreshCalc();
+            }
             case Custom -> {
                 if(customPreferenceListViewModel.preferenceParamListSize()==0){
                     createDiscountPreferenceData();
@@ -191,6 +196,7 @@ public class ResultListFragment extends Fragment {
                 for (int i = 0; i < customPreferenceListViewModel.preferenceParamListSize(); i++) {
                     discountPerList.add(i, customPreferenceListViewModel.PreferenceParamList().getValue().get(i).per());
                 }
+                    refreshCalc();
             }
         }
     }
@@ -231,6 +237,15 @@ public class ResultListFragment extends Fragment {
             // アダプタに最新の計算結果をupdate
             resultLayoutAdapter.updateItem(resultDataList);
         }
+    }
+
+    // 再計算用メソッド
+    private void refreshCalc(){
+        if(discountPerList ==null || discountPerList.isEmpty()){
+            return;
+        }
+        calcDiscounts();
+
     }
 
     @Override

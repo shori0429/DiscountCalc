@@ -69,8 +69,6 @@ public class ResultListFragment extends Fragment {
     // 計算タイプ
     DiscountType discountType;
 
-    // 余白の適用フラグ
-    boolean[] paddingFlags;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -143,8 +141,6 @@ public class ResultListFragment extends Fragment {
             // 計算
             calcDiscounts();
 
-            paddingFlags = new boolean[4];
-            paddingFlags[2] = true;
 
         });
     }

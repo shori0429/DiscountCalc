@@ -1,4 +1,5 @@
 # 一括割引計算アプリ(Android)
+
 ![Android](https://img.shields.io/badge/-Android-{#3DDC84}?logo=android)
 
 Java / Android Studioで作成した割引計算アプリ
@@ -8,8 +9,6 @@ Java / Android Studioで作成した割引計算アプリ
 
 ユーザーが入力した金額に対して、複数の割引率で一括計算・比較できるアプリがあると便利だと思い作成
 
-## アプリ画面(エミュレータ[Pixel 9a:API37])
-
 
 ## 実装機能
 - 割引率計算
@@ -18,6 +17,9 @@ Java / Android Studioで作成した割引計算アプリ
 - Fragment画面遷移
 - ListAdapter,DiffUtilを使用した一覧表示
 - 自分で使用する割引率を設定・保存
+
+
+## アプリ画面( 環境:エミュレータ[Pixel 9a:API37] )
 
 ### Presetモード
 あらかじめ用意された割引率を使用する
@@ -43,16 +45,19 @@ Java / Android Studioで作成した割引計算アプリ
 - RecyclerView
 - DiffUtil
 
+
 ## 意識したもの
 - Activityを1つだけにして、複数のFragmentで画面管理
 - MVVMを意識してできるだけロジック分離
 - ListAdapter,DiffUtilを利用してリスト表示を効率化
+
 
 ## 改善予定
 - Material3を利用したアプリバーへの刷新
 - 設定画面をスライドメニューへ統合
 - リスト表示のレイアウト調整
 - Customデータ未登録時の制御改善
+
 
 ## 既知のバグ(2026/05/22)
 - Customデータの保存処理が上手くできていない

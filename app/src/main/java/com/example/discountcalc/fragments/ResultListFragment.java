@@ -132,17 +132,14 @@ public class ResultListFragment extends Fragment {
                     // 1度でいいので破棄
                     resultOneCalcLabelView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
-        resultLayoutAdapter = new ResultLayoutAdapter(resultDataList, getOneCalcViewLayoutWidthAndHeight());
+                    resultLayoutAdapter = new ResultLayoutAdapter(getOneCalcViewLayoutWidthAndHeight());
 
                     // 縦方向のLayoutManagerを作成
                     LinearLayoutManager llm = new LinearLayoutManager(resultPriceListBinding.getRoot().getContext());
-                    recyclerView.setHasFixedSize(true);
+                    //recyclerView.setHasFixedSize(true);
                     recyclerView.setLayoutManager(llm);
                     recyclerView.setAdapter(resultLayoutAdapter);
-
-                    if(!resultDataList.isEmpty()){
-                        resultLayoutAdapter.updateItem(resultDataList);
-                    }
+                    resultLayoutAdapter.submitList(new ArrayList<>(resultDataList));
                 }
             }
         });
@@ -237,7 +234,7 @@ public class ResultListFragment extends Fragment {
         }
         if (resultLayoutAdapter != null) {
             // アダプタに最新の計算結果をupdate
-            resultLayoutAdapter.updateItem(resultDataList);
+            resultLayoutAdapter.submitList(new ArrayList<>(resultDataList));
         }
     }
 

@@ -1,6 +1,7 @@
 package com.example.discountcalc.customAdapters;
 
 import android.graphics.Point;
+import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,6 +31,10 @@ public class ResultLayoutAdapter extends ListAdapter<DiscountData,ResultLayoutAd
     private final HashMap<Integer, Point> adapterLayoutSize;
 
     ResultOneCalcViewBinding binding;
+
+    private static final String payload_discountPer="discountPer";
+    private static final String payload_discountPrice="discountPrice";
+    private static final String payload_AfterPrice="afterPrice";
 
     /**
      * 1行分のViewの参照を保持するホルダークラス
@@ -90,7 +96,34 @@ public class ResultLayoutAdapter extends ListAdapter<DiscountData,ResultLayoutAd
         }
 
     }
+
+    // ビューの内容を置き換える(レイアウトマネージャーによって呼び出される)
     @Override
+    public void onBindViewHolder(@NonNull ResultViewHolder holder, int position,@NonNull List<Object> payloads) {
+        if (payloads.isEmpty()) {
+            super.onBindViewHolder(holder, position, payloads);
+            return;
+        }
+        for (Object payload:payloads){
+            if(payload instanceof Bundle diff){
+
+                // この位置のデータセットから要素を取得し、ビューの内容をその要素で置き換える
+                holder.discountTextview.setText(String.format(Locale.getDefault(), "%d%%", diff.getInt(payload_discountPer)));
+                holder.discountPriceTextview.setText(String.format(Locale.getDefault(), "%,d円", diff.getInt(payload_discountPrice)));
+                holder.priceTextview.setText(String.format(Locale.getDefault(), "%,d円", diff.getInt(payload_AfterPrice)));
+                // 文字のGravityを変更(右寄せ)
+                holder.discountTextview.setGravity(Gravity.END);
+                holder.discountPriceTextview.setGravity(Gravity.END);
+                holder.priceTextview.setGravity(Gravity.END);
+
+                // ヘッダーのサイズに合わせる
+                if(adapterLayoutSize !=null){
+                    applySize(holder.discountTextview,adapterLayoutSize.get(R.id.discountLabel));
+                    applySize(holder.discountPriceTextview,adapterLayoutSize.get(holder.discountPriceTextview.getId()));
+                    applySize(holder.priceTextview,adapterLayoutSize.get(holder.priceTextview.getId()));
+                }
+            }
+        }
 
     }
 
@@ -103,9 +136,41 @@ public class ResultLayoutAdapter extends ListAdapter<DiscountData,ResultLayoutAd
     }
 
     @Override
+    public void submitList(@Nullable List<DiscountData> list) {
+        super.submitList(list);
+    }
+
+    @Override
     protected DiscountData getItem(int position) {
         return super.getItem(position);
     }
 
+    static final DiffUtil.ItemCallback<DiscountData> DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<>() {
+                @Override
+                public boolean areItemsTheSame(@NonNull DiscountData oldItem, @NonNull DiscountData newItem) {
+                    return oldItem.getDiscountPer() == newItem.getDiscountPer();
+                }
 
+                @Override
+                public boolean areContentsTheSame(@NonNull DiscountData oldItem, @NonNull DiscountData newItem) {
+                    return oldItem.equals(newItem);
+                }
+
+                @Nullable
+                @Override
+                public Object getChangePayload(@NonNull DiscountData oldItem, @NonNull DiscountData newItem) {
+                    Bundle diff=new Bundle();
+
+                    diff.putInt(payload_discountPer,newItem.getDiscountPer());
+                    if(oldItem.getDiscountPrice()!= newItem.getDiscountPrice()){
+                        diff.putInt(payload_discountPrice,newItem.getDiscountPrice());
+                    }
+                    if(oldItem.getAfterPrice() != newItem.getAfterPrice()) {
+                        diff.putInt(payload_AfterPrice,newItem.getAfterPrice());
+                    }
+                    if(diff.isEmpty())return null;
+                    return diff;
+                }
+            };
 }

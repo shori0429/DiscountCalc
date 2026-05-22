@@ -24,7 +24,6 @@ import java.util.Locale;
  **/
 public class ResultLayoutAdapter extends ListAdapter<DiscountData,ResultLayoutAdapter.ResultViewHolder> {
 
-    private ArrayList<DiscountData> localData;
 
     // resultPriceListViewのid,layout_width,Layout_heightを格納
     private final HashMap<Integer, Point> adapterLayoutSize;
@@ -54,17 +53,10 @@ public class ResultLayoutAdapter extends ListAdapter<DiscountData,ResultLayoutAd
      * アダプタのデータセットを初期化
      * RecycleViewで使用されるビューに入力するデータを含む
      */
-    public ResultLayoutAdapter(ArrayList<DiscountData> dataset)
-    {
-        localData=dataset;
-    }
-
-
     /// resultLabelのid,layout_width,Layout_heightを格納
-    public ResultLayoutAdapter(ArrayList<DiscountData>dataset, HashMap<Integer,Point>layoutSize){
-        localData=dataset;
-        adapterLayoutSize=layoutSize;
-
+    public ResultLayoutAdapter(HashMap<Integer, Point> layoutSize) {
+        super(DIFF_CALLBACK);
+        adapterLayoutSize = layoutSize;
     }
 
     // 新しい1行分のビューを作成(レイアウトマネージャーによって呼び出される)
@@ -80,10 +72,11 @@ public class ResultLayoutAdapter extends ListAdapter<DiscountData,ResultLayoutAd
     // ビューの内容を置き換える(レイアウトマネージャーによって呼び出される)
     @Override
     public void onBindViewHolder(@NonNull ResultViewHolder holder, int position) {
+        DiscountData data=getItem(position);
         // この位置のデータセットから要素を取得し、ビューの内容をその要素で置き換える
-        holder.discountTextview.setText(String.format(Locale.getDefault(),"%d%%",localData.get(position).getDiscountPer()));
-        holder.discountPriceTextview.setText(String.format(Locale.getDefault(),"%,d円",localData.get(position).getDiscountPrice()));
-        holder.priceTextview.setText(String.format(Locale.getDefault(),"%,d円",localData.get(position).getAfterPrice()));
+        holder.discountTextview.setText(String.format(Locale.getDefault(), "%d%%", data.getDiscountPer()));
+        holder.discountPriceTextview.setText(String.format(Locale.getDefault(), "%,d円", data.getDiscountPrice()));
+        holder.priceTextview.setText(String.format(Locale.getDefault(), "%,d円", data.getAfterPrice()));
         // 文字のGravityを変更(右寄せ)
         holder.discountTextview.setGravity(Gravity.END);
         holder.discountPriceTextview.setGravity(Gravity.END);
@@ -97,17 +90,8 @@ public class ResultLayoutAdapter extends ListAdapter<DiscountData,ResultLayoutAd
         }
 
     }
-    // データセットのサイズを返す (レイアウトマネージャによって呼び出される)
     @Override
-    public int getItemCount() {
-        return localData.size();
-    }
 
-    //
-    public void updateItem(ArrayList<DiscountData> data){
-        localData=data;
-        // localDataのサイズ分の変更をobserverに通知
-        notifyItemRangeChanged(0,getItemCount());
     }
 
     private void applySize(TextView textView,Point size){
@@ -116,6 +100,11 @@ public class ResultLayoutAdapter extends ListAdapter<DiscountData,ResultLayoutAd
         lp.width = size.x;
         lp.height=size.y;
         textView.setLayoutParams(lp);
+    }
+
+    @Override
+    protected DiscountData getItem(int position) {
+        return super.getItem(position);
     }
 
 

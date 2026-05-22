@@ -100,6 +100,8 @@ public class ResultListFragment extends Fragment {
         // 読み込みUI表示
         progressBarView.setVisibility(View.VISIBLE);
         viewModelInitialize();
+        livedataInit();
+
     }
 
     @Override
@@ -113,8 +115,6 @@ public class ResultListFragment extends Fragment {
         loadSettingData();
 
         recyclerInit();
-
-        LivedataInit();
 
         if (progressBarView != null) {
             progressBarView.setVisibility(View.GONE);
@@ -158,7 +158,7 @@ public class ResultListFragment extends Fragment {
     }
 
     // ユーザー入力した数値が変更された時の処理
-    private void LivedataInit() {
+    private void livedataInit() {
         // LiveData設定
         final Observer<Integer> priceObserver = integer -> {
             // 入力した数値をbeforePriceに適用

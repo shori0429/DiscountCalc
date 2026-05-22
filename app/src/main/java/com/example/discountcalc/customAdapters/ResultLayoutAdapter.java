@@ -3,29 +3,33 @@ package com.example.discountcalc.customAdapters;
 import android.graphics.Point;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.discountcalc.databinding.ResultOneCalcViewBinding;
 import com.example.discountcalc.params.DiscountData;
 import com.example.discountcalc.R;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 /**
  * 1行分のデータを1行分のViewに設定して生成するクラス
  **/
-public class ResultLayoutAdapter extends RecyclerView.Adapter<ResultLayoutAdapter.ResultViewHolder> {
+public class ResultLayoutAdapter extends ListAdapter<DiscountData,ResultLayoutAdapter.ResultViewHolder> {
 
     private ArrayList<DiscountData> localData;
 
     // resultPriceListViewのid,layout_width,Layout_heightを格納
-    private HashMap<Integer,Point> adapterLayoutSize;
+    private final HashMap<Integer, Point> adapterLayoutSize;
+
+    ResultOneCalcViewBinding binding;
 
     /**
      * 1行分のViewの参照を保持するホルダークラス
@@ -36,24 +40,14 @@ public class ResultLayoutAdapter extends RecyclerView.Adapter<ResultLayoutAdapte
         private final TextView priceTextview;
 
         //ビューホルダー
-        public ResultViewHolder(View view){
-            super(view);
-            discountTextview =view.findViewById(R.id.discountLabel);
-            discountPriceTextview =view.findViewById(R.id.discountPriceLabel);
-            priceTextview =view.findViewById(R.id.priceLabel);
+        public ResultViewHolder(ResultOneCalcViewBinding binding) {
+            super(binding.getRoot());
+
+            discountTextview = binding.discountLabel;
+            discountPriceTextview = binding.discountPriceLabel;
+            priceTextview = binding.priceLabel;
         }
 
-        public TextView getDiscountTextview(){
-            return  discountTextview;
-        }
-
-        public TextView getDiscountPriceTextview() {
-            return discountPriceTextview;
-        }
-
-        public TextView getPriceTextview() {
-            return priceTextview;
-        }
     }
 
     /*
@@ -78,9 +72,9 @@ public class ResultLayoutAdapter extends RecyclerView.Adapter<ResultLayoutAdapte
     @Override
     public ResultViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // リスト項目のUIを定義する新しいビューを作成する。
-        View inflate = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.result_one_calc_view,parent,false);
-        return new ResultViewHolder(inflate);
+        LayoutInflater inflate = LayoutInflater.from(parent.getContext());
+        binding = ResultOneCalcViewBinding.inflate(inflate,parent,false);
+        return new ResultViewHolder(binding);
     }
 
     // ビューの内容を置き換える(レイアウトマネージャーによって呼び出される)

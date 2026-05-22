@@ -100,6 +100,8 @@ public class ResultListFragment extends Fragment {
         // 読み込みUI表示
         progressBarView.setVisibility(View.VISIBLE);
         viewModelInitialize();
+        livedataInit();
+
     }
 
     @Override
@@ -113,8 +115,6 @@ public class ResultListFragment extends Fragment {
         loadSettingData();
 
         recyclerInit();
-
-        LivedataInit();
 
         if (progressBarView != null) {
             progressBarView.setVisibility(View.GONE);
@@ -132,17 +132,14 @@ public class ResultListFragment extends Fragment {
                     // 1度でいいので破棄
                     resultOneCalcLabelView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
-        resultLayoutAdapter = new ResultLayoutAdapter(resultDataList, getOneCalcViewLayoutWidthAndHeight());
+                    resultLayoutAdapter = new ResultLayoutAdapter(getOneCalcViewLayoutWidthAndHeight());
 
                     // 縦方向のLayoutManagerを作成
                     LinearLayoutManager llm = new LinearLayoutManager(resultPriceListBinding.getRoot().getContext());
-                    recyclerView.setHasFixedSize(true);
+                    //recyclerView.setHasFixedSize(true);
                     recyclerView.setLayoutManager(llm);
                     recyclerView.setAdapter(resultLayoutAdapter);
-
-                    if(!resultDataList.isEmpty()){
-                        resultLayoutAdapter.updateItem(resultDataList);
-                    }
+                    resultLayoutAdapter.submitList(new ArrayList<>(resultDataList));
                 }
             }
         });
@@ -152,13 +149,13 @@ public class ResultListFragment extends Fragment {
     private void viewModelInitialize() {
         // ActivityにこのFragmentが追加されているかチェック
         if (this.getActivity() == null) return;
-        discountCalcViewModel = new ViewModelProvider(this).get(DiscountCalcViewModel.class);
+        discountCalcViewModel = new ViewModelProvider(requireActivity()).get(DiscountCalcViewModel.class);
         customPreferenceListViewModel = new ViewModelProvider(this, new CustomPreferenceListViewModelFactory(requireActivity().getApplication()))
                 .get(CustomPreferenceListViewModel.class);
     }
 
     // ユーザー入力した数値が変更された時の処理
-    private void LivedataInit() {
+    private void livedataInit() {
         // LiveData設定
         final Observer<Integer> priceObserver = integer -> {
             // 入力した数値をbeforePriceに適用
@@ -183,15 +180,15 @@ public class ResultListFragment extends Fragment {
                 refreshCalc();
             }
             case Custom -> {
-                if (customPreferenceListViewModel.PreferenceParamList()==null) {
+                if (customPreferenceListViewModel.PreferenceParamList() == null) {
                     createDiscountPreferenceData();
                     break;
                 }
-                customPreferenceListViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(),params->{
-                    customPreferenceListViewModel.usePreferenceParamList(preferences.getString(getString(R.string.using_custom_preference),""));
+                customPreferenceListViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(), params -> {
+                    customPreferenceListViewModel.usePreferenceParamList(preferences.getString(getString(R.string.using_custom_preference), ""));
                 });
 
-                customPreferenceListViewModel.PreferenceParamList().observe(getViewLifecycleOwner(),param->{
+                customPreferenceListViewModel.PreferenceParamList().observe(getViewLifecycleOwner(), param -> {
                     // 割引率リストをクリアしておく
                     discountPerList.clear();
                     for (int i = 0; i < customPreferenceListViewModel.preferenceParamListSize(); i++) {
@@ -208,11 +205,11 @@ public class ResultListFragment extends Fragment {
         preferences=PreferenceManager.getDefaultSharedPreferences(this.requireContext());
 
         // 表示数取得
-        viewCount=preferences.getInt(getString(R.string.view_count),DEFAULT_VIEWCOUNT);
+        viewCount = preferences.getInt(getString(R.string.view_count), DEFAULT_VIEWCOUNT);
 
-        String useKey=getString(R.string.using_setting);
+        String useKey = getString(R.string.using_setting);
         // SharedPreferencesに保存された設定キー取得しセット。存在しない場合はNone
-        String settingType=preferences.getString(useKey,DiscountType.None.name());
+        String settingType = preferences.getString(useKey, DiscountType.None.name());
         discountType = DiscountType.valueOf(settingType);
     }
 
@@ -220,7 +217,7 @@ public class ResultListFragment extends Fragment {
     private void calcDiscounts() {
         resultDataList.clear();
         // ローカル変数を使用することでviewCountを直接操作しなくても表示数調整できるように
-        int displayViewCount=viewCount;
+        int displayViewCount = viewCount;
         // 表示数が利用する割引率のリストよりも大きければ、利用する割引率のリストに合わせる。OutOfBoundsの防止
         if (displayViewCount > discountPerList.size()) displayViewCount = discountPerList.size();
         for (int i = 0; i < displayViewCount; i++) {
@@ -237,13 +234,13 @@ public class ResultListFragment extends Fragment {
         }
         if (resultLayoutAdapter != null) {
             // アダプタに最新の計算結果をupdate
-            resultLayoutAdapter.updateItem(resultDataList);
+            resultLayoutAdapter.submitList(new ArrayList<>(resultDataList));
         }
     }
 
     // 再計算用メソッド
-    private void refreshCalc(){
-        if(discountPerList ==null || discountPerList.isEmpty()){
+    private void refreshCalc() {
+        if (discountPerList == null || discountPerList.isEmpty()) {
             return;
         }
         calcDiscounts();
@@ -253,25 +250,25 @@ public class ResultListFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        boolean isSaveFlag=preferences.getBoolean(getString(R.string.is_save_parameters),false);
+        boolean isSaveFlag = preferences.getBoolean(getString(R.string.is_save_parameters), false);
         // パラメータ保存をしない設定であれば保存処理を実行しない。
-        if(!isSaveFlag) return;
+        if (!isSaveFlag) return;
 
         // 一時中断で保存しておく
-        boolean isSave=saveDataStore();
-        Log.i("settingSave",String.valueOf(isSave));
+        boolean isSave = saveDataStore();
+        Log.i("settingSave", String.valueOf(isSave));
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        boolean isSaveFlag=preferences.getBoolean(getString(R.string.is_save_parameters),false);
+        boolean isSaveFlag = preferences.getBoolean(getString(R.string.is_save_parameters), false);
         // パラメータ保存をしない設定であれば保存処理を実行しない。
-        if(!isSaveFlag) return;
+        if (!isSaveFlag) return;
 
         // Fragmentが削除された際に保存しておく
-        boolean isSave=saveDataStore();
-        Log.i("settingSave",String.valueOf(isSave));
+        boolean isSave = saveDataStore();
+        Log.i("settingSave", String.valueOf(isSave));
     }
 
     // あらかじめ用意された割引率取得し、一覧データに使用する割引率を設定する。
@@ -284,11 +281,11 @@ public class ResultListFragment extends Fragment {
             discountPerList.add(discountData[i]);
         }
         // 使用する割引率設定をプリセットに指定して保存しておく。
-        discountType=DiscountType.Preset;
+        discountType = DiscountType.Preset;
 
         // 使用する割引率設定を更新しておく。
-        String saveKey=getString(R.string.using_setting);
-        preferences.edit().putString(saveKey,discountType.toString()).apply();
+        String saveKey = getString(R.string.using_setting);
+        preferences.edit().putString(saveKey, discountType.toString()).apply();
     }
 
     private HashMap<Integer, Point> getOneCalcViewLayoutWidthAndHeight() {

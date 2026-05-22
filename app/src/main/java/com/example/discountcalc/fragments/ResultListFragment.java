@@ -17,6 +17,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.ProgressBar;
 import android.widget.TableRow;
 
 import com.example.discountcalc.calculationPack.DiscountCalc;
@@ -42,10 +44,13 @@ public class ResultListFragment extends Fragment {
     private int viewCount=0;
 
     // 価格
-    private int price=0;
+    private int beforeDiscountPrice =0;
     private View view;
 
-    private TableRow resultOneCalcView;
+    // 結果リストのラベルView(割引率、割引額、小計)
+    private TableRow resultOneCalcLabelView;
+
+    private ProgressBar progressBarView;
 
 
     SharedPreferences preferences;
@@ -61,88 +66,14 @@ public class ResultListFragment extends Fragment {
     private ResultPriceListBinding resultPriceListBinding;
 
     // 結果表示用のリスト
-    ArrayList<DiscountData> resultDataList;
+    ArrayList<DiscountData> resultDataList = new ArrayList<>();
 
     // 使用する割引率のリスト
-    ArrayList<Integer> discountPerList;
+    ArrayList<Integer> discountPerList = new ArrayList<>();
 
     // 計算タイプ
     DiscountType discountType;
 
-    // 余白の適用フラグ
-    boolean[] paddingFlags;
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        // Get the ViewModel.
-        Log.i("ResultListFragment", "Called ViewModelProvider.get");
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        view.post(this::viewModelInitialize);
-    }
-
-    private void viewModelInitialize() {
-        discountCalcViewModel = new ViewModelProvider(requireActivity()).get(DiscountCalcViewModel.class);
-        customPreferenceListViewModel =new ViewModelProvider(this,new CustomPreferenceListViewModelFactory(requireActivity().getApplication()))
-                .get(CustomPreferenceListViewModel.class);
-        // 設定データ取得
-        getPreferences();
-
-        customPreferenceListViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(),allParams->{
-            if(allParams.size()>0){
-                customPreferenceListViewModel.usePreferenceParamList(preferences.getString(getString(R.string.using_custom_preference),""));
-            }
-            // このフラグメントの購読を解除することでフラグメント生成後1度だけ呼ばれるように(できているはず)
-            customPreferenceListViewModel.AllPreferenceParamList().removeObservers(getViewLifecycleOwner());
-        });
-
-        // ViewModelのリポジトリLiveDataを購読。
-        customPreferenceListViewModel.PreferenceParamList().observe(getViewLifecycleOwner(),preferenceParams->{
-            // 保存データ取得
-            loadSettingData();
-
-            if (discountType == DiscountType.None) {
-                createDiscountPreferenceData();
-            }
-
-            // 計算
-            calcDiscounts();
-
-            paddingFlags = new boolean[4];
-            paddingFlags[2] = true;
-
-            recyclerView = resultPriceListBinding.resultPriceList;
-
-            resultLayoutAdapter = new ResultLayoutAdapter(resultDataList, getOneCalcViewLayoutWidthAndHeight());
-
-            // 縦方向のLayoutManagerを作成
-            LinearLayoutManager llm = new LinearLayoutManager(resultPriceListBinding.getRoot().getContext());
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setLayoutManager(llm);
-            recyclerView.setAdapter(resultLayoutAdapter);
-
-
-            LivedataInit();
-        });
-    }
-
-    //入力価格データ購読設定
-    private void LivedataInit() {
-        // LiveData設定
-        final Observer<Integer> priceObserver = integer -> {
-            price = integer;
-            calcDiscounts();
-            resultLayoutAdapter.updateItem(resultDataList);
-        };
-        discountCalcViewModel.getPrice().observe(getViewLifecycleOwner(), priceObserver);
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -150,13 +81,91 @@ public class ResultListFragment extends Fragment {
         // Inflate the layout for this fragment
         resultPriceListBinding = ResultPriceListBinding.inflate(inflater, container, false);
         view = resultPriceListBinding.getRoot();
-        resultOneCalcView=resultPriceListBinding.resultLabel.resultLabelPackage;
+        recyclerView = resultPriceListBinding.resultPriceList;
+        resultOneCalcLabelView = resultPriceListBinding.resultLabel.resultLabelPackage;
+        progressBarView = resultPriceListBinding.resultListProgress;
 
 
         Log.i("resultFragment", getParentFragmentManager().toString());
 
         return view;
     }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Get the ViewModel.
+        Log.i("ResultListFragment", "Called ViewModelProvider.get");
+
+        // 読み込みUI表示
+        progressBarView.setVisibility(View.VISIBLE);
+        viewModelInitialize();
+        livedataInit();
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+
+        // 設定データ取得
+        getPreferences();
+        // 保存データ取得
+        loadSettingData();
+
+        recyclerInit();
+
+        if (progressBarView != null) {
+            progressBarView.setVisibility(View.GONE);
+        }
+    }
+
+    private void recyclerInit() {
+
+        // 描画完了後の通知を受け取って、その地点のHashMapを作成
+        resultOneCalcLabelView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                View checkView=resultOneCalcLabelView.findViewById(R.id.discountLabel);
+                if(checkView != null && checkView.getWidth() >0){
+                    // 1度でいいので破棄
+                    resultOneCalcLabelView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                    resultLayoutAdapter = new ResultLayoutAdapter(getOneCalcViewLayoutWidthAndHeight());
+
+                    // 縦方向のLayoutManagerを作成
+                    LinearLayoutManager llm = new LinearLayoutManager(resultPriceListBinding.getRoot().getContext());
+                    //recyclerView.setHasFixedSize(true);
+                    recyclerView.setLayoutManager(llm);
+                    recyclerView.setAdapter(resultLayoutAdapter);
+                    resultLayoutAdapter.submitList(new ArrayList<>(resultDataList));
+                }
+            }
+        });
+    }
+
+
+    private void viewModelInitialize() {
+        // ActivityにこのFragmentが追加されているかチェック
+        if (this.getActivity() == null) return;
+        discountCalcViewModel = new ViewModelProvider(requireActivity()).get(DiscountCalcViewModel.class);
+        customPreferenceListViewModel = new ViewModelProvider(this, new CustomPreferenceListViewModelFactory(requireActivity().getApplication()))
+                .get(CustomPreferenceListViewModel.class);
+    }
+
+    // ユーザー入力した数値が変更された時の処理
+    private void livedataInit() {
+        // LiveData設定
+        final Observer<Integer> priceObserver = integer -> {
+            // 入力した数値をbeforePriceに適用
+            beforeDiscountPrice = integer;
+            // 再計算
+            refreshCalc();
+        };
+        discountCalcViewModel.getPrice().observe(getViewLifecycleOwner(), priceObserver);
+    }
+
 
     private boolean saveDataStore() {
         return !PreferenceManager.getDefaultSharedPreferences(requireContext()).getBoolean("isSavePreferences", false);
@@ -164,19 +173,29 @@ public class ResultListFragment extends Fragment {
 
     private void loadSettingData() {
 
-        // 割引率のリスト初期化
-        discountPerList=new ArrayList<>();
 
         switch (discountType) {
-            case None, Preset -> createDiscountPreferenceData();
+            case None, Preset -> {
+                createDiscountPreferenceData();
+                refreshCalc();
+            }
             case Custom -> {
-                if(customPreferenceListViewModel.preferenceParamListSize()==0){
+                if (customPreferenceListViewModel.PreferenceParamList() == null) {
                     createDiscountPreferenceData();
                     break;
                 }
-                for (int i = 0; i < customPreferenceListViewModel.preferenceParamListSize(); i++) {
-                    discountPerList.add(i, customPreferenceListViewModel.PreferenceParamList().getValue().get(i).per());
-                }
+                customPreferenceListViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(), params -> {
+                    customPreferenceListViewModel.usePreferenceParamList(preferences.getString(getString(R.string.using_custom_preference), ""));
+                });
+
+                customPreferenceListViewModel.PreferenceParamList().observe(getViewLifecycleOwner(), param -> {
+                    // 割引率リストをクリアしておく
+                    discountPerList.clear();
+                    for (int i = 0; i < customPreferenceListViewModel.preferenceParamListSize(); i++) {
+                        discountPerList.add(customPreferenceListViewModel.getPreferenceParamData(i).per());
+                    }
+                    refreshCalc();
+                });
             }
         }
     }
@@ -186,89 +205,102 @@ public class ResultListFragment extends Fragment {
         preferences=PreferenceManager.getDefaultSharedPreferences(this.requireContext());
 
         // 表示数取得
-        viewCount=preferences.getInt(getString(R.string.view_count),DEFAULT_VIEWCOUNT);
+        viewCount = preferences.getInt(getString(R.string.view_count), DEFAULT_VIEWCOUNT);
 
-        String useKey=getString(R.string.using_setting);
+        String useKey = getString(R.string.using_setting);
         // SharedPreferencesに保存された設定キー取得しセット。存在しない場合はNone
-        String settingType=preferences.getString(useKey,DiscountType.None.name());
+        String settingType = preferences.getString(useKey, DiscountType.None.name());
         discountType = DiscountType.valueOf(settingType);
-        resultDataList =new ArrayList<>();
     }
 
     // 計算処理
     private void calcDiscounts() {
         resultDataList.clear();
+        // ローカル変数を使用することでviewCountを直接操作しなくても表示数調整できるように
+        int displayViewCount = viewCount;
         // 表示数が利用する割引率のリストよりも大きければ、利用する割引率のリストに合わせる。OutOfBoundsの防止
-        if(viewCount>discountPerList.size())viewCount=discountPerList.size();
-        for (int i = 0; i < viewCount; i++) {
+        if (displayViewCount > discountPerList.size()) displayViewCount = discountPerList.size();
+        for (int i = 0; i < displayViewCount; i++) {
             // 割引率取得
             int discountPer = discountPerList.get(i);
             // 割引額算出
-            int discountPrice = DiscountCalc.discountCalculationIntPercentage(price, discountPer);
+            int discountPrice = DiscountCalc.discountCalculationIntPercentage(beforeDiscountPrice, discountPer);
             // 割引後の価格算出
-            int afterPrice = price - discountPrice;
+            int afterPrice = beforeDiscountPrice - discountPrice;
 
             // 結果用のリストに追加
             DiscountData data = new DiscountData(discountPer, discountPrice, afterPrice, 0);
-            resultDataList.add(i, data);
+            resultDataList.add(data);
         }
+        if (resultLayoutAdapter != null) {
+            // アダプタに最新の計算結果をupdate
+            resultLayoutAdapter.submitList(new ArrayList<>(resultDataList));
+        }
+    }
+
+    // 再計算用メソッド
+    private void refreshCalc() {
+        if (discountPerList == null || discountPerList.isEmpty()) {
+            return;
+        }
+        calcDiscounts();
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        boolean isSaveFlag=preferences.getBoolean(getString(R.string.is_save_parameters),false);
+        boolean isSaveFlag = preferences.getBoolean(getString(R.string.is_save_parameters), false);
         // パラメータ保存をしない設定であれば保存処理を実行しない。
-        if(!isSaveFlag) return;
+        if (!isSaveFlag) return;
 
         // 一時中断で保存しておく
-        boolean isSave=saveDataStore();
-        Log.i("settingSave",String.valueOf(isSave));
+        boolean isSave = saveDataStore();
+        Log.i("settingSave", String.valueOf(isSave));
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        boolean isSaveFlag=preferences.getBoolean(getString(R.string.is_save_parameters),false);
+        boolean isSaveFlag = preferences.getBoolean(getString(R.string.is_save_parameters), false);
         // パラメータ保存をしない設定であれば保存処理を実行しない。
-        if(!isSaveFlag) return;
+        if (!isSaveFlag) return;
 
         // Fragmentが削除された際に保存しておく
-        boolean isSave=saveDataStore();
-        Log.i("settingSave",String.valueOf(isSave));
+        boolean isSave = saveDataStore();
+        Log.i("settingSave", String.valueOf(isSave));
     }
 
     // あらかじめ用意された割引率取得し、一覧データに使用する割引率を設定する。
     private void createDiscountPreferenceData() {
         // あらかじめ用意された割引率を取得
         int[] discountData = getResources().getIntArray(R.array.preset_discount_values);
-        if (discountPerList == null) {
-            discountPerList = new ArrayList<>();
-        }
+
+        discountPerList.clear();
         for (int i = 0; i < discountData.length; i++) {
-            discountPerList.add(i, discountData[i]);
+            discountPerList.add(discountData[i]);
         }
         // 使用する割引率設定をプリセットに指定して保存しておく。
-        discountType=DiscountType.Preset;
+        discountType = DiscountType.Preset;
 
         // 使用する割引率設定を更新しておく。
-        String saveKey=getString(R.string.using_setting);
-        preferences.edit().putString(saveKey,discountType.toString()).apply();
+        String saveKey = getString(R.string.using_setting);
+        preferences.edit().putString(saveKey, discountType.toString()).apply();
     }
 
     private HashMap<Integer, Point> getOneCalcViewLayoutWidthAndHeight() {
         final HashMap<Integer, Point> layoutSize = new HashMap<>();
         layoutSize.put(R.id.discountLabel, new Point(
-                resultOneCalcView.findViewById(R.id.discountLabel).getWidth(),
-                resultOneCalcView.findViewById(R.id.discountLabel).getHeight()
+                resultOneCalcLabelView.findViewById(R.id.discountLabel).getWidth(),
+                resultOneCalcLabelView.findViewById(R.id.discountLabel).getHeight()
         ));
         layoutSize.put(R.id.discountPriceLabel, new Point(
-                resultOneCalcView.findViewById(R.id.discountPriceLabel).getWidth(),
-                resultOneCalcView.findViewById(R.id.discountPriceLabel).getHeight()
+                resultOneCalcLabelView.findViewById(R.id.discountPriceLabel).getWidth(),
+                resultOneCalcLabelView.findViewById(R.id.discountPriceLabel).getHeight()
         ));
         layoutSize.put(R.id.priceLabel, new Point(
-                resultOneCalcView.findViewById(R.id.priceLabel).getWidth(),
-                resultOneCalcView.findViewById(R.id.priceLabel).getHeight()
+                resultOneCalcLabelView.findViewById(R.id.priceLabel).getWidth(),
+                resultOneCalcLabelView.findViewById(R.id.priceLabel).getHeight()
         ));
 
         return layoutSize;

@@ -1,5 +1,7 @@
 package com.example.discountcalc.params;
 
+import androidx.annotation.Nullable;
+
 public class DiscountData {
 
     // 割引率
@@ -53,5 +55,18 @@ public class DiscountData {
 
     public int getConfigEnum() {
         return configEnum;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        boolean equals = false;
+        if (obj instanceof DiscountData data) {
+            if (this.discountPer == data.discountPer &&
+                    this.discountPrice == data.discountPrice &&
+                    this.afterPrice == data.afterPrice) {
+                equals = true;
+            }
+        }
+        return equals;
     }
 }

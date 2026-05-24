@@ -56,20 +56,24 @@ public class CustomPreferenceListAdapter
             binding.setPosition(position);
             binding.setPreferenceParam(preferenceParam);
             binding.setViewModel(viewModel);
-            binding.customPreferenceOneLineNum.setOnFocusChangeListener((v,hasFocus)->{
-                if(!hasFocus){
-                    int newPer= Integer.parseInt(binding.customPreferenceOneLineNum.getText().toString());
-                    int beforePer=viewModel.getPreferenceParamData(position).per();
-                    // 値が変わってなければここで終了
-                    if(newPer==beforePer)return;
+                binding.customPreferenceOneLineNum.setOnFocusChangeListener((v, hasFocus) -> {
+                    if (!hasFocus) {
+                        try {
+                            int newPer = Integer.parseInt(binding.customPreferenceOneLineNum.getText().toString());
+                            int beforePer = viewModel.getPreferenceParamData(position).per();
+                            // 値が変わってなければここで終了
+                            if (newPer == beforePer) return;
 
-                    PreferenceParam newPreferenceData=new PreferenceParam(viewModel.getPreferenceParamData(position).uid(),
-                            viewModel.getPreferenceParamData(position).orderIndex(),
-                            newPer,
-                            viewModel.getPreferenceParamData(position).saveName());
-                    viewModel.updatePreferenceData(position,newPreferenceData);
-                }
-            });
+                            PreferenceParam newPreferenceData = new PreferenceParam(viewModel.getPreferenceParamData(position).uid(),
+                                    viewModel.getPreferenceParamData(position).orderIndex(),
+                                    newPer,
+                                    viewModel.getPreferenceParamData(position).saveName());
+                            viewModel.updatePreferenceData(position, newPreferenceData);
+                        } catch (NumberFormatException ex) {
+                            throw new RuntimeException("CustomPreferenceListViewHolder.bind:" + ex);
+                        }
+                    }
+                });
             binding.executePendingBindings();
         }
 
@@ -98,7 +102,7 @@ public class CustomPreferenceListAdapter
 
 
     }
-    
+
     public CustomPreferenceListAdapter(CustomPreferenceListViewModel viewModel){
         super(DIFF_CALLBACK);
         customPreferenceListViewModel=viewModel;

@@ -101,6 +101,7 @@ public class ResultListFragment extends Fragment {
         progressBarView.setVisibility(View.VISIBLE);
         viewModelInitialize();
         livedataInit();
+        recyclerInit();
 
     }
 
@@ -114,7 +115,6 @@ public class ResultListFragment extends Fragment {
         // 保存データ取得
         loadSettingData();
 
-        recyclerInit();
 
         if (progressBarView != null) {
             progressBarView.setVisibility(View.GONE);

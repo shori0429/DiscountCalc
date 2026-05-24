@@ -101,20 +101,18 @@ public class ResultListFragment extends Fragment {
         progressBarView.setVisibility(View.VISIBLE);
         viewModelInitialize();
         livedataInit();
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-
         // 設定データ取得
         getPreferences();
         // 保存データ取得
         loadSettingData();
 
         recyclerInit();
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
 
         if (progressBarView != null) {
             progressBarView.setVisibility(View.GONE);

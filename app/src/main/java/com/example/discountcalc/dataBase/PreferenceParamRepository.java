@@ -9,7 +9,6 @@ import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.example.discountcalc.DAO.PreferenceParamDAO;
 import com.example.discountcalc.params.PreferenceParam;
-import com.example.discountcalc.params.SQLiteTableInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +21,6 @@ public class PreferenceParamRepository {
     private final PreferenceParamDAO preferenceParamDAO;
     private final LiveData<List<PreferenceParam>> preferenceParamList;
 
-    private List<SQLiteTableInfo> sqLiteTableInfoList;
     int result;
 
     // WordRepositoryをユニットテストするには、Application依存関係を削除する必要があることに注意
@@ -33,7 +31,6 @@ public class PreferenceParamRepository {
         AppDataBase db = AppDataBase.getDatabase(application);
         preferenceParamDAO=db.preferenceParamDAO();
         preferenceParamList= preferenceParamDAO.getAll();
-        sqLiteTableInfoList =new ArrayList<>();
         Log.i("database", Objects.requireNonNull(db.getOpenHelper().getDatabaseName()));
     }
 

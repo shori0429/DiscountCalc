@@ -121,6 +121,13 @@ public class ResultListFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        resultLayoutAdapter=null;
+        resultPriceListBinding=null;
+    }
+
     private void recyclerInit() {
 
         // 描画完了後の通知を受け取って、その地点のHashMapを作成

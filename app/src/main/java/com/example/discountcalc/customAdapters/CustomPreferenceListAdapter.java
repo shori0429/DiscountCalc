@@ -68,6 +68,7 @@ public class CustomPreferenceListAdapter
 
                         if (text.isEmpty()) {
                             binding.customPreferenceOneLineNum.setText(String.valueOf(beforePer));
+                            return;
                         }
 
                         // 値が変わってなければここで終了

@@ -24,19 +24,12 @@ public class MainActivity extends AppCompatActivity{
         setContentView(binding.getRoot());
 
         toolBarFragment=new ToolBarFragment();
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
 
         // ツールバーフラグメントを配置
         FragmentManager fragmentManager=getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.Main_ToolBarView,toolBarFragment)
                 .commit();
-
         // 空白箇所タップでフォーカスを外す(子フラグメントのeditText用)
         binding.getRoot().setOnClickListener(v->{
             InputMethodManager imm=(InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);

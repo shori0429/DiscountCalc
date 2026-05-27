@@ -98,15 +98,4 @@ public class PreferenceParamRepository {
         });
     }
 
-    public List<String> getTableInfoList(){
-        AppDataBase.databaseWriteExecutor.submit(()->{
-            SimpleSQLiteQuery query=new SimpleSQLiteQuery("PRAGMA table_info(custom_preference_table)");
-            sqLiteTableInfoList =preferenceParamDAO.getTableInfoList(query);
-        });
-        List<String> saveNameList=new ArrayList<>();
-        for(SQLiteTableInfo info: sqLiteTableInfoList){
-            saveNameList.add(info.name());
-        }
-        return saveNameList;
-    }
 }

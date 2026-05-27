@@ -84,7 +84,7 @@ public class CustomPreferenceListAdapter
                         viewModel.updatePreferenceData(adapterPosition, newPreferenceData);
                     } catch (NumberFormatException ex) {
                         binding.customPreferenceOneLineNum.setText(String.valueOf(beforePer));
-                        Log.e("CustomPreferenceListAdapter", String.valueOf(new RuntimeException("CustomPreferenceListViewHolder.bind:" + ex)));
+                        Log.e("CustomPreferenceListAdapter", "Failed to parse preference value", ex);
                     }
                 }
             });

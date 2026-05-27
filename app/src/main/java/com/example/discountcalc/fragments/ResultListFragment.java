@@ -125,7 +125,6 @@ public class ResultListFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         if (resultOneCalcLabelView != null && globalLayoutListener != null) {
             resultOneCalcLabelView.getViewTreeObserver().removeOnGlobalLayoutListener(globalLayoutListener);
         }
@@ -135,6 +134,7 @@ public class ResultListFragment extends Fragment {
         resultLayoutAdapter = null;
         resultOneCalcLabelView = null;
         progressBarView = null;
+        globalLayoutListener =null;
 
     }
 

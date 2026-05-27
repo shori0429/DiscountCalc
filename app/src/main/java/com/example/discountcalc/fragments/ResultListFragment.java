@@ -126,6 +126,9 @@ public class ResultListFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if(resultOneCalcLabelView!=null&&globalLayoutListener!=null){
+        resultOneCalcLabelView.getViewTreeObserver().removeOnGlobalLayoutListener(globalLayoutListener);
+        }
         resultLayoutAdapter=null;
         resultPriceListBinding=null;
     }

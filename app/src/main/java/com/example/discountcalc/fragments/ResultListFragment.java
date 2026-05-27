@@ -135,6 +135,7 @@ public class ResultListFragment extends Fragment {
         resultOneCalcLabelView = null;
         progressBarView = null;
         globalLayoutListener =null;
+        super.onDestroyView();
 
     }
 

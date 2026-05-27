@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_custom_toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:background="@color/dark_green_alpha75"
+    android:orientation="horizontal">
+
+    <ImageButton
+        android:id="@+id/Action_LeftButton"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:scaleType="fitCenter"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="8dp"
+        android:src="@drawable/action_back_image"
+        android:background="@color/trans"
+        android:adjustViewBounds="true"
+        />
+
+    <TextView
+        android:id="@+id/Action_Title"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:gravity="center"
+        android:paddingStart="4dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="4dp"
+        android:paddingBottom="4dp"
+        android:text="@string/title_tool_bar"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="#000000"
+        android:background="@color/trans"
+        android:maxLines="1"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMinTextSize="@dimen/small_size"
+        android:autoSizeMaxTextSize="@dimen/large_size"
+        />
+
+    <ImageButton
+        android:id="@+id/Action_RightButton"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:scaleType="fitCenter"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="8dp"
+        android:src="@drawable/setting_image"
+        android:background="@color/trans"
+        />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

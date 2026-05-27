@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/result_label_package"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:weightSum="10">
+
+    <TextView
+        android:id="@+id/discountLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/shape_outer_frame"
+        android:gravity="center"
+        android:text="@string/discountRate"
+        android:textSize="@dimen/normal_size" />
+
+    <TextView
+        android:id="@+id/discountPriceLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:background="@drawable/shape_outer_frame"
+        android:gravity="center"
+        android:text="@string/discountLabel"
+        android:textSize="@dimen/normal_size" />
+
+    <TextView
+        android:id="@+id/priceLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="6"
+        android:background="@drawable/shape_outer_frame"
+        android:gravity="center"
+        android:text="@string/priceLabel"
+        android:textSize="@dimen/normal_size" />
+</TableRow>

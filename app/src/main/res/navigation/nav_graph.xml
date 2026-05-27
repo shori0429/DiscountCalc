@@ -3,26 +3,40 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/nav_titleFragment">
 
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="com.example.discountcalc.FirstFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
-
+        android:id="@+id/nav_titleFragment"
+        android:name="com.example.discountcalc.fragments.TitleFragment"
+        android:label="TitleFragment"
+        tools:layout="@layout/calc_title">
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            android:id="@+id/action_titleFragment_to_settingsFragment"
+            app:destination="@id/nav_settingsFragment"
+            app:popUpTo="@id/nav_titleFragment"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="com.example.discountcalc.SecondFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
-
+        android:id="@+id/nav_settingsFragment"
+        android:name="com.example.discountcalc.fragments.DiscountCalcPreferencesFragment"
+        android:label="SettingsFragment"
+        tools:layout="@layout/config_main">
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_settingsFragment_to_titleFragment"
+            app:destination="@id/nav_titleFragment"
+            app:popUpTo="@id/nav_titleFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_customDiscountPreferenceFragment"
+            app:destination="@id/nav_customDiscountPreferenceFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_customDiscountPreferenceFragment"
+        android:name="com.example.discountcalc.fragments.CustomDiscountPreferenceFragment"
+        android:label="custom_discount_preference_fragment"
+        tools:layout="@layout/custom_discount_preference_fragment" >
+        <action
+            android:id="@+id/action_customDiscountPreferenceFragment_to_settingsFragment"
+            app:destination="@id/nav_settingsFragment" />
+    </fragment>
+    <!--Global Action-->
 </navigation>

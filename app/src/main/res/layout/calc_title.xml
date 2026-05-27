@@ -2,19 +2,21 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/calcTitleView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
+
 
     <TextView
-        android:id="@+id/titleLabel"
+        android:id="@+id/unitLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="割引計算ツール"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:paddingTop="8dp"
+        android:text="@string/unitLabelText"
+        android:textSize="@dimen/large_size"
+        android:textStyle="normal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -22,26 +24,30 @@
         android:id="@+id/priceTextField"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
         android:ems="10"
         android:hint="@string/priceTextFieldText_hint"
+        android:importantForAutofill="no"
         android:inputType="number"
+        android:digits="0123456789"
+        android:focusableInTouchMode="true"
+        android:textSize="@dimen/large_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/unitLabel"
-        app:layout_constraintTop_toBottomOf="@+id/titleLabel"
-        tools:ignore="TouchTargetSizeCheck" />
+        app:layout_constraintTop_toTopOf="@+id/unitLabel"
+        tools:ignore="TouchTargetSizeCheck"
+        />
 
-    <TextView
-        android:id="@+id/unitLabel"
-        android:layout_width="wrap_content"
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/title_resultListView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:text="￥"
-        android:textSize="30sp"
-        android:textStyle="normal"
+
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleLabel" />
+        app:layout_constraintTop_toBottomOf="@id/priceTextField"
+        tools:layout="@layout/result_price_list" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

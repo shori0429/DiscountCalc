@@ -1,0 +1,23 @@
+<resources>
+    <!-- Reply Preference -->
+    <string name="value_preset">Preset</string>
+    <string name="value_custom">Custom</string>
+    <string-array name="using_custom_types">
+        <item>@string/value_preset</item>
+        <item>@string/value_custom</item>
+    </string-array>
+
+    <integer-array name="preset_discount_values">
+        <item>3</item>
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>25</item>
+        <item>30</item>
+        <item>40</item>
+        <item>50</item>
+        <item>80</item>
+    </integer-array>
+
+</resources>

@@ -58,6 +58,8 @@ public class ResultListFragment extends Fragment {
     private RecyclerView recyclerView;
     private ResultLayoutAdapter resultLayoutAdapter;
 
+    private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
+
     DiscountCalcViewModel discountCalcViewModel;
 
     // カスタム設定データのViewModel
@@ -129,9 +131,7 @@ public class ResultListFragment extends Fragment {
     }
 
     private void recyclerInit() {
-
-        // 描画完了後の通知を受け取って、その地点のHashMapを作成
-        resultOneCalcLabelView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 View checkView=resultOneCalcLabelView.findViewById(R.id.discountLabel);
@@ -149,7 +149,9 @@ public class ResultListFragment extends Fragment {
                     resultLayoutAdapter.submitList(new ArrayList<>(resultDataList));
                 }
             }
-        });
+        };
+        // 描画完了後の通知を受け取って、その地点のHashMapを作成
+        resultOneCalcLabelView.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);
     }
 
 

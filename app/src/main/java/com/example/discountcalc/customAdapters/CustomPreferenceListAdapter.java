@@ -56,18 +56,36 @@ public class CustomPreferenceListAdapter
             binding.setPosition(position);
             binding.setPreferenceParam(preferenceParam);
             binding.setViewModel(viewModel);
-            binding.customPreferenceOneLineNum.setOnFocusChangeListener((v,hasFocus)->{
-                if(!hasFocus){
-                    int newPer= Integer.parseInt(binding.customPreferenceOneLineNum.getText().toString());
-                    int beforePer=viewModel.getPreferenceParamData(position).per();
-                    // 値が変わってなければここで終了
-                    if(newPer==beforePer)return;
+            binding.customPreferenceOneLineNum.setOnFocusChangeListener((v, hasFocus) -> {
+                if (!hasFocus) {
+                    //　アダプターに対する相対位置を取得
+                    int adapterPosition = getBindingAdapterPosition();
+                    if (adapterPosition == RecyclerView.NO_POSITION) return;
 
-                    PreferenceParam newPreferenceData=new PreferenceParam(viewModel.getPreferenceParamData(position).uid(),
-                            viewModel.getPreferenceParamData(position).orderIndex(),
-                            newPer,
-                            viewModel.getPreferenceParamData(position).saveName());
-                    viewModel.updatePreferenceData(position,newPreferenceData);
+                    int beforePer = viewModel.getPreferenceParamData(adapterPosition).per();
+                    try {
+                        String text = binding.customPreferenceOneLineNum.getText().toString();
+
+                        if (text.isEmpty()) {
+                            binding.customPreferenceOneLineNum.setText(String.valueOf(beforePer));
+                            return;
+                        }
+
+                        // 値が変わってなければここで終了
+                        int newPer = Integer.parseInt(text);
+                        if (newPer == beforePer) return;
+
+                        PreferenceParam newPreferenceData = new PreferenceParam(
+                                viewModel.getPreferenceParamData(adapterPosition).uid(),
+                                viewModel.getPreferenceParamData(adapterPosition).orderIndex(),
+                                newPer,
+                                viewModel.getPreferenceParamData(adapterPosition).saveName()
+                        );
+                        viewModel.updatePreferenceData(adapterPosition, newPreferenceData);
+                    } catch (NumberFormatException ex) {
+                        binding.customPreferenceOneLineNum.setText(String.valueOf(beforePer));
+                        Log.e("CustomPreferenceListAdapter", "Failed to parse preference value", ex);
+                    }
                 }
             });
             binding.executePendingBindings();
@@ -98,7 +116,7 @@ public class CustomPreferenceListAdapter
 
 
     }
-    
+
     public CustomPreferenceListAdapter(CustomPreferenceListViewModel viewModel){
         super(DIFF_CALLBACK);
         customPreferenceListViewModel=viewModel;

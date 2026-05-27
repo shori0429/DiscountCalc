@@ -49,6 +49,4 @@ public interface PreferenceParamDAO {
     @Query("SELECT DISTINCT save_name FROM "+DataBaseStrings.TableName)
     LiveData<List<String>> getSaveNameColumnsList();
 
-    @RawQuery
-    List<SQLiteTableInfo> getTableInfoList(SupportSQLiteQuery query);
 }

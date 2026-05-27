@@ -58,6 +58,8 @@ public class ResultListFragment extends Fragment {
     private RecyclerView recyclerView;
     private ResultLayoutAdapter resultLayoutAdapter;
 
+    private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
+
     DiscountCalcViewModel discountCalcViewModel;
 
     // カスタム設定データのViewModel
@@ -101,6 +103,7 @@ public class ResultListFragment extends Fragment {
         progressBarView.setVisibility(View.VISIBLE);
         viewModelInitialize();
         livedataInit();
+        recyclerInit();
 
     }
 
@@ -114,17 +117,30 @@ public class ResultListFragment extends Fragment {
         // 保存データ取得
         loadSettingData();
 
-        recyclerInit();
 
         if (progressBarView != null) {
             progressBarView.setVisibility(View.GONE);
         }
     }
 
-    private void recyclerInit() {
+    @Override
+    public void onDestroyView() {
+        if (resultOneCalcLabelView != null && globalLayoutListener != null) {
+            resultOneCalcLabelView.getViewTreeObserver().removeOnGlobalLayoutListener(globalLayoutListener);
+        }
+        view = null;
+        resultPriceListBinding = null;
+        recyclerView = null;
+        resultLayoutAdapter = null;
+        resultOneCalcLabelView = null;
+        progressBarView = null;
+        globalLayoutListener =null;
+        super.onDestroyView();
 
-        // 描画完了後の通知を受け取って、その地点のHashMapを作成
-        resultOneCalcLabelView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+    }
+
+    private void recyclerInit() {
+        globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 View checkView=resultOneCalcLabelView.findViewById(R.id.discountLabel);
@@ -142,7 +158,9 @@ public class ResultListFragment extends Fragment {
                     resultLayoutAdapter.submitList(new ArrayList<>(resultDataList));
                 }
             }
-        });
+        };
+        // 描画完了後の通知を受け取って、その地点のHashMapを作成
+        resultOneCalcLabelView.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);
     }
 
 

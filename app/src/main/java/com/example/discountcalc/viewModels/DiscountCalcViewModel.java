@@ -14,7 +14,7 @@ public class DiscountCalcViewModel extends ViewModel {
     //
     private final MutableLiveData<Integer> configEnum;
 
-    private DiscountCalcViewModel(){
+    public DiscountCalcViewModel(){
 
         price=new MutableLiveData<>(0);
         viewCount=new MutableLiveData<>(0);

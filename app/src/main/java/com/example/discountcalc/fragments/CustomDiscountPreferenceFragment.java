@@ -82,7 +82,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         useSaveDataNameLiveData=new MutableLiveData<>();
         useSaveDataNameLiveData.observe(getViewLifecycleOwner(),useName->{
             List<PreferenceParam> dataList=loadCustomPreferenceList(useName);
-            if(dataList.size()==0) {
+            if(dataList.isEmpty()) {
                 // ロード先が存在しなければ1個の空要素だけを作成。
                 dataList.add(new PreferenceParam(0,Math.incrementExact(dataList.size()),0,""));
             }
@@ -138,11 +138,11 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         customPreferenceViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(), new Observer<>() {
             @Override
             public void onChanged(List<PreferenceParam> allParams) {
-                if (allParams.size() > 0) {
+                if (!allParams.isEmpty()) {
                     customPreferenceViewModel.usePreferenceParamList(useSaveDataNameLiveData.getValue());
                     useSaveDataNameLiveData.setValue(sharedPreferences.getString(getString(R.string.using_custom_preference), null));
                 }
-                if (allParams.size() == 0) {
+                if (allParams.isEmpty()) {
                     customPreferenceViewModel.usePreferenceParamList("");
                 }
                 // 購読を解除。
@@ -275,7 +275,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         //dataStoreHelper.putIntegerValue(saveCountKey, customPreferenceViewModel.listSize());
 
         String title=saveTitle.getText().toString();
-        if(title.equals("")){
+        if(title.isEmpty()){
             //TODO:入力無しは未入力ダイアログ出して保存しないほうがいいかも。
             Toast.makeText(getContext(),"未入力",Toast.LENGTH_SHORT).show();
             return false;

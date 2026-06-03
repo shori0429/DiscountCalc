@@ -114,6 +114,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
 
     @Override
     public void onDestroy() {
+        detachBindingElements();
         super.onDestroy();
         //saveDataStore();
     }
@@ -126,6 +127,16 @@ public class CustomDiscountPreferenceFragment extends Fragment {
         clearButton=customDiscountPreferenceFragmentBinding.clearElementButton;
         allClearButton=customDiscountPreferenceFragmentBinding.allClearElementButton;
         saveTitle=customDiscountPreferenceFragmentBinding.saveTitle;
+    }
+
+    // 解放処理
+    private void detachBindingElements(){
+        elementNumberViewText=null;
+        elementAddButton=null;
+        saveButton=null;
+        clearButton=null;
+        allClearButton=null;
+        saveTitle=null;
     }
     private void viewModelInitialize() {
         customPreferenceViewModel =new ViewModelProvider(this, new CustomPreferenceListViewModelFactory(requireActivity().getApplication()))

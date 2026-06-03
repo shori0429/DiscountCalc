@@ -292,6 +292,8 @@ public class CustomDiscountPreferenceFragment extends Fragment {
             return false;
         }
         Log.i("saveId","saveID : "+title);
+
+        // 重複確認
         if(!customPreferenceViewModel.existingCheckDAO(title)){
             if(customPreferenceViewModel.saveNewData(title)) {
                 Toast.makeText(getContext(), title + "の名前で保存しました。", Toast.LENGTH_SHORT).show();
@@ -299,6 +301,7 @@ public class CustomDiscountPreferenceFragment extends Fragment {
                 Toast.makeText(getContext(), "保存できませんでした。", Toast.LENGTH_SHORT).show();
             }
         }else{
+            // 重複時、ダイアログ表示
             duplicationCheckDialog(title);
         }
 

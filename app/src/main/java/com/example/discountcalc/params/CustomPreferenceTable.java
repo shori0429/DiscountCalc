@@ -2,10 +2,11 @@ package com.example.discountcalc.params;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 // 設定名テーブル
-@Entity(tableName = "preference_table")
+@Entity(tableName = "preference_table",indices = {@Index(value = "saveName",unique = true)})
 public record CustomPreferenceTable(@PrimaryKey(autoGenerate = true)
                                     @ColumnInfo(name = "preference_id")
                                     long preferenceId,

@@ -37,7 +37,7 @@ public interface CustomPreferenceTableDAO {
 
     // 割引率リストを新規保存
     @Insert
-    long insertRates(List<DiscountRateTable> table);
+    List<Long> insertRates(List<DiscountRateTable> table);
 
     // 割引率の設定名を上書き更新
     @Update
@@ -59,4 +59,13 @@ public interface CustomPreferenceTableDAO {
     @Query("SELECT * FROM preference_table " +
             "JOIN discount_rate_table ON preference_table.preference_id = discount_rate_table.preference_id")
     Map<CustomPreferenceTable,List<DiscountRateTable>> loadCustomPreferenceTableAndDiscountRateTable();
+
+
+    // 割引率リストの上書き
+    @Update
+    int updateRates(List<DiscountRateTable> toUpdate);
+
+    // 割引率リストの削除(上書き時に使用)
+    @Delete
+    void deleteRateTableAll(List<DiscountRateTable> toDelete);
 }

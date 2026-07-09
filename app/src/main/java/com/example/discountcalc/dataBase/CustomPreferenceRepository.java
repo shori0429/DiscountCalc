@@ -44,7 +44,7 @@ public class CustomPreferenceRepository {
     }
 
     /// 割引率リストを新規保存
-    public long insertRates(List<DiscountRateTable> rateList){
+    public List<Long> insertRates(List<DiscountRateTable> rateList){
         return dao.insertRates(rateList);
     }
 

@@ -15,8 +15,8 @@ import androidx.room.PrimaryKey;
         parentColumns = "preference_id",
         childColumns = "preference_id",
         onDelete = ForeignKey.CASCADE),
-        // perの重複禁止
-        indices = {@Index(value = "per", unique = true)})
+        // preference_idとperのセット重複禁止
+        indices = {@Index(value = {"preference_id","per"}, unique = true)})
 // 割引率テーブル
 public record DiscountRateTable(@PrimaryKey(autoGenerate = true)
                                 @ColumnInfo(name = "rate_id") long rateId,

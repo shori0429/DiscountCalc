@@ -19,7 +19,6 @@ public abstract class AppDataBase extends RoomDatabase {
     //public abstract PreferenceParamDAO preferenceParamDAO();
 
     public abstract CustomPreferenceTableDAO customPreferenceTableDAO();
-    public abstract DiscountRateTable discountRateTable();
 
     private static volatile AppDataBase instance;
     private static final int NUMBER_OF_THREADS=4;

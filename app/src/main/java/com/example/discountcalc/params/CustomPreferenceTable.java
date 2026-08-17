@@ -6,7 +6,7 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 // 設定名テーブル
-@Entity(tableName = "preference_table",indices = {@Index(value = "saveName",unique = true)})
+@Entity(tableName = "preference_table",indices = {@Index(value = "save_name",unique = true)})
 public record CustomPreferenceTable(@PrimaryKey(autoGenerate = true)
                                     @ColumnInfo(name = "preference_id")
                                     long preferenceId,

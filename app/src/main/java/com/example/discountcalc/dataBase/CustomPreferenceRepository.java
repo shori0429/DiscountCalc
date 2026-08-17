@@ -14,15 +14,16 @@ import java.util.Map;
 import java.util.Objects;
 
 public class CustomPreferenceRepository {
+    private final AppDataBase dataBase;
     private final CustomPreferenceTableDAO dao;
 
     // DAOにデータベースの読み取り/書き込みメソッドがすべて含まれているため、
     // リポジトリコンストラクタには、データベース全体でなくDAOが渡される。
     public CustomPreferenceRepository(Application application){
 
-        AppDataBase db = AppDataBase.getDatabase(application);
-        dao=db.customPreferenceTableDAO();
-        Log.i("database", Objects.requireNonNull(db.getOpenHelper().getDatabaseName()));
+        dataBase = AppDataBase.getDatabase(application);
+        dao=dataBase.customPreferenceTableDAO();
+        Log.i("database", Objects.requireNonNull(dataBase.getOpenHelper().getDatabaseName()));
     }
 
     /// 保存済みのsave_nameに基づく割引率リストを取得。(外部キー:discount_id)を利用。ASCで昇順に

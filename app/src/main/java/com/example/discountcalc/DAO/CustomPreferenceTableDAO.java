@@ -31,6 +31,10 @@ public interface CustomPreferenceTableDAO {
     @Query("SELECT * FROM preference_table ORDER BY order_index ASC")
     LiveData<List<CustomPreferenceTable>> getAllPreferences();
 
+    /// preference_tableのorderIndexカラムの最大値を取得
+    @Query("SELECT MAX(order_index) FROM preference_table")
+    Integer getPreferenceMaxOrderIndex();
+
     // 割引率の設定名を新規保存
     @Insert
     long insertPreference(CustomPreferenceTable table);
@@ -68,4 +72,13 @@ public interface CustomPreferenceTableDAO {
     // 割引率リストの削除(上書き時に使用)
     @Delete
     void deleteRateTableAll(List<DiscountRateTable> toDelete);
+
+    @Transaction
+    default void applyRatesChange(List<DiscountRateTable> toDelete,List<DiscountRateTable> toInsert,List<DiscountRateTable> toUpdate){
+        deleteRateTableAll(toDelete);
+        insertRates(toInsert);
+        int updateCount = updateRates(toUpdate);
+    }
+
+
 }

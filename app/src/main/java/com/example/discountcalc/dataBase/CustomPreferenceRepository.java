@@ -9,6 +9,7 @@ import com.example.discountcalc.DAO.CustomPreferenceTableDAO;
 import com.example.discountcalc.params.CustomPreferenceTable;
 import com.example.discountcalc.params.DiscountRateTable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -40,8 +41,9 @@ public class CustomPreferenceRepository {
     }
 
     /// 割引率の設定名を新規保存
-    public long insertPreference(CustomPreferenceTable customPreference){
-        return dao.insertPreference(customPreference);
+    public long insertPreference(String newSaveName,int newOrderIndex){
+        CustomPreferenceTable newTable=CustomPreferenceTable.createPreferenceParam(newSaveName,newOrderIndex);
+        return dao.insertPreference(newTable);
     }
 
     /// 割引率リストを新規保存
@@ -75,4 +77,47 @@ public class CustomPreferenceRepository {
         return dao.loadCustomPreferenceTableAndDiscountRateTable();
     }
 
+    /// 保存名&割引率リスト完全新規保存
+    public long insertPreferenceWithRate(String newSaveName,List<DiscountRateTable> rateList){
+        if (newSaveName == null || rateList == null) return 0;
+        // 設定名を保存し、lowIdを取得
+        long lowId=insertPreference(newSaveName, getNextPreferenceOrderIndex());
+        if (lowId != -1) {
+            // 新しいリストを作成し、lowIdをセット(紐付けるため)
+            // rateId,per,orderIndexは引数のものを使用
+            List<DiscountRateTable> list = new ArrayList<>();
+            for (var rtb : rateList) {
+                list.add(new DiscountRateTable(
+                        rtb.rateId(),
+                        lowId,
+                        rtb.per(),
+                        rtb.orderIndex()
+                ));
+            }
+            // 割引率リストを新規保存
+            insertRates(list);
+        }
+        return lowId;
+    }
+
+    /// 割引率リスト更新処理
+    public void updateRates(List<DiscountRateTable> toDelete, List<DiscountRateTable> toInsert,List<DiscountRateTable> toUpdate) {
+
+        dao.applyRatesChange(toDelete, toInsert, toUpdate);
+    }
+
+
+    /// 新規保存名追加時、次に使うOrderIndexの値を取得
+    private int getNextPreferenceOrderIndex(){
+        Integer maxOrderIndex=dao.getPreferenceMaxOrderIndex();
+        int newOrderIndex;
+
+        //
+        if (maxOrderIndex == null) {
+            newOrderIndex = 0;
+        } else {
+            newOrderIndex = maxOrderIndex + 1;
+        }
+        return newOrderIndex;
+    }
 }

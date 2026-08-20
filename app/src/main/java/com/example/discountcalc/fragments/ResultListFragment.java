@@ -26,6 +26,7 @@ import com.example.discountcalc.customAdapters.ResultLayoutAdapter;
 import com.example.discountcalc.params.DiscountType;
 import com.example.discountcalc.params.DiscountData;
 import com.example.discountcalc.R;
+import com.example.discountcalc.params.EditableDiscountRate;
 import com.example.discountcalc.viewModels.CustomPreferenceListViewModel;
 import com.example.discountcalc.viewModels.CustomPreferenceListViewModelFactory;
 import com.example.discountcalc.viewModels.DiscountCalcViewModel;
@@ -33,6 +34,8 @@ import com.example.discountcalc.databinding.ResultPriceListBinding;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @SuppressWarnings("FieldCanBeLocal")
@@ -67,11 +70,11 @@ public class ResultListFragment extends Fragment {
 
     private ResultPriceListBinding resultPriceListBinding;
 
-    // 結果表示用のリスト
-    ArrayList<DiscountData> resultDataList = new ArrayList<>();
+    /// 結果表示用のリスト
+    List<DiscountData> resultDataList = new ArrayList<>();
 
-    // 使用する割引率のリスト
-    ArrayList<Integer> discountPerList = new ArrayList<>();
+    /// 使用する割引率のリスト
+    List<Integer> discountPerList = new ArrayList<>();
 
     // 計算タイプ
     DiscountType discountType;
@@ -198,22 +201,21 @@ public class ResultListFragment extends Fragment {
                 refreshCalc();
             }
             case Custom -> {
-                if (customPreferenceListViewModel.PreferenceParamList() == null) {
+                // 保存名リストが存在しない場合はPresetと同じ動作を行う
+                if (customPreferenceListViewModel.getSaveNameList() == null) {
                     createDiscountPreferenceData();
                     break;
                 }
-                customPreferenceListViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(), params -> {
-                    customPreferenceListViewModel.usePreferenceParamList(preferences.getString(getString(R.string.using_custom_preference), ""));
-                });
+                // SharedPreferencesに保存されている保存名を指定
+                customPreferenceListViewModel.selectPreference(preferences.getString(getString(R.string.using_custom_preference), ""));
 
-                customPreferenceListViewModel.PreferenceParamList().observe(getViewLifecycleOwner(), param -> {
-                    // 割引率リストをクリアしておく
-                    discountPerList.clear();
-                    for (int i = 0; i < customPreferenceListViewModel.preferenceParamListSize(); i++) {
-                        discountPerList.add(customPreferenceListViewModel.getPreferenceParamData(i).per());
-                    }
-                    refreshCalc();
-                });
+                // 保存名に応じた割引率リストを取得
+                // 割引率リストをクリアしておく
+                discountPerList.clear();
+                discountPerList = customPreferenceListViewModel.getWorkingList().stream()
+                        .map(EditableDiscountRate::per)
+                        .collect(Collectors.toList());
+                refreshCalc();
             }
         }
     }

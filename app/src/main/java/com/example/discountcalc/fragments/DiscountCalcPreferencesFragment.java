@@ -18,7 +18,6 @@ import androidx.preference.SeekBarPreference;
 
 import com.example.discountcalc.params.DiscountType;
 import com.example.discountcalc.R;
-import com.example.discountcalc.params.PreferenceParam;
 import com.example.discountcalc.viewModels.CustomPreferenceListViewModel;
 import com.example.discountcalc.viewModels.CustomPreferenceListViewModelFactory;
 
@@ -60,30 +59,31 @@ public class DiscountCalcPreferencesFragment extends PreferenceFragmentCompat {
         customPreferenceListViewModel=new ViewModelProvider(this,new CustomPreferenceListViewModelFactory(requireActivity().getApplication()))
                 .get(CustomPreferenceListViewModel.class);
 
-        customPreferenceListViewModel.AllPreferenceParamList().observe(getViewLifecycleOwner(),allParams->{
-            if(allParams.size()>0){
-                customPreferenceListViewModel.AllPreferenceParamList().removeObservers(getViewLifecycleOwner());
-                // 重複要素を一つにまとめたリストを作成
-                List<String> loadSaveList = allParams.stream()
-                        .map(PreferenceParam::saveName)
-                        .distinct()
-                        .collect(Collectors.toList());
+        // TODO ViewModelから全設定リスト名を取得する
+        // 保存済みのSaveNameをリスト取得
+        // リストサイズ分のCharSequence配列を作成
+        List<String> saveNameList = customPreferenceListViewModel.getSaveNameList();
 
-                // CharSequence[]に保存名のリストをセット
-                // TODO ストリーム使ってうまいこと作れそう
-                int listSize = loadSaveList.size();
-                CharSequence entries[] = new CharSequence[listSize];
 
-                for (int i = 0; i < listSize; i++) {
-                    entries[i] = loadSaveList.get(i);
-                }
 
-                usingSaveCustomPreference.setEntries(entries);
-                usingSaveCustomPreference.setEntryValues(entries);
-                // 初期化時に使用する設定データがカスタム設定になっているなら表示させておく
-                customPreferenceSetting(DiscountType.valueOf(usingCustomPreference.getValue()),usingSaveCustomPreference);
-            }
-        });
+        int listSize = 0;
+        if(saveNameList!=null) {
+            saveNameList.size();
+        }
+
+        // CharSequence[]に保存名のリストをセット
+        CharSequence entries[] = new CharSequence[listSize];
+        for (int i = 0; i < listSize; i++) {
+            entries[i] = saveNameList.get(i);
+        }
+
+        // ListPreferenceにエンティティリストをセット
+        // 実際に保存されるエンティティリストをセット
+        usingSaveCustomPreference.setEntries(entries);
+        usingSaveCustomPreference.setEntryValues(entries);
+        // 初期化時に使用する設定データがカスタム設定になっているなら表示させておく
+        customPreferenceSetting(DiscountType.valueOf(usingCustomPreference.getValue()), usingSaveCustomPreference);
+//        });
     }
 
     // 設定データ取得
@@ -139,12 +139,17 @@ public class DiscountCalcPreferencesFragment extends PreferenceFragmentCompat {
     }
 
     private void setViewMax(String useName) {
-        // 読み込んだ保存データの要素数をセット
-        customPreferenceListViewModel.usePreferenceParamList(useName);
-        int viewMax = customPreferenceListViewModel.preferenceParamListSize();
-        viewCountSeekBar.setMax(viewMax);
-        // 前のシークバーの位置が、更新後のシークバーの最大値を超えている場合に値を更新し、戻った時のエラー回避
-        if(viewCountSeekBar.getValue()>viewMax)viewCountSeekBar.setValue(viewMax);
+        customPreferenceListViewModel.selectPreference(useName);
+        List<String> saveNameList=customPreferenceListViewModel.getSaveNameList();
+        if(saveNameList!=null) {
+            int viewMax = saveNameList.size();
+            viewCountSeekBar.setMax(viewMax);
+            // 前のシークバーの位置が、更新後のシークバーの最大値を超えている場合に値を更新し、戻った時のエラー回避
+            if (viewCountSeekBar.getValue() > viewMax) viewCountSeekBar.setValue(viewMax);
+        }else{
+            // TODO 一旦シークバー非表示
+            viewCountSeekBar.setVisible(false);
+        }
     }
 
     private void setNavGraphDestination(){

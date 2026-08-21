@@ -13,11 +13,12 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.discountcalc.databinding.SavedataListviewOnelineBinding;
-import com.example.discountcalc.params.PreferenceParam;
+import com.example.discountcalc.params.CustomPreferenceTable;
 import com.example.discountcalc.viewModels.CustomPreferenceListViewModel;
 
 import java.util.List;
 
+/// 保存された設定名をリスト表示する為のアダプタクラス
 public class SaveDataListViewAdapter
         extends ListAdapter<String, SaveDataListViewAdapter.SaveDataListViewHolder>{
 
@@ -30,7 +31,7 @@ public class SaveDataListViewAdapter
 
     public static class SaveDataListViewHolder extends RecyclerView.ViewHolder{
 
-        private List<PreferenceParam> preferenceParamList;
+        private List<CustomPreferenceTable> preferenceParamList;
 
         private final SavedataListviewOnelineBinding binding;
 
@@ -42,7 +43,7 @@ public class SaveDataListViewAdapter
         public void bind(String param,CustomPreferenceListViewModel viewModel){
             binding.saveTitle.setText(param);
             binding.buttonDelete.setOnClickListener(v->{
-                viewModel.deleteSaveData(param);
+                //saviewModel.deleteSaveData(param);
             });
             binding.executePendingBindings();
         }

@@ -52,7 +52,7 @@ public interface CustomPreferenceTableDAO {
     int countBySaveName(String saveName);
 
     // save_nameの削除(CASCADEで割引率も自動削除)
-    @Delete
+    @Query("DELETE FROM preference_table WHERE save_name = :saveName")
     void deletePreference(String saveName);
 
     // 既存の割引率リストを削除(上書き時に使用)

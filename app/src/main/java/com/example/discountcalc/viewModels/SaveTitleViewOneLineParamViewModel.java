@@ -6,16 +6,16 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.discountcalc.dataBase.PreferenceParamRepository;
+import com.example.discountcalc.dataBase.CustomPreferenceRepository;
 
 public class SaveTitleViewOneLineParamViewModel extends AndroidViewModel {
-    private MutableLiveData<String> loadSaveTitleColumn;
+    private final MutableLiveData<String> loadSaveTitleColumn;
 
-    PreferenceParamRepository repository;
+    CustomPreferenceRepository repository;
 
     public SaveTitleViewOneLineParamViewModel(@NonNull Application application) {
         super(application);
-        repository=new PreferenceParamRepository(application);
+        repository=new CustomPreferenceRepository(application);
         loadSaveTitleColumn=new MutableLiveData<>("");
     }
 

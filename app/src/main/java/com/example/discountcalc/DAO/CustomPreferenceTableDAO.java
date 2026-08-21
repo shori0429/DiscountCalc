@@ -4,7 +4,9 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.example.discountcalc.params.CustomPreferenceTable;
@@ -36,15 +38,15 @@ public interface CustomPreferenceTableDAO {
     Integer getPreferenceMaxOrderIndex();
 
     // 割引率の設定名を新規保存
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertPreference(CustomPreferenceTable table);
 
     // 割引率リストを新規保存
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     List<Long> insertRates(List<DiscountRateTable> table);
 
     // 割引率の設定名を上書き更新
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     void updatePreference(CustomPreferenceTable table);
 
     // save_nameの重複確認
@@ -66,7 +68,7 @@ public interface CustomPreferenceTableDAO {
 
 
     // 割引率リストの上書き
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     int updateRates(List<DiscountRateTable> toUpdate);
 
     // 割引率リストの削除(上書き時に使用)
